@@ -6,4 +6,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserController {
     ResponseEntity<UserResponseDto> save(UserDto userDto);
+    ResponseEntity<UserResponseDto> findById(Long id);
 }

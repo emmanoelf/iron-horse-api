@@ -25,4 +25,11 @@ public class UserControllerImpl implements UserController {
         UserResponseDto userResponseDto = this.userService.save(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
     }
+
+    @Override
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDto> findById(@PathVariable Long id) {
+        UserResponseDto userResponseDto = this.userService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponseDto);
+    }
 }
