@@ -34,4 +34,17 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(
                         () -> new UserNotFound("Usuário não encontrado"));
     }
+
+    @Override
+    @Transactional
+    public Long deleteById(Long id) {
+        Long rowsAffected = this.userRepository.deleteUserById(id);
+
+        if(rowsAffected == 0) {
+            throw new UserNotFound("Entidade não encontrada");
+        }
+
+        this.userRepository.flush();
+        return rowsAffected;
+    }
 }

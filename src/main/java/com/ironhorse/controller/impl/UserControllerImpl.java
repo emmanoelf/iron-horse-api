@@ -32,4 +32,11 @@ public class UserControllerImpl implements UserController {
         UserResponseDto userResponseDto = this.userService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDto);
     }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        this.userService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
