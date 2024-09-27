@@ -39,4 +39,11 @@ public class UserControllerImpl implements UserController {
         this.userService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @Override
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDto> update(@PathVariable Long id, @RequestBody @Valid UserDto userDto) {
+        UserResponseDto userResponseDto = this.userService.update(id, userDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponseDto);
+    }
 }

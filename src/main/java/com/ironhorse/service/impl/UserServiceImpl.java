@@ -11,6 +11,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -46,5 +48,23 @@ public class UserServiceImpl implements UserService {
 
         this.userRepository.flush();
         return rowsAffected;
+    }
+
+    @Override
+    public UserResponseDto update(Long id, UserDto userDto) {
+        Optional<User> user = this.userRepository.findById(id);
+
+        if(!user.isPresent()) {
+            throw new UserNotFound("Usuário não encontrado");
+        }
+
+        User updatedUser = user.get();
+        updatedUser.setName(userDto.name());
+        updatedUser.setEmail(userDto.email());
+        updatedUser.setPassword(userDto.password());
+        updatedUser.setPhone(userDto.phone());
+
+        this.userRepository.save(updatedUser);
+        return UserMapper.toDto(updatedUser);
     }
 }
