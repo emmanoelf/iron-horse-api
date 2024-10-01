@@ -69,6 +69,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
     }
 
+    @ExceptionHandler(ForbiddenAccessException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected ResponseEntity<ProblemDetail> handleForbiddenAccess(ForbiddenAccessException ex) {
+        ProblemType problemType = ProblemType.FORBIDDEN_ACCESS; // Defina um tipo apropriado
+
+        ProblemDetail problemDetail = createProblemDetailBuilder(
+                HttpStatus.FORBIDDEN,
+                problemType,
+                ex.getMessage()
+        ).build();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
+    }
+
     private ProblemDetail.ProblemDetailBuilder createProblemDetailBuilder(HttpStatus status, ProblemType problemType, String detail){
         return ProblemDetail.builder()
                 .status(status.value())
