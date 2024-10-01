@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ForbiddenAccessException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     protected ResponseEntity<ProblemDetail> handleForbiddenAccess(ForbiddenAccessException ex) {
-        ProblemType problemType = ProblemType.FORBIDDEN_ACCESS; // Defina um tipo apropriado
+        ProblemType problemType = ProblemType.FORBIDDEN_ACCESS;
 
         ProblemDetail problemDetail = createProblemDetailBuilder(
                 HttpStatus.FORBIDDEN,
