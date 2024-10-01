@@ -26,4 +26,26 @@ public class CarControllerImpl implements CarController {
         CarResponseDto carResponseDto = this.carService.save(carDto, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(carResponseDto);
     }
+
+    @Override
+    @GetMapping("/{id}")
+    public ResponseEntity<CarResponseDto> findById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.carService.findById(id));
+    }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        this.carService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
+    @PutMapping("/{carId}/{userId}")
+    public ResponseEntity<CarResponseDto> update(@RequestBody @Valid CarDto carDto,
+                                                 @PathVariable Long carId,
+                                                 @PathVariable Long userId) {
+        CarResponseDto carResponseDto = this.carService.update(carDto, carId, userId);
+        return ResponseEntity.status(HttpStatus.OK).body(carResponseDto);
+    }
 }
