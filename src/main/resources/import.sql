@@ -1,0 +1,2 @@
+insert into role (created_at, id, updated_at, name) values (current_timestamp(), 1, current_timestamp(),'Renter');
+insert into role (created_at, id, updated_at, name) values (current_timestamp(), 22, current_timestamp(),'Owner');
