@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ProblemType {
-    ENTITY_NOT_FOUND("/entidade-nao-encontrada", "Entidade não encontrada"),
+    RESOURCE_NOT_FOUND("/recurso-nao-encontrado", "Recurso não encontrado"),
     INVALID_DATA("/dados-invalidos", "Dados inválidos"),
     FORBIDDEN_ACCESS("/acesso-proibido", "Não há privilégios necessários para o acesso");
 

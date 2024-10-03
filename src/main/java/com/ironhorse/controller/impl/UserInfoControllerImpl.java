@@ -21,8 +21,17 @@ public class UserInfoControllerImpl implements UserInfoController {
 
     @Override
     @PostMapping("/{userId}")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserInfoResponseDto> save(@RequestBody @Valid UserInfoDto userInfoDto, @PathVariable Long userId) {
-        UserInfoResponseDto response = this.userInfoService.save(userInfoDto, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        UserInfoResponseDto userInfoResponseDto = this.userInfoService.save(userInfoDto, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userInfoResponseDto);
+    }
+
+    @Override
+    @GetMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserInfoResponseDto> findByUserId(@PathVariable Long userId) {
+        UserInfoResponseDto userInfoResponseDto = this.userInfoService.findByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(userInfoResponseDto);
     }
 }

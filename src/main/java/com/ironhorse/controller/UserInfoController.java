@@ -4,6 +4,7 @@ import com.ironhorse.dto.UserInfoDto;
 import com.ironhorse.dto.UserInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,4 +20,12 @@ public interface UserInfoController {
                     content = {@Content(mediaType = "application/json")})
     })
     ResponseEntity<UserInfoResponseDto> save(UserInfoDto userInfoDto, Long userId);
+
+    @Operation(summary = "Find user info by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "User info found",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserInfoResponseDto.class))}),
+    })
+    ResponseEntity<UserInfoResponseDto> findByUserId(Long userId);
 }
