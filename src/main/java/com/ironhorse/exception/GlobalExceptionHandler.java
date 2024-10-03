@@ -3,6 +3,7 @@ package com.ironhorse.exception;
 import com.ironhorse.dto.ProblemDetail;
 import com.ironhorse.dto.ProblemObject;
 import com.ironhorse.dto.ProblemType;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,12 +31,29 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     protected ResponseEntity<ProblemDetail> handleEntityNotFound(EntityNotFound ex) {
-        ProblemType problemType = ProblemType.ENTITY_NOT_FOUND;
+        ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
 
         ProblemDetail problemDetail = createProblemDetailBuilder(
                 HttpStatus.NOT_FOUND,
                 problemType,
                 ex.getMessage()
+        ).build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected ResponseEntity<ProblemDetail> handleNoResourceFound(HttpServletRequest request) {
+        ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
+
+        String detail = String.format("O recurso %s que você tentou acessar não foi encontrado", request.getRequestURI());
+
+
+        ProblemDetail problemDetail = createProblemDetailBuilder(
+                HttpStatus.NOT_FOUND,
+                problemType,
+                detail
         ).build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
