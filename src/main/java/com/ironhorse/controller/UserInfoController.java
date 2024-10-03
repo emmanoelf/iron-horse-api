@@ -28,4 +28,11 @@ public interface UserInfoController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserInfoResponseDto.class))}),
     })
     ResponseEntity<UserInfoResponseDto> findByUserId(Long userId);
+
+    @Operation(summary = "Delete user info by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "User info deleted"),
+    })
+    ResponseEntity<Void> deleteByUserId(Long userId);
 }

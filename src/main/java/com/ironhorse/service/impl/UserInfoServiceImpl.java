@@ -47,4 +47,17 @@ public class UserInfoServiceImpl implements UserInfoService {
 
         return UserInfoMapper.toDto(userInfo);
     }
+
+    @Override
+    @Transactional
+    public Long deleteByUserId(Long userId) {
+        Long affectedRow = this.userInfoRepository.deleteByUserId(userId);
+
+        if(affectedRow == 0){
+            throw new UserNotFound("Usuário não encontrado");
+        }
+
+        this.userInfoRepository.flush();
+        return affectedRow;
+    }
 }
