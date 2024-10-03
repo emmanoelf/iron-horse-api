@@ -41,4 +41,12 @@ public class UserInfoControllerImpl implements UserInfoController {
         this.userInfoService.deleteByUserId(userId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @Override
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserInfoResponseDto> update(@RequestBody @Valid UserInfoDto userInfoDto,
+                                                      @PathVariable Long userId) {
+        UserInfoResponseDto userInfoResponseDto = this.userInfoService.update(userInfoDto, userId);
+        return ResponseEntity.status(HttpStatus.OK).body(userInfoResponseDto);
+    }
 }

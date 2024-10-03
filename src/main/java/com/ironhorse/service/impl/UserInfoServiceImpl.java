@@ -54,10 +54,30 @@ public class UserInfoServiceImpl implements UserInfoService {
         Long affectedRow = this.userInfoRepository.deleteByUserId(userId);
 
         if(affectedRow == 0){
-            throw new UserNotFound("Usuário não encontrado");
+            throw new UserInfoNotFoundException("Informações do usuário não encontradas");
         }
 
         this.userInfoRepository.flush();
         return affectedRow;
+    }
+
+    @Override
+    @Transactional
+    public UserInfoResponseDto update(UserInfoDto userInfoDto, Long userId) {
+        UserInfo userInfo = this.userInfoRepository.findById(userId)
+                .orElseThrow(() -> new UserInfoNotFoundException("Informações do usuário não encontradas"));
+
+        userInfo.setStreetAddress(userInfoDto.cpf());
+        userInfo.setStreetAddress(userInfoDto.streetAddress());
+        userInfo.setStreetName(userInfoDto.streetName());
+        userInfo.setStreetNumber(userInfoDto.streetNumber());
+        userInfo.setDistrict(userInfoDto.district());
+        userInfo.setZipcode(userInfoDto.zipcode());
+        userInfo.setCity(userInfoDto.city());
+        userInfo.setState(userInfoDto.state());
+        userInfo.setDriverLicense(userInfoDto.driverLicense());
+
+        this.userInfoRepository.flush();
+        return UserInfoMapper.toDto(userInfo);
     }
 }

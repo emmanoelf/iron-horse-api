@@ -35,4 +35,12 @@ public interface UserInfoController {
                     description = "User info deleted"),
     })
     ResponseEntity<Void> deleteByUserId(Long userId);
+
+    @Operation(summary = "Update user info by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "User info updated",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserInfoResponseDto.class))}),
+    })
+    ResponseEntity<UserInfoResponseDto> update(UserInfoDto userInfoDto, Long userId);
 }
