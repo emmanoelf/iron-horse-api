@@ -1,5 +1,6 @@
 package com.ironhorse.controller;
 
+import com.ironhorse.dto.UserInfoCreateDto;
 import com.ironhorse.dto.UserInfoDto;
 import com.ironhorse.dto.UserInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,9 +18,9 @@ public interface UserInfoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Create a user info",
-                    content = {@Content(mediaType = "application/json")})
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserInfoCreateDto.class))}),
     })
-    ResponseEntity<UserInfoResponseDto> save(UserInfoDto userInfoDto, Long userId);
+    ResponseEntity<UserInfoResponseDto> save(UserInfoCreateDto userInfoCreateDto, Long userId);
 
     @Operation(summary = "Find user info by ID")
     @ApiResponses(value = {

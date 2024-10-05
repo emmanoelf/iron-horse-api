@@ -1,6 +1,7 @@
 package com.ironhorse.controller.impl;
 
 import com.ironhorse.controller.UserInfoController;
+import com.ironhorse.dto.UserInfoCreateDto;
 import com.ironhorse.dto.UserInfoDto;
 import com.ironhorse.dto.UserInfoResponseDto;
 import com.ironhorse.service.UserInfoService;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/user_info")
+@RequestMapping("/v1/userInfo")
 public class UserInfoControllerImpl implements UserInfoController {
 
     private final UserInfoService userInfoService;
@@ -22,8 +23,8 @@ public class UserInfoControllerImpl implements UserInfoController {
     @Override
     @PostMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserInfoResponseDto> save(@RequestBody @Valid UserInfoDto userInfoDto, @PathVariable Long userId) {
-        UserInfoResponseDto userInfoResponseDto = this.userInfoService.save(userInfoDto, userId);
+    public ResponseEntity<UserInfoResponseDto> save(@RequestBody @Valid UserInfoCreateDto userInfoCreateDto, @PathVariable Long userId) {
+        UserInfoResponseDto userInfoResponseDto = this.userInfoService.save(userInfoCreateDto, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(userInfoResponseDto);
     }
 

@@ -1,5 +1,6 @@
 package com.ironhorse.service.impl;
 
+import com.ironhorse.dto.UserInfoCreateDto;
 import com.ironhorse.dto.UserInfoDto;
 import com.ironhorse.dto.UserInfoResponseDto;
 import com.ironhorse.exception.ForbiddenAccessException;
@@ -24,10 +25,10 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     @Transactional
-    public UserInfoResponseDto save(UserInfoDto userInfoDto, Long userId) {
+    public UserInfoResponseDto save(UserInfoCreateDto userInfoCreateDto, Long userId) {
         User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFound("Usuário não encontrado"));
 
-        UserInfo userInfo = UserInfoMapper.toModel(userInfoDto);
+        UserInfo userInfo = UserInfoMapper.toModel(userInfoCreateDto);
         userInfo.setUser(user);
         userInfo = this.userInfoRepository.save(userInfo);
 
