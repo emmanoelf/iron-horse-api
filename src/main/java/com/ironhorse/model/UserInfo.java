@@ -46,6 +46,18 @@ public class UserInfo {
     @Column(nullable = false)
     private String driverLicense;
 
+    @Column(nullable = false)
+    private boolean acceptComunication;
+
+    @Column(nullable = false)
+    private boolean isTermsUser;
+
+    @Column(nullable = false)
+    private boolean isRegularized;
+
+    @Column(nullable = false)
+    private boolean isRealInformation;
+
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
