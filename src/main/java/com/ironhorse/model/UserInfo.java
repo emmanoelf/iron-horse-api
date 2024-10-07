@@ -62,6 +62,10 @@ public class UserInfo {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_picture", referencedColumnName = "id", nullable = true)
+    private FileStorage userPicture;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime created_at;
