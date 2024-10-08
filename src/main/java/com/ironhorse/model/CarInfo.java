@@ -113,4 +113,11 @@ public class CarInfo {
     private LocalDateTime updated_at;
 
 
+    public void setIsFinesBelongToTheOffender(Boolean finesBelongToTheOffender) {
+        this.isFinesBelongToTheOffender = finesBelongToTheOffender;
+    }
+
+    public void setIsTermsUser(Boolean termsUser) {
+        this.isTermsUser = termsUser;
+    }
 }
