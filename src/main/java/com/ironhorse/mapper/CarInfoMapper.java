@@ -1,9 +1,7 @@
 package com.ironhorse.mapper;
 
 import com.ironhorse.dto.CarInfoDto;
-import com.ironhorse.dto.CarResponseDto;
 import com.ironhorse.model.CarInfo;
-
 
 public class CarInfoMapper {
 
@@ -42,32 +40,32 @@ public class CarInfoMapper {
 
     public static CarInfoDto toDto(CarInfo carInfo) {
         return new CarInfoDto(
-                carInfo.getAirConditioner(),
-                carInfo.getInsurance(),
-                carInfo.getAlarm(),
-                carInfo.getAntiTheftSecret(),
-                carInfo.getChassi(),
-                carInfo.getDirectionType(),
-                carInfo.getFuelType(),
-                carInfo.getEngineNumber(),
-                carInfo.getElectricWindowsAndLocks(),
-                carInfo.getEngineHorsePower(),
-                carInfo.getInsulfilm(),
-                carInfo.getFireExtinguisher(),
                 carInfo.getLicensePlate(),
-                carInfo.getMonkey(),
-                carInfo.getMileage(),
-                carInfo.getMultimedia(),
-                carInfo.getSmokersAccepted(),
-                carInfo.getSpareTire(),
-                carInfo.getRenavam(),
-                carInfo.getTagPike(),
-                carInfo.getTagActivated(),
                 carInfo.getTransmission(),
-                carInfo.getTriangle(),
-                carInfo.getWheelWrench(),
-                carInfo.isFinesBelongToTheOffender(), // Corrigido para isFinesBelongToTheOffender()
-                carInfo.isTermsUser()
+                carInfo.getDirectionType(),
+                carInfo.getChassi(),
+                carInfo.getEngineNumber(),
+                carInfo.getEngineHorsePower(),
+                carInfo.getMileage(),
+                carInfo.getFuelType(),
+                carInfo.getRenavam(),
+                carInfo.getInsuranceName(),
+                carInfo.isInsurance(),
+                carInfo.isInsulfilm(),
+                carInfo.isTagPike(),
+                carInfo.isAntiTheftSecret(),
+                carInfo.isMultimedia(),
+                carInfo.isAirConditioner(),
+                carInfo.isElectricWindowsAndLocks(),
+                carInfo.isTriangle(),
+                carInfo.isMonkey(),
+                carInfo.isWheelWrench(),
+                carInfo.isSpareTire(),
+                carInfo.isFireExtinguisher(),
+                carInfo.isAlarm(),
+                carInfo.isSmokersAccepted(),
+                carInfo.isTagActivated(),
+                carInfo.isFinesBelongToTheOffender(),
+                carInfo.isTermsUser());
     }
-
 }
