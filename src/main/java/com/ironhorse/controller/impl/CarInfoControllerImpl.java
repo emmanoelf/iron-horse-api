@@ -20,28 +20,28 @@ public class CarInfoControllerImpl implements CarInfoController {
     }
 
     @Override
-    @PostMapping("/{car_id}")
+    @PostMapping("/{carId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CarInfoDto> save(@RequestBody @Valid CarInfoDto carInfoDto, Long carId) {
+    public ResponseEntity<CarInfoDto> save(@RequestBody @Valid  CarInfoDto carInfoDto,@PathVariable Long carId) {
         CarInfoDto carInfo = this.carInfoService.save(carInfoDto, carId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(carInfoDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(carInfo);
     }
 
     @Override
-    @GetMapping("/{car_id}")
+    @GetMapping("/{carId}")
     public ResponseEntity<CarInfoDto> findCarById(@PathVariable Long carId) {
         return ResponseEntity.status(HttpStatus.OK).body(this.carInfoService.findCarById(carId));
     }
 
     @Override
-    @DeleteMapping("/{car_id}")
+    @DeleteMapping("/{carId}")
     public ResponseEntity<Void> deleteByCarId(@PathVariable Long carId) {
         this.carInfoService.deleteByCarId(carId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override
-    @PutMapping("/{car_id}")
+    @PutMapping("/{carId}")
     public ResponseEntity<CarInfoDto> update(@RequestBody @Valid CarInfoDto carInfoDto,
                                                  @PathVariable Long carId) {
         CarInfoDto carInfo = this.carInfoService.update(carInfoDto, carId);

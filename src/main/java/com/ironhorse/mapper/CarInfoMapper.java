@@ -8,7 +8,6 @@ public class CarInfoMapper {
     public static CarInfo toModel(CarInfoDto carInfoDto) {
         return CarInfo.builder()
                 .airConditioner(carInfoDto.airConditioner())
-                .insurance(carInfoDto.insurance())
                 .alarm(carInfoDto.alarm())
                 .antiTheftSecret(carInfoDto.antiTheftSecret())
                 .chassi(carInfoDto.chassi())
@@ -19,7 +18,6 @@ public class CarInfoMapper {
                 .engineHorsePower(carInfoDto.engineHorsePower())
                 .insulfilm(carInfoDto.insulfilm())
                 .insuranceName(carInfoDto.insuranceName())
-                .insurance(carInfoDto.insurance())
                 .fireExtinguisher(carInfoDto.fireExtinguisher())
                 .licensePlate(carInfoDto.licensePlate())
                 .monkey(carInfoDto.monkey())
@@ -35,6 +33,7 @@ public class CarInfoMapper {
                 .wheelWrench(carInfoDto.wheelWrench())
                 .isFinesBelongToTheOffender(carInfoDto.isFinesBelongToTheOffender())
                 .isTermsUser(carInfoDto.isTermsUser())
+                .insurance(carInfoDto.insurance())
                 .build();
     }
 
