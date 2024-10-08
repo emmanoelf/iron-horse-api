@@ -18,13 +18,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class FileLocalStorageServiceImpl implements FileStorageService {
     private final FileStorageRepository fileStorageRepository;
     private final UserInfoRepository userInfoRepository;
+    private static final String CONTENT_PNG = "image/png";
+    private static final String CONTENT_JPEG = "image/jpeg";
+    private static final String PREFIX_FILENAME = "profile";
 
     @Value("${upload.dir}")
     private String uploadDir;
@@ -33,13 +35,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     @Transactional
     public void uploadFile(MultipartFile file, Long userId){
         try{
-            if(file.isEmpty()){
-                throw new FileUploadException("Arquivo não encontrado");
-            }
-
-            if(!file.getContentType().equals("image/jpeg") && !file.getContentType().equals("image/png")){
-                throw new FileUploadException("A imagem deve ser PNG ou JPEG");
-            }
+            this.validateFile(file);
 
             UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
                     () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
@@ -48,18 +44,11 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
                 this.deleteUserProfileFile(userId);
             }
 
-            String originalFilename = file.getOriginalFilename();
-            long timestamp = System.currentTimeMillis();
-            String fileName = "profile_" + timestamp + "_" + originalFilename;
-
+            String fileName = this.generateFilename(file.getOriginalFilename());
             File uploadFile = new File(uploadDir + fileName);
-
             file.transferTo(uploadFile);
 
-            FileStorage fileStorage = new FileStorage();
-            fileStorage.setName(fileName);
-            fileStorage.setPath(uploadFile.getAbsolutePath());
-            fileStorage.setSize(file.getSize());
+            FileStorage fileStorage = this.createFileStorage(fileName, uploadFile.getAbsolutePath(), file.getSize());
             userInfo.setUserPicture(fileStorage);
 
             this.fileStorageRepository.save(fileStorage);
@@ -78,17 +67,13 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
             throw new IllegalArgumentException("Não há foto de perfil para ser deletada");
         }
 
-        Optional<FileStorage> fileStorage = this.fileStorageRepository.findById(userInfo.getUserPicture().getId());
-        File deleteFile = new File(fileStorage.get().getPath());
-        if(deleteFile.exists()){
-            boolean deleted = deleteFile.delete();
-            if(!deleted){
-                throw new IllegalArgumentException("Ocorreu um erro ao excluir a foto");
-            }
-        }
+        FileStorage fileStorage = this.fileStorageRepository.findById(userInfo.getUserPicture().getId()).orElseThrow(
+                () -> new FileStorageNotFoundException("Arquivo não encontrado"));
+
+        this.deleteFileStorage(fileStorage);
 
         userInfo.setUserPicture(null);
-        this.fileStorageRepository.deleteById(fileStorage.get().getId());
+        this.fileStorageRepository.deleteById(fileStorage.getId());
         this.fileStorageRepository.flush();
     }
 
@@ -105,5 +90,45 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
                 () -> new FileStorageNotFoundException("Arquivo não encontrado"));
 
         return FileStorageMapper.toDto(fileStorage);
+    }
+
+    private String generateFilename(String originalFilename){
+        long timestamp = System.currentTimeMillis();
+        return String.format("%s_%d_%s", FileLocalStorageServiceImpl.PREFIX_FILENAME, timestamp, originalFilename);
+    }
+
+    private boolean isValidContentType(String contentType) {
+        return CONTENT_PNG.equals(contentType) || CONTENT_JPEG.equals(contentType);
+    }
+
+    private void validateFile(MultipartFile file) throws FileUploadException {
+        if (file.isEmpty()) {
+            throw new FileUploadException("Arquivo não encontrado");
+        }
+
+        if (!this.isValidContentType(file.getContentType())) {
+            throw new FileUploadException("A imagem deve ser PNG ou JPEG");
+        }
+    }
+
+    private FileStorage createFileStorage(String fileName, String absolutePath, Long size){
+        FileStorage fileStorage = new FileStorage();
+        fileStorage.setName(fileName);
+        fileStorage.setPath(absolutePath);
+        fileStorage.setSize(size);
+
+        return fileStorage;
+    }
+
+    private File deleteFileStorage(FileStorage fileStorage){
+        File deleteFile = new File(fileStorage.getPath());
+        if(deleteFile.exists()){
+            boolean deleted = deleteFile.delete();
+            if(!deleted){
+                throw new IllegalArgumentException("Ocorreu um erro ao excluir a foto");
+            }
+        }
+
+        return deleteFile;
     }
 }
