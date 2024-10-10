@@ -5,18 +5,17 @@ import com.ironhorse.mapper.ReviewMapper;
 import com.ironhorse.model.Review;
 import com.ironhorse.repository.ReviewRepository;
 import com.ironhorse.service.ReviewService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository repository;
-    private final ReviewMapper reviewMapper;
 
     // Criar Review
     public ReviewDto createReview(ReviewDto reviewDto) {
@@ -34,9 +33,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     // Buscar Review por ID
-    public Optional<ReviewDto> getReviewById(Long id) {
-        return repository.findById(id)
-                .map(ReviewMapper::toDto);
+    public ReviewDto getReviewById(Long id) {
+        return repository.findById(id).map(ReviewMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("Review não encontrada"));
+
     }
 
     // Atualizar Review
@@ -46,8 +46,6 @@ public class ReviewServiceImpl implements ReviewService {
         Review updatedReview = repository.save(review);
         return ReviewMapper.toDto(updatedReview);
     }
-
-
 
     // Deletar Review
     public void deleteReview(Long id) {

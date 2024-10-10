@@ -10,7 +10,7 @@ public interface ReviewService {
 
     List<ReviewDto> getAllReviews();
 
-    Optional<Object> getReviewById(Long id);
+    ReviewDto getReviewById(Long id);
 
     void deleteReview(Long id);
 

@@ -36,9 +36,8 @@ public class ReviewControllerImpl implements ReviewController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getReviewById(@PathVariable Long id) {
-        return reviewService.getReviewById(id)
-                .map(reviewDto -> new ResponseEntity<>(reviewDto, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        ReviewDto reviewDto = this.reviewService.getReviewById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(reviewDto);
     }
 
     @PutMapping("/{id}")
