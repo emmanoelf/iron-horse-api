@@ -16,7 +16,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CarOverviewServiceImpl implements CarOverviewService {
     private final CarOverviewRepository carOverviewRepository;
-    private final CarOverviewMapper carOverviewMapper;
 
     // Criar CarOverview
     public CarOverviewDto createCarOverview(CarOverviewDto carOverviewDto, CarDto carDto) {
