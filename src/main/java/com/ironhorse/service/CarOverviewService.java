@@ -1,18 +1,11 @@
 package com.ironhorse.service;
 
-import com.ironhorse.dto.CarOverviewDto;
-
+import com.ironhorse.model.CarOverview;
 import java.util.List;
-import java.util.Optional;
 
 public interface CarOverviewService {
-    CarOverviewDto createCarOverview(CarOverviewDto carOverviewDto);
-
-    List<CarOverviewDto> getAllCarOverviews();
-
-    Optional<CarOverviewDto> getCarOverviewById(Long id);
-
-    CarOverviewDto updateCarOverview(Long id, CarOverviewDto carOverviewDto);
-
-    void deleteCarOverview(Long id);
+    CarOverview save(CarOverview carOverview);
+    List<CarOverview> findAll();
+    CarOverview findById(Long id);
+    void deleteById(Long id);
 }
