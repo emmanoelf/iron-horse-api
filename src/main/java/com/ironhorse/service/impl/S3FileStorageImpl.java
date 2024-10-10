@@ -1,5 +1,6 @@
 package com.ironhorse.service.impl;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.ironhorse.dto.FileStorageDto;
 import com.ironhorse.exception.FileStorageNotFoundException;
 import com.ironhorse.exception.UserInfoNotFoundException;
@@ -16,44 +17,48 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class FileLocalStorageServiceImpl implements FileStorageService {
+public class S3FileStorageImpl implements FileStorageService {
     private final FileStorageRepository fileStorageRepository;
     private final UserInfoRepository userInfoRepository;
+    private final AmazonS3 amazonS3;
+
     private static final String CONTENT_PNG = "image/png";
     private static final String CONTENT_JPEG = "image/jpeg";
     private static final String PREFIX_FILENAME = "profile";
 
-    @Value("${upload.dir}")
-    private String uploadDir;
+    @Value("${aws.s3.bucketName}")
+    private String bucketName;
 
     @Override
     @Transactional
-    public void uploadFile(MultipartFile file, Long userId){
-        try{
-            this.validateFile(file);
+    public void uploadFile(MultipartFile multiPartFile, Long userId) {
+        try {
+            this.validateFile(multiPartFile);
 
             UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
                     () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
-            if(userInfo.getUserPicture() != null){
+            if (userInfo.getUserPicture() != null) {
                 this.deleteUserProfileFile(userId);
             }
 
-            String fileName = this.generateFilename(file.getOriginalFilename());
-            File uploadFile = new File(uploadDir + fileName);
-            file.transferTo(uploadFile);
+            String fileName = this.generateFilename(multiPartFile.getOriginalFilename());
+            File file = this.convertMultipartToFile(multiPartFile);
+            amazonS3.putObject(bucketName, fileName, file);
+            file.delete();
+            String urlImage = amazonS3.getUrl(bucketName, fileName).toString();
 
-            FileStorage fileStorage = this.createFileStorage(fileName, uploadFile.getAbsolutePath(), file.getSize());
+            FileStorage fileStorage = this.createFileStorage(fileName, urlImage, multiPartFile.getSize());
             userInfo.setUserPicture(fileStorage);
 
             this.fileStorageRepository.save(fileStorage);
-        }catch (IOException e){
-             e.getCause();
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao enviar arquivo para S3", e);
         }
     }
 
@@ -63,14 +68,14 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
                 () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
-        if(userInfo.getUserPicture() == null){
+        if (userInfo.getUserPicture() == null) {
             throw new IllegalArgumentException("Não há foto de perfil para ser deletada");
         }
 
         FileStorage fileStorage = this.fileStorageRepository.findById(userInfo.getUserPicture().getId()).orElseThrow(
                 () -> new FileStorageNotFoundException("Arquivo não encontrado"));
 
-        this.deleteFileStorage(fileStorage);
+        amazonS3.deleteObject(bucketName, fileStorage.getName());
 
         userInfo.setUserPicture(null);
         this.fileStorageRepository.deleteById(fileStorage.getId());
@@ -82,7 +87,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
                 () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
-        if(userInfo.getUserPicture() == null){
+        if (userInfo.getUserPicture() == null) {
             throw new IllegalArgumentException("O usuário não possui foto");
         }
 
@@ -92,7 +97,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         return FileStorageMapper.toDto(fileStorage);
     }
 
-    private String generateFilename(String originalFilename){
+    private String generateFilename(String originalFilename) {
         long timestamp = System.currentTimeMillis();
         return String.format("%s_%d_%s", PREFIX_FILENAME, timestamp, originalFilename);
     }
@@ -111,24 +116,19 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         }
     }
 
-    private FileStorage createFileStorage(String fileName, String absolutePath, Long size){
+    private FileStorage createFileStorage(String fileName, String absolutePath, Long size) {
         FileStorage fileStorage = new FileStorage();
         fileStorage.setName(fileName);
         fileStorage.setPath(absolutePath);
         fileStorage.setSize(size);
-
         return fileStorage;
     }
 
-    private File deleteFileStorage(FileStorage fileStorage){
-        File deleteFile = new File(fileStorage.getPath());
-        if(deleteFile.exists()){
-            boolean deleted = deleteFile.delete();
-            if(!deleted){
-                throw new IllegalArgumentException("Ocorreu um erro ao excluir a foto");
-            }
-        }
-
-        return deleteFile;
+    private File convertMultipartToFile(MultipartFile file) throws IOException {
+        File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convFile;
     }
 }
