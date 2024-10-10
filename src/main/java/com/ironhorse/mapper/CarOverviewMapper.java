@@ -1,10 +1,10 @@
 package com.ironhorse.mapper;
 
-import com.ironhorse.dto.CarDto;
-import com.ironhorse.dto.CarInfoDto;
-import com.ironhorse.dto.CarOverviewDto;
+import com.ironhorse.dto.*;
 import com.ironhorse.model.Car;
 import com.ironhorse.model.CarOverview;
+
+import java.util.List;
 
 public class CarOverviewMapper {
 
@@ -22,11 +22,27 @@ public class CarOverviewMapper {
                 .build();
     }
 
-    public static CarOverviewDto toDto(CarOverview carOverview){
-        CarDto carDto = null;
+    public static CarOverviewCarDto toDto(CarOverview carOverview, CarResponseDto car, CarInfoDto carInfoDto){
 
-        Car car = carOverview.getCar();
-        CarInfoDto carInfoDto = CarInfoMapper.toDto(car.getCarInfo());
+        return new CarOverviewCarDto(
+                carOverview.getDescription(),
+                carOverview.getNumberTrips(),
+                carOverview.isAvailable(),
+                carOverview.isActive(),
+                carOverview.getPrice(),
+                car.model(),
+                car.brand(),
+                carInfoDto
+        );
+    };
+
+
+
+    public static CarOverviewDto toInfoDto(CarOverview carOverview,CarInfoDto carInfoDto){
+//        CarDto carDto = null;
+//
+//        Car car = carOverview.getCar();
+//        CarInfoDto carInfoDto = CarInfoMapper.toDto(car.getCarInfo());
 
         return new CarOverviewDto(
                 carOverview.getDescription(),

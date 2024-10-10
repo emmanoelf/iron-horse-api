@@ -1,5 +1,6 @@
 package com.ironhorse.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,6 +36,7 @@ public class CarOverview {
 
     @OneToOne
     @JoinColumn(name = "car_id", nullable = false, unique = true)
+    @JsonBackReference
     private Car car;
 
 }
