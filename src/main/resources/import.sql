@@ -1,3 +1,4 @@
+
 -- Inserindo roles
 INSERT INTO role (created_at, id, updated_at, name) VALUES (NOW(), 1, NOW(), 'Renter');
 INSERT INTO role (created_at, id, updated_at, name) VALUES (NOW(), 22, NOW(), 'Owner');

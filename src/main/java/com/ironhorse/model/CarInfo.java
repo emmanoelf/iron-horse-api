@@ -100,8 +100,8 @@ public class CarInfo {
     @Column(nullable = false)
     private boolean isTermsUser;
 
-    @ManyToOne
-    @JoinColumn(name = "car_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "car_id", nullable = false, unique = true)
     private Car car;
 
     @CreationTimestamp
