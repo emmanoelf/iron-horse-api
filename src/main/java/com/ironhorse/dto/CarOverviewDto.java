@@ -1,18 +1,18 @@
 package com.ironhorse.dto;
 
+import com.ironhorse.model.Car;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 
 public record CarOverviewDto(
-        String model,
-        String brand,
-        String description,
-        Integer numberTrips,
+        @NotNull @NotBlank String description,
+        @NotNull Integer numberTrips,
         boolean isActive,
         boolean isAvailable,
-        Long year,
-        BigDecimal price,
-        LocalDateTime created_at,
-        LocalDateTime updated_at,
-        CarDto car // Referência ao CarDTO
-) {}
+        @NotNull BigDecimal price,
+        @NotNull CarInfoDto carInfos,
+        List<ReviewDto> reviews
+) {
+}

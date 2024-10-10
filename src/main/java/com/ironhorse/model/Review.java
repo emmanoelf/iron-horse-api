@@ -21,14 +21,9 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String model;
-    private String brand;
-    private String description;
-    private Integer numberTrips;
-    private boolean isActive;
-    private boolean isAvailable;
-    private Long year;
-    private BigDecimal price;
+    private Long rate;
+    private Long numberOfRented;
+    private String pros;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -39,7 +34,7 @@ public class Review {
     private LocalDateTime updated_at;
 
     @ManyToOne
-    @JoinColumn(name = "car_id", nullable = false)
+    @JoinColumn(name = "car_id", nullable = false, unique = true)
     private Car car;
 
     @ManyToOne

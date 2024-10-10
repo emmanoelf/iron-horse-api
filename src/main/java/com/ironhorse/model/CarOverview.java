@@ -19,13 +19,10 @@ public class CarOverview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String model;
-    private String brand;
     private String description;
     private Integer numberTrips;
     private boolean isActive;
     private boolean isAvailable;
-    private Long year;
     private BigDecimal price;
 
     @CreationTimestamp

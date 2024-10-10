@@ -1,10 +1,10 @@
 package com.ironhorse.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class Car {
     private Long manufactureYear;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
     @OneToOne(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -38,8 +38,8 @@ public class Car {
     @OneToOne(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private CarInfo carInfo;
 
-   @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-   private List<Review> review;
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Review> review;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
