@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
@@ -100,6 +101,22 @@ public class GlobalExceptionHandler {
         ).build();
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<ProblemDetail> handleMaxUploadSizeException(MaxUploadSizeExceededException ex) {
+        ProblemType problemType = ProblemType.FILE_SIZE_EXCEEDED;
+
+        String detail = "Tamanho do arquivo excedido. Tente enviar um arquivo menor que 12MB.";
+
+        ProblemDetail problemDetail = createProblemDetailBuilder(
+                HttpStatus.BAD_REQUEST,
+                problemType,
+                detail
+        ).build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
     }
 
     private ProblemDetail.ProblemDetailBuilder createProblemDetailBuilder(HttpStatus status, ProblemType problemType, String detail){

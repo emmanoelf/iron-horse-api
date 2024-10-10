@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum ProblemType {
     RESOURCE_NOT_FOUND("/recurso-nao-encontrado", "Recurso não encontrado"),
     INVALID_DATA("/dados-invalidos", "Dados inválidos"),
-    FORBIDDEN_ACCESS("/acesso-proibido", "Não há privilégios necessários para o acesso");
+    FORBIDDEN_ACCESS("/acesso-proibido", "Não há privilégios necessários para o acesso"),
+    FILE_SIZE_EXCEEDED("/tamanho-excedido", "O tamanho do arquivo foi excedido");
 
     private String title;
     private String uri;
