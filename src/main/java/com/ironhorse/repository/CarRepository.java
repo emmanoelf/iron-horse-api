@@ -24,10 +24,10 @@ public interface CarRepository extends JpaRepository<Car, Long> {
                 co.price
             )
             FROM Car c
-            JOIN User u ON c.user.id = u.id
-            JOIN UserInfo ui ON u.id = ui.id
-            JOIN CarOverview co ON c.id = co.id
-            JOIN Review r ON c.id = r.car.id
+            INNER JOIN User u ON c.user.id = u.id
+            INNER JOIN UserInfo ui ON u.id = ui.id
+            INNER JOIN CarOverview co ON c.id = co.id
+            INNER JOIN Review r ON c.id = r.car.id
             WHERE co.isAvailable = true AND ui.city = :city
             GROUP BY c.id, c.brand, c.model, ui.city, ui.state, co.numberTrips, co.price
             """)
