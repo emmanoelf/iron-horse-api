@@ -12,4 +12,5 @@ public interface CarOverviewService {
 
     CarOverview findById(Long id);
     void deleteById(Long id);
+    CarOverview getAllDetails(Long carId);
 }

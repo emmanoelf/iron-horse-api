@@ -1,14 +1,11 @@
 package com.ironhorse.repository;
 
-import com.ironhorse.dto.CarOverviewCarDto;
 import com.ironhorse.model.CarOverview;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface CarOverviewRepository extends JpaRepository<CarOverview, Long> {
-Optional<CarOverviewCarDto> getCarOverviewById(Long id);
-
-
-
+    @Query("SELECT co FROM CarOverview co JOIN FETCH co.car c JOIN FETCH c.carInfo ci WHERE c.id = :carId")
+    CarOverview findCarOverviewByCarId(@Param("carId") Long carId);
 }
