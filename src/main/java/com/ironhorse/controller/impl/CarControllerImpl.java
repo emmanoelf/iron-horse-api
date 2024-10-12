@@ -53,8 +53,8 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    @GetMapping("/listAll/{city}")
-    public ResponseEntity<List<CarResumeProjection>> findAllCarsByCity(@PathVariable String city) {
+    @GetMapping("/search")
+    public ResponseEntity<List<CarResumeProjection>> findAllCarsByCity(@RequestParam String city) {
         List<CarResumeProjection> projection = this.carService.findAllCarsByCity(city);
         return ResponseEntity.status(HttpStatus.OK).body(projection);
     }
