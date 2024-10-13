@@ -1,9 +1,13 @@
 package com.ironhorse.service.impl;
 
-import com.ironhorse.dto.CarOverviewDto;
+import com.ironhorse.dto.CarOverviewCreateDto;
+import com.ironhorse.dto.CarOverviewResponseDto;
+import com.ironhorse.mapper.CarOverviewMapper;
+import com.ironhorse.model.Car;
 import com.ironhorse.repository.CarInfoRepository;
 import com.ironhorse.repository.CarRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.ironhorse.model.CarOverview;
@@ -13,26 +17,21 @@ import com.ironhorse.service.CarOverviewService;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CarOverviewServiceImpl implements CarOverviewService {
-
-    @Autowired
-    private CarOverviewRepository carOverviewRepository;
-
-    @Autowired
-    private CarRepository carRepository;
-
-    @Autowired
-    private CarInfoRepository carInfoRepository;
+    private final CarOverviewRepository carOverviewRepository;
+    private final CarRepository carRepository;
+    private final CarInfoRepository carInfoRepository;
 
     @Override
-    public CarOverview save(CarOverview carOverview) {
-        return carOverviewRepository.save(carOverview);
-    }
+    public CarOverviewResponseDto save(CarOverviewCreateDto carOverviewCreateDto, Long carId) {
+        Car car = this.carRepository.findById(carId).orElseThrow(
+                () -> new EntityNotFoundException("Carro não encontrado"));
 
-    @Override
-    public List<CarOverviewDto> findAll() {
-        List<CarOverviewDto> car = null;
-        return car;
+        CarOverview carOverview = CarOverviewMapper.toModel(carOverviewCreateDto);
+        carOverview.setCar(car);
+        this.carOverviewRepository.save(carOverview);
+        return CarOverviewMapper.toDto(carOverview);
     }
 
     @Override

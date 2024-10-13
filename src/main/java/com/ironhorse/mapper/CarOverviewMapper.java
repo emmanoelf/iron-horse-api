@@ -23,7 +23,6 @@ public class CarOverviewMapper {
     }
 
     public static CarOverviewCarDto toDto(CarOverview carOverview, CarResponseDto car, CarInfoDto carInfoDto){
-
         return new CarOverviewCarDto(
                 carOverview.getDescription(),
                 carOverview.getNumberTrips(),
@@ -35,8 +34,6 @@ public class CarOverviewMapper {
                 carInfoDto
         );
     };
-
-
 
     public static CarOverviewDto toInfoDto(CarOverview carOverview,CarInfoDto carInfoDto){
 //        CarDto carDto = null;
@@ -52,6 +49,27 @@ public class CarOverviewMapper {
                 carOverview.getPrice(),
                 carInfoDto,
                 null
+        );
+    }
+
+    public static CarOverview toModel(CarOverviewCreateDto carOverviewCreateDto){
+        return CarOverview.builder()
+                .description(carOverviewCreateDto.description())
+                .isActive(carOverviewCreateDto.isActive())
+                .isAvailable(carOverviewCreateDto.isAvailable())
+                .price(carOverviewCreateDto.price())
+                .build();
+    }
+
+    public static CarOverviewResponseDto toDto(CarOverview carOverview){
+        return new CarOverviewResponseDto(
+                carOverview.getDescription(),
+                carOverview.getNumberTrips(),
+                carOverview.isActive(),
+                carOverview.isAvailable(),
+                carOverview.getPrice(),
+                carOverview.getCreated_at(),
+                carOverview.getUpdated_at()
         );
     }
 }
