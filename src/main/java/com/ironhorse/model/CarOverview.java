@@ -39,4 +39,9 @@ public class CarOverview {
     @JsonBackReference
     private Car car;
 
+
+    @PrePersist
+    private void defaultZero(){
+        this.numberTrips = 0;
+    }
 }
