@@ -3,6 +3,7 @@ package com.ironhorse.exception;
 import com.ironhorse.dto.ProblemDetail;
 import com.ironhorse.dto.ProblemObject;
 import com.ironhorse.dto.ProblemType;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -29,9 +30,9 @@ public class GlobalExceptionHandler {
         this.messageSource = messageSource;
     }
 
-    @ExceptionHandler(EntityNotFound.class)
+    @ExceptionHandler({EntityNotFound.class, EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected ResponseEntity<ProblemDetail> handleEntityNotFound(EntityNotFound ex) {
+    protected ResponseEntity<ProblemDetail> handleEntityNotFound(EntityNotFoundException ex) {
         ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
 
         ProblemDetail problemDetail = createProblemDetailBuilder(
