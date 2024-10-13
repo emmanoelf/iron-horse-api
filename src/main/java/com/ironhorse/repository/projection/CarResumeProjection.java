@@ -12,6 +12,9 @@ public record CarResumeProjection(
         @NotNull Long manufactureYear,
         @NotBlank @NotNull String city,
         @NotBlank @NotNull String state,
+        @NotBlank @NotNull String streetAddress,
+        @NotBlank @NotNull String streetName,
+        Long streetNumber,
         Double rate,
         Integer numberTrips,
         BigDecimal price

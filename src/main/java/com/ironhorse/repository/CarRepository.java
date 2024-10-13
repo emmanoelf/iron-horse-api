@@ -19,6 +19,9 @@ public interface CarRepository extends JpaRepository<Car, Long> {
                 c.manufactureYear,
                 ui.city,
                 ui.state,
+                ui.streetAddress,
+                ui.streetName,
+                ui.streetNumber,
                 AVG(r.rate),
                 co.numberTrips,
                 co.price
