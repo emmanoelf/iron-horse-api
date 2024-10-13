@@ -49,6 +49,14 @@ public class CarOverviewControllerImpl implements CarOverviewController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCarOverview(@PathVariable Long id) {
         carOverviewService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
+    @PutMapping("/{carId}")
+    public ResponseEntity<CarOverviewResponseDto> updateCarOverview(@RequestBody CarOverviewCreateDto carOverviewCreateDto,
+                                                                    @PathVariable Long carId) {
+        CarOverviewResponseDto carOverviewResponseDto = this.carOverviewService.update(carOverviewCreateDto, carId);
+        return ResponseEntity.status(HttpStatus.OK).body(carOverviewResponseDto);
     }
 }

@@ -1,6 +1,5 @@
 package com.ironhorse.controller;
 
-import com.ironhorse.dto.CarInfoDto;
 import com.ironhorse.dto.CarOverviewCreateDto;
 import com.ironhorse.dto.CarOverviewResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,4 +17,12 @@ public interface CarOverviewController {
                         content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CarOverviewCreateDto.class))}),
         })
         ResponseEntity<CarOverviewResponseDto> createCarOverview(CarOverviewCreateDto carOverviewCreateDto, Long carId);
+
+        @Operation(summary = "Update car overview")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200",
+                        description = "Car overview updated",
+                        content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CarOverviewCreateDto.class))}),
+        })
+        ResponseEntity<CarOverviewResponseDto> updateCarOverview(CarOverviewCreateDto carOverviewCreateDto, Long carId);
 }
