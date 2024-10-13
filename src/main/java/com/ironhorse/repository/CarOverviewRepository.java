@@ -12,6 +12,7 @@ public interface CarOverviewRepository extends JpaRepository<CarOverview, Long> 
             "FROM CarOverview co " +
             "JOIN FETCH co.car c " +
             "JOIN FETCH c.carInfo ci " +
+            "JOIN FETCH c.reviews r " +
             "WHERE c.id = :carId")
     Optional<CarOverview> getAllDetailsFromCarOverview(@Param("carId") Long carId);
 

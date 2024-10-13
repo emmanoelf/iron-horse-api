@@ -41,7 +41,7 @@ public class Car {
     private CarInfo carInfo;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Review> review;
+    private List<Review> reviews;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

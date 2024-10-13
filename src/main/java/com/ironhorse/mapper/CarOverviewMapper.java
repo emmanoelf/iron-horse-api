@@ -3,6 +3,9 @@ package com.ironhorse.mapper;
 import com.ironhorse.dto.*;
 import com.ironhorse.model.CarOverview;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class CarOverviewMapper {
     public static CarOverviewDto toInfoDto(CarOverview carOverview,CarInfoDto carInfoDto){
 //        CarDto carDto = null;
@@ -32,11 +35,15 @@ public class CarOverviewMapper {
 
     public static CarOverviewListDto toDtoOverview(CarOverview carOverview){
         CarInfoDto carInfoDto = CarInfoMapper.toDto(carOverview.getCar().getCarInfo());
+        List<ReviewDto> reviewDto = carOverview.getCar().getReviews().stream()
+                .map(ReviewMapper::toDto)
+                .collect(Collectors.toList());
 
         CarWithCarInfoDto carWithCarInfoDto = new CarWithCarInfoDto(
                 carOverview.getCar().getBrand(),
                 carOverview.getCar().getModel(),
                 carOverview.getCar().getManufactureYear(),
+                reviewDto,
                 carInfoDto
         );
 
