@@ -7,6 +7,5 @@ import com.ironhorse.model.CarOverview;
 public interface CarOverviewService {
     CarOverviewResponseDto save(CarOverviewCreateDto carOverviewCreateDto, Long carId);
     CarOverview findById(Long id);
-    void deleteById(Long id);
     CarOverviewResponseDto update(CarOverviewCreateDto carOverviewCreateDto, Long carId);
 }

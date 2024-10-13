@@ -38,11 +38,6 @@ public class CarOverviewServiceImpl implements CarOverviewService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        carOverviewRepository.deleteById(id);
-    }
-
-    @Override
     @Transactional
     public CarOverviewResponseDto update(CarOverviewCreateDto carOverviewCreateDto, Long carId) {
         CarOverview carOverview = this.carOverviewRepository.findCarOverviewByCarId(carId).orElseThrow(
