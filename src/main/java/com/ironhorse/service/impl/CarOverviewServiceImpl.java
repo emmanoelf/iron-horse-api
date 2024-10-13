@@ -1,6 +1,7 @@
 package com.ironhorse.service.impl;
 
 import com.ironhorse.dto.CarOverviewCreateDto;
+import com.ironhorse.dto.CarOverviewListDto;
 import com.ironhorse.dto.CarOverviewResponseDto;
 import com.ironhorse.mapper.CarOverviewMapper;
 import com.ironhorse.model.Car;
@@ -33,8 +34,11 @@ public class CarOverviewServiceImpl implements CarOverviewService {
     }
 
     @Override
-    public CarOverview findById(Long id) {
-        return carOverviewRepository.findById(id).orElseThrow(() -> new RuntimeException("CarOverview not found"));
+    public CarOverviewListDto findByCarIdWithDetails(Long carId) {
+        CarOverview carOverview = this.carOverviewRepository.findCarOverviewByCarId(carId).orElseThrow(
+                () -> new EntityNotFoundException("Carro não encontrado"));
+
+        return CarOverviewMapper.toDtoOverview(carOverview);
     }
 
     @Override
