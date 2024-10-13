@@ -4,9 +4,9 @@ import com.ironhorse.dto.CarOverviewCreateDto;
 import com.ironhorse.dto.CarOverviewResponseDto;
 import com.ironhorse.mapper.CarOverviewMapper;
 import com.ironhorse.model.Car;
-import com.ironhorse.repository.CarInfoRepository;
 import com.ironhorse.repository.CarRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,16 +14,14 @@ import com.ironhorse.model.CarOverview;
 import com.ironhorse.repository.CarOverviewRepository;
 import com.ironhorse.service.CarOverviewService;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class CarOverviewServiceImpl implements CarOverviewService {
     private final CarOverviewRepository carOverviewRepository;
     private final CarRepository carRepository;
-    private final CarInfoRepository carInfoRepository;
 
     @Override
+    @Transactional
     public CarOverviewResponseDto save(CarOverviewCreateDto carOverviewCreateDto, Long carId) {
         Car car = this.carRepository.findById(carId).orElseThrow(
                 () -> new EntityNotFoundException("Carro não encontrado"));
@@ -45,8 +43,17 @@ public class CarOverviewServiceImpl implements CarOverviewService {
     }
 
     @Override
-    public CarOverview getAllDetails(Long carId){
-        CarOverview details = this.carOverviewRepository.findCarOverviewByCarId(carId);
-        return details;
+    @Transactional
+    public CarOverviewResponseDto update(CarOverviewCreateDto carOverviewCreateDto, Long carId) {
+        CarOverview carOverview = this.carOverviewRepository.findCarOverviewByCarId(carId).orElseThrow(
+                () -> new EntityNotFoundException("Detalhes do carro não encontrado"));
+
+        carOverview.setDescription(carOverviewCreateDto.description());
+        carOverview.setActive(carOverviewCreateDto.isActive());
+        carOverview.setAvailable(carOverviewCreateDto.isAvailable());
+        carOverview.setPrice(carOverviewCreateDto.price());
+
+        this.carOverviewRepository.save(carOverview);
+        return CarOverviewMapper.toDto(carOverview);
     }
 }

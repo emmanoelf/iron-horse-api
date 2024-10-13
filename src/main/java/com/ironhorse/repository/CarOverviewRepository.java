@@ -5,7 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface CarOverviewRepository extends JpaRepository<CarOverview, Long> {
     @Query("SELECT co FROM CarOverview co JOIN FETCH co.car c JOIN FETCH c.carInfo ci WHERE c.id = :carId")
-    CarOverview findCarOverviewByCarId(@Param("carId") Long carId);
+    CarOverview getAllDetailsFromCarOverview(@Param("carId") Long carId);
+    Optional<CarOverview> findCarOverviewByCarId(Long carId);
 }
