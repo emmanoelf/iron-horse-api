@@ -1,15 +1,12 @@
 package com.ironhorse.controller.impl;
 
-import java.util.List; // Certifique-se de que este é java.util.List
-
-import com.ironhorse.dto.CarInfoDto;
-import com.ironhorse.dto.CarOverviewCarDto;
-import com.ironhorse.dto.CarOverviewDto;
-import com.ironhorse.dto.CarResponseDto;
+import com.ironhorse.controller.CarOverviewController;
+import com.ironhorse.dto.*;
 import com.ironhorse.mapper.CarOverviewMapper;
 import com.ironhorse.service.CarInfoService;
 import com.ironhorse.service.CarService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,21 +15,16 @@ import com.ironhorse.service.CarOverviewService;
 
 @RestController
 @RequestMapping("/v1/car-overviews")
-public class CarOverviewControllerImpl {
+public class CarOverviewControllerImpl implements CarOverviewController {
+    private final CarOverviewService carOverviewService;
+    private final CarService carService;
+    private final CarInfoService carInfoService;
 
-    @Autowired
-    private CarOverviewService carOverviewService;
-
-    @Autowired
-    private CarService carService;
-
-    @Autowired
-    private CarInfoService carInfoService;
-
-    @GetMapping
-    public ResponseEntity<List<CarOverviewDto>> getAllCarOverviews() {
-        List<CarOverviewDto> carOverviews = carOverviewService.findAll();
-        return ResponseEntity.ok(carOverviews);
+    public CarOverviewControllerImpl(CarOverviewService carOverviewService,
+                                     CarInfoService carInfoService, CarService carService) {
+        this.carOverviewService = carOverviewService;
+        this.carInfoService = carInfoService;
+        this.carService = carService;
     }
 
     //tentanddo
@@ -41,15 +33,17 @@ public class CarOverviewControllerImpl {
         CarOverview carOverview = carOverviewService.findById(id);
         CarResponseDto car = carService.findById(id);
         CarInfoDto carInfoDto = carInfoService.findCarById(id);
-        CarOverviewCarDto carOverviewCarDto = CarOverviewMapper.toDto(carOverview,car,carInfoDto);
+        CarOverviewCarDto carOverviewCarDto = CarOverviewMapper.toDto(carOverview, car, carInfoDto);
         return ResponseEntity.ok(carOverviewCarDto);
     }
 
-
-        @PostMapping
-    public ResponseEntity<CarOverview> createCarOverview(@RequestBody CarOverview carOverview) {
-        CarOverview savedCarOverview = carOverviewService.save(carOverview);
-        return ResponseEntity.ok(savedCarOverview);
+    @Override
+    @PostMapping("/{carId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<CarOverviewResponseDto> createCarOverview(@RequestBody @Valid CarOverviewCreateDto carOverviewCreateDto,
+                                                                    @PathVariable Long carId) {
+        CarOverviewResponseDto savedCarOverview = this.carOverviewService.save(carOverviewCreateDto, carId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCarOverview);
     }
 
     @DeleteMapping("/{id}")
