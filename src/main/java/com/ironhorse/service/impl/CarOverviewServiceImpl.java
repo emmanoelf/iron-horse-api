@@ -35,7 +35,7 @@ public class CarOverviewServiceImpl implements CarOverviewService {
 
     @Override
     public CarOverviewListDto findByCarIdWithDetails(Long carId) {
-        CarOverview carOverview = this.carOverviewRepository.findCarOverviewByCarId(carId).orElseThrow(
+        CarOverview carOverview = this.carOverviewRepository.getAllDetailsFromCarOverview(carId).orElseThrow(
                 () -> new EntityNotFoundException("Carro não encontrado"));
 
         return CarOverviewMapper.toDtoOverview(carOverview);
