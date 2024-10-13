@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum ProblemType {
     RESOURCE_NOT_FOUND("/recurso-nao-encontrado", "Recurso não encontrado"),
     INVALID_DATA("/dados-invalidos", "Dados inválidos"),
-    FORBIDDEN_ACCESS("/acesso-proibido", "Não há privilégios necessários para o acesso");
+    FORBIDDEN_ACCESS("/acesso-proibido", "Não há privilégios necessários para o acesso"),
+    DUPLICATED_DATA("/dados-duplicados", "Dados duplicados");
 
     private String title;
     private String uri;

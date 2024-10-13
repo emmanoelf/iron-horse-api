@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -100,6 +101,21 @@ public class GlobalExceptionHandler {
         ).build();
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<ProblemDetail> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        ProblemType problemType = ProblemType.DUPLICATED_DATA;
+        String detail = "Já constam registros deste tipo.";
+
+        ProblemDetail problemDetail = createProblemDetailBuilder(
+                HttpStatus.CONFLICT,
+                problemType,
+                detail
+        ).build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
     }
 
     private ProblemDetail.ProblemDetailBuilder createProblemDetailBuilder(HttpStatus status, ProblemType problemType, String detail){
