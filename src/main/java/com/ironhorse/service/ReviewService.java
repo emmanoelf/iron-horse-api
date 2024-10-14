@@ -10,6 +10,8 @@ public interface ReviewService {
 
     List<ReviewDto> getAllReviews();
 
+    List<ReviewDto> getReviewByCarId(Long carId);
+
     ReviewDto getReviewById(Long id);
 
     void deleteReview(Long id);

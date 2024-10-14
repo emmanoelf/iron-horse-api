@@ -8,16 +8,15 @@ public class ReviewMapper {
     public static Review toModel(ReviewDto reviewDto){
         return Review.builder()
                 .rate(reviewDto.rate())
-                .numberOfRented(reviewDto.numberOfRented())
                 .pros(reviewDto.pros())
+                .cons(reviewDto.cons())
                 .build();
     }
 
     public static ReviewDto toDto(Review review){
         return new ReviewDto(
                 review.getRate(),
-                review.getNumberOfRented(),
-                review.getPros()
-        );
+                review.getPros(),
+                review.getCons());
     }
 }
