@@ -5,8 +5,10 @@ import com.ironhorse.exception.CarNotFound;
 import com.ironhorse.mapper.ReviewMapper;
 import com.ironhorse.model.Car;
 import com.ironhorse.model.Review;
+import com.ironhorse.model.User;
 import com.ironhorse.repository.CarRepository;
 import com.ironhorse.repository.ReviewRepository;
+import com.ironhorse.repository.UserRepository;
 import com.ironhorse.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +23,20 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository repository;
     private final CarRepository carRepository;
+    private final UserRepository userRepository;
 
     // Criar Review
-    public ReviewDto createReview(ReviewDto reviewDto) {
+    public ReviewDto createReview(ReviewDto reviewDto, Long carId, Long userId) {
+        Car car = carRepository.findById(carId).orElseThrow(() -> new EntityNotFoundException("Carro não encontrado!"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado!"));
         Review review = ReviewMapper.toModel(reviewDto);
+        review.setUser(user);
+        review.setCar(car);
         Review savedReview = repository.save(review);
         return ReviewMapper.toDto(savedReview);
     }
+
+
 
     // Buscar todos os Reviews
     public List<ReviewDto> getAllReviews() {
@@ -64,6 +73,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Review não encontrada"));
         review.setPros(reviewDto.pros());
         review.setCons(reviewDto.cons());
+        review.setRate(reviewDto.rate());
 
         Review updatedReview = repository.save(review);
         return ReviewMapper.toDto(updatedReview);

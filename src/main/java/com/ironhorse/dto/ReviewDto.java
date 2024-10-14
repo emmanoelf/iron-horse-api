@@ -9,13 +9,12 @@ import java.time.LocalDateTime;
 public record ReviewDto(
         @NotNull Long rate,
         @NotNull @NotBlank String pros,
-        @NotNull @NotBlank String cons
+        @NotNull @NotBlank String cons,
 
-//        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-//        LocalDateTime created_at,
-//
-//        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-//        LocalDateTime updated_at
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+        LocalDateTime created_at,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+        LocalDateTime updated_at
 
 ) {
 }
