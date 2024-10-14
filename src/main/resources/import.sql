@@ -23,5 +23,5 @@ INSERT INTO `car_overview` (is_active, is_available, number_trips, price, car_id
 
 -- Inserindo em review
 
-INSERT INTO `review` (car_id, created_at, number_of_rented, rate, updated_at, user_id, pros) VALUES (1, NOW(), 5, 4, NOW(), 1, 'Ótima experiência! O carro estava em excelentes condições.'), (1, NOW(), 2, 5, NOW(), 2, 'Carro muito confortável e fácil de dirigir.'), (2, NOW(), 8, 3, NOW(), 1, 'Bom carro, mas o consumo de combustível poderia ser melhor.'), (2, NOW(), 4, 4, NOW(), 2, 'Serviço excelente, carro em ótimo estado.');
+INSERT INTO `review` (car_id, created_at, rate, updated_at, user_id, pros, cons) VALUES (1, NOW(), 4, NOW(), 1, 'Ótima experiência! O carro estava em excelentes condições.', 'Carro meio ruim mas tudo bem'), (1, NOW(), 5, NOW(), 2, 'Carro muito confortável e fácil de dirigir.', 'Carro fusca né mano sobe em morro azul'), (2, NOW(), 3, NOW(), 1, 'Bom carro, mas o consumo de combustível poderia ser melhor.', 'Só tava afim de reclamar mas gostei do carro'), (2, NOW(), 4, NOW(), 2, 'Serviço excelente, carro em ótimo estado.', 'Era melhor ter usado o carro do pelé');
 
