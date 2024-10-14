@@ -2,16 +2,10 @@ package com.ironhorse.model;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +28,7 @@ public class Review {
     private Long rate;
     private Long numberOfRented;
     private String pros;
+    private String cons;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -50,6 +45,5 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
 
 }
