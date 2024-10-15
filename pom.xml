@@ -29,6 +29,7 @@
     <properties>
         <java.version>17</java.version>
         <springdoc-openapi.version>2.5.0</springdoc-openapi.version>
+        <aws-java-jdk-s3.version>1.12.772</aws-java-jdk-s3.version>
     </properties>
     <dependencies>
         <dependency>
@@ -70,6 +71,11 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc-openapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>${aws-java-jdk-s3.version}</version>
         </dependency>
     </dependencies>
 
