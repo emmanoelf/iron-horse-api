@@ -3,11 +3,14 @@ package com.ironhorse.controller.impl;
 import com.ironhorse.controller.CarController;
 import com.ironhorse.dto.CarDto;
 import com.ironhorse.dto.CarResponseDto;
+import com.ironhorse.repository.projection.CarResumeProjection;
 import com.ironhorse.service.CarService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/cars")
@@ -47,5 +50,12 @@ public class CarControllerImpl implements CarController {
                                                  @PathVariable Long userId) {
         CarResponseDto carResponseDto = this.carService.update(carDto, carId, userId);
         return ResponseEntity.status(HttpStatus.OK).body(carResponseDto);
+    }
+
+    @Override
+    @GetMapping("/search")
+    public ResponseEntity<List<CarResumeProjection>> findAllCarsByCity(@RequestParam String city) {
+        List<CarResumeProjection> projection = this.carService.findAllCarsByCity(city);
+        return ResponseEntity.status(HttpStatus.OK).body(projection);
     }
 }

@@ -100,7 +100,7 @@ public class CarInfo {
     @Column(nullable = false)
     private boolean isTermsUser;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
 

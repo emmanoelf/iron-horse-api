@@ -10,11 +10,13 @@ import com.ironhorse.model.Car;
 import com.ironhorse.model.User;
 import com.ironhorse.repository.CarRepository;
 import com.ironhorse.repository.UserRepository;
+import com.ironhorse.repository.projection.CarResumeProjection;
 import com.ironhorse.service.CarService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -81,5 +83,10 @@ public class CarServiceImpl implements CarService {
 
         this.carRepository.save(car);
         return CarMapper.toDto(car);
+    }
+
+    @Override
+    public List<CarResumeProjection> findAllCarsByCity(String city) {
+        return this.carRepository.findCarResumesByCity(city);
     }
 }
