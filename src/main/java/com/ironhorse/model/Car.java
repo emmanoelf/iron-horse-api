@@ -1,11 +1,14 @@
 package com.ironhorse.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -30,6 +33,16 @@ public class Car {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToOne(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private CarOverview carOverview;
+
+    @OneToOne(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private CarInfo carInfo;
+
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

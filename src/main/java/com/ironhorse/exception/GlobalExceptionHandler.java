@@ -3,10 +3,12 @@ package com.ironhorse.exception;
 import com.ironhorse.dto.ProblemDetail;
 import com.ironhorse.dto.ProblemObject;
 import com.ironhorse.dto.ProblemType;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,9 +31,9 @@ public class GlobalExceptionHandler {
         this.messageSource = messageSource;
     }
 
-    @ExceptionHandler(EntityNotFound.class)
+    @ExceptionHandler({EntityNotFound.class, EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected ResponseEntity<ProblemDetail> handleEntityNotFound(EntityNotFound ex) {
+    protected ResponseEntity<ProblemDetail> handleEntityNotFound(EntityNotFoundException ex) {
         ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
 
         ProblemDetail problemDetail = createProblemDetailBuilder(
@@ -101,6 +103,21 @@ public class GlobalExceptionHandler {
         ).build();
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<ProblemDetail> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        ProblemType problemType = ProblemType.DUPLICATED_DATA;
+        String detail = "Já constam registros deste tipo.";
+
+        ProblemDetail problemDetail = createProblemDetailBuilder(
+                HttpStatus.CONFLICT,
+                problemType,
+                detail
+        ).build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
