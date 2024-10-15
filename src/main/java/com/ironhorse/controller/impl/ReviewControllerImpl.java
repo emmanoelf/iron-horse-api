@@ -1,17 +1,13 @@
 package com.ironhorse.controller.impl;
 
 import com.ironhorse.controller.ReviewController;
-import com.ironhorse.dto.CarResponseDto;
 import com.ironhorse.dto.ReviewDto;
-import com.ironhorse.model.Car;
-import com.ironhorse.service.CarService;
 import com.ironhorse.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -38,16 +34,16 @@ public class ReviewControllerImpl implements ReviewController {
         return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
+
     @GetMapping("/{carId}")
-    public ResponseEntity<Object> getReviewById(@PathVariable Long carId) {
+    public ResponseEntity<ReviewDto> getReviewById(@PathVariable Long carId) {
         ReviewDto reviewDto = this.reviewService.getReviewById(carId);
         return ResponseEntity.status(HttpStatus.OK).body(reviewDto);
     }
 
-
     @GetMapping("/all-car-reviews/{carId}")
-    public ResponseEntity<List<ReviewDto>> getReviewListById(@PathVariable Long carId){
-        List<ReviewDto> reviewDtos = this.reviewService.getReviewByCarId(carId);
+    public ResponseEntity<List<ReviewDto>> getReviewListByCarId(@PathVariable Long carId){
+        List<ReviewDto> reviewDtos = this.reviewService.getReviewListByCarId(carId);
         return ResponseEntity.status(HttpStatus.OK).body(reviewDtos);
     }
 

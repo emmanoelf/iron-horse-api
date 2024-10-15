@@ -10,7 +10,7 @@ public interface ReviewService {
 
     List<ReviewDto> getAllReviews();
 
-    List<ReviewDto> getReviewByCarId(Long carId);
+    List<ReviewDto> getReviewListByCarId(Long carId);
 
     ReviewDto getReviewById(Long id);
 

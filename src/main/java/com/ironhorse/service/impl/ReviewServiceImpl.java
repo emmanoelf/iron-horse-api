@@ -11,6 +11,7 @@ import com.ironhorse.repository.ReviewRepository;
 import com.ironhorse.repository.UserRepository;
 import com.ironhorse.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -25,7 +26,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final CarRepository carRepository;
     private final UserRepository userRepository;
 
-    // Criar Review
+    @Transactional
     public ReviewDto createReview(ReviewDto reviewDto, Long carId, Long userId) {
         Car car = carRepository.findById(carId).orElseThrow(() -> new EntityNotFoundException("Carro não encontrado!"));
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado!"));
@@ -36,9 +37,6 @@ public class ReviewServiceImpl implements ReviewService {
         return ReviewMapper.toDto(savedReview);
     }
 
-
-
-    // Buscar todos os Reviews
     public List<ReviewDto> getAllReviews() {
         List<Review> reviews = repository.findAll();
         return reviews.stream()
@@ -46,15 +44,13 @@ public class ReviewServiceImpl implements ReviewService {
                 .toList();
     }
 
-    // Buscar Review por ID
     public ReviewDto getReviewById(Long id) {
         return repository.findById(id).map(ReviewMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Review não encontrada"));
 
     }
 
-    // Review por carro
-    public List<ReviewDto> getReviewByCarId(Long carId) {
+    public List<ReviewDto> getReviewListByCarId(Long carId) {
         Car car = this.carRepository.findById(carId)
                 .orElseThrow(() -> new CarNotFound("Carro não encontrado"));
         List<ReviewDto> reviewDtos = Optional.ofNullable(car.getReviews())
@@ -68,7 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     }
 
-    // Atualizar Review
+    @Transactional
     public ReviewDto updateReview(Long id, ReviewDto reviewDto) {
         Review review = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Review não encontrada"));
         review.setPros(reviewDto.pros());
@@ -79,9 +75,8 @@ public class ReviewServiceImpl implements ReviewService {
         return ReviewMapper.toDto(updatedReview);
     }
 
-    // Deletar Review
+    @Transactional
     public void deleteReview(Long carId) {
-
         repository.deleteById(carId);
     }
 
