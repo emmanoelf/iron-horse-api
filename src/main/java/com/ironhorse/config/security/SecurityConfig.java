@@ -24,6 +24,7 @@ public class SecurityConfig{
                         .requestMatchers("/v1/auth/login").permitAll()
                         .requestMatchers("/v1/cars/search").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/car-overviews/").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/users").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
