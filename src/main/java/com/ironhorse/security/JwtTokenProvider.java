@@ -54,10 +54,12 @@ public class JwtTokenProvider {
     }
 
     public Instant extractExpiration(String token) {
-        return extractClaim(token, claims -> Instant.ofEpochSecond((long) claims.get("exp")));
+        return extractClaim(token, claims -> claims.get("exp") instanceof Instant
+                ? (Instant) claims.get("exp")
+                : Instant.ofEpochSecond((Long) claims.get("exp")));
     }
 
     public Long extractUserId(String token) {
-        return extractClaim(token, claims -> Long.valueOf(claims.get("userId").toString()));
+        return extractClaim(token, claims -> (Long) claims.get("userId"));
     }
 }
