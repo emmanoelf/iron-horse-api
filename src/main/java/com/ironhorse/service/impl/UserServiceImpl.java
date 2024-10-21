@@ -71,4 +71,15 @@ public class UserServiceImpl implements UserService {
         this.userRepository.save(updatedUser);
         return UserMapper.toDto(updatedUser);
     }
+
+    @Override
+    public User findByEmail(String email) {
+        User user = this.userRepository.findByEmail(email);
+
+        if(user == null) {
+            throw new UserNotFound("Usuário não encontrado");
+        }
+
+        return user;
+    }
 }
