@@ -40,8 +40,25 @@ public class JwtTokenProvider {
         claimsBuilder.claim("userId", userId);
         claimsBuilder.claim("role", role.getRole());
         claimsBuilder.issuedAt(Instant.now());
-        claimsBuilder.expiresAt(Instant.now().plus(1, ChronoUnit.HOURS));
+        claimsBuilder.expiresAt(Instant.now().plus(8, ChronoUnit.HOURS));
         extraClaims.forEach(claimsBuilder::claim);
+
+        JwtClaimsSet claims = claimsBuilder.build();
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public String generateRefreshTokenFromAccess (String accessToken) {
+        String email = this.extractEmail(accessToken);
+        Long userId = this.extractUserId(accessToken);
+        String role = this.extractRole(accessToken).getRole();
+
+        JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder();
+        claimsBuilder.issuer("iron-horse");
+        claimsBuilder.subject(email);
+        claimsBuilder.claim("userId", userId);
+        claimsBuilder.claim("role", role);
+        claimsBuilder.issuedAt(Instant.now());
+        claimsBuilder.expiresAt(Instant.now().plus(15, ChronoUnit.DAYS));
 
         JwtClaimsSet claims = claimsBuilder.build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
