@@ -1,5 +1,6 @@
 package com.ironhorse.security;
 
+import com.ironhorse.model.UserRole;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
 
@@ -32,10 +33,12 @@ public class JwtTokenProvider {
         return jwt.getClaims();
     }
 
-    public String generateToken(String email, Long userId, Map<String, Object> extraClaims) {
+    public String generateToken(String email, Long userId, UserRole role, Map<String, Object> extraClaims) {
         JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder();
+        claimsBuilder.issuer("iron-horse");
         claimsBuilder.subject(email);
         claimsBuilder.claim("userId", userId);
+        claimsBuilder.claim("role", role.getRole());
         claimsBuilder.issuedAt(Instant.now());
         claimsBuilder.expiresAt(Instant.now().plus(1, ChronoUnit.HOURS));
         extraClaims.forEach(claimsBuilder::claim);
@@ -61,5 +64,10 @@ public class JwtTokenProvider {
 
     public Long extractUserId(String token) {
         return extractClaim(token, claims -> (Long) claims.get("userId"));
+    }
+
+    public UserRole extractRole(String token) {
+        String roleName = extractClaim(token, claims -> claims.get("role").toString());
+        return UserRole.valueOf(roleName);
     }
 }
