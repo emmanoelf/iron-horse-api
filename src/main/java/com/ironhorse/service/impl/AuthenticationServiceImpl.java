@@ -32,6 +32,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new BadCredentialsException("Login ou senha inválidos");
         }
 
-        return this.jwtTokenProvider.generateToken(user.getEmail(), user.getId(), new HashMap<>());
+        return this.jwtTokenProvider.generateToken(user.getEmail(), user.getId(), user.getRole(), new HashMap<>());
     }
 }
