@@ -1,7 +1,3 @@
--- Inserindo roles
-INSERT INTO role (created_at, id, updated_at, name) VALUES (NOW(), 1, NOW(), 'Renter');
-INSERT INTO role (created_at, id, updated_at, name) VALUES (NOW(), 22, NOW(), 'Owner');
-
 -- Inserindo um usuário
 INSERT INTO user (created_at, updated_at, email, name, password, phone, role) VALUES ('2024-10-08 01:10:00', '2024-10-08 01:10:00', 'user1@example.com', 'Alice Silva', '$2a$10$5y2QutxOnBjHhE0fstJi6O8QTKPrU5Na40s73sbBY0C8NaHJ1H8ie', '1234567890', 'ADMIN');
 INSERT INTO user (created_at, updated_at, email, name, password, phone, role) VALUES ('2024-10-08 01:10:00', '2024-10-08 01:10:00', 'user2@example.com', 'Diovana Silva', '$2a$10$5y2QutxOnBjHhE0fstJi6O8QTKPrU5Na40s73sbBY0C8NaHJ1H8ie', '2131231243', 'USER');
