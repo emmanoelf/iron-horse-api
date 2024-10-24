@@ -23,10 +23,10 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    @PostMapping("/{id}")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CarResponseDto> save(@RequestBody @Valid CarDto carDto, @PathVariable Long id) {
-        CarResponseDto carResponseDto = this.carService.save(carDto, id);
+    public ResponseEntity<CarResponseDto> save(@RequestBody @Valid CarDto carDto) {
+        CarResponseDto carResponseDto = this.carService.save(carDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(carResponseDto);
     }
 

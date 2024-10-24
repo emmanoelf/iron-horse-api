@@ -22,7 +22,7 @@ public interface CarController {
                     description = "Create car",
                     content = {@Content(mediaType = "application/json")})
     })
-    ResponseEntity<CarResponseDto> save(CarDto carDto, Long id);
+    ResponseEntity<CarResponseDto> save(CarDto carDto);
 
     @Operation(summary = "Find car by ID")
     @ApiResponses(value = {

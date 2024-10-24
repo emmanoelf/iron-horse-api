@@ -11,6 +11,7 @@ import com.ironhorse.model.User;
 import com.ironhorse.repository.CarRepository;
 import com.ironhorse.repository.UserRepository;
 import com.ironhorse.repository.projection.CarResumeProjection;
+import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.CarService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +26,13 @@ public class CarServiceImpl implements CarService {
 
     private final CarRepository carRepository;
     private final UserRepository userRepository;
+    private final AuthenticatedService authenticatedService;
 
     @Override
     @Transactional
-    public CarResponseDto save(CarDto carDto, Long id) {
-        User user = this.userRepository.findById(id).orElseThrow((
+    public CarResponseDto save(CarDto carDto) {
+        Long userId = this.authenticatedService.getCurrentUserId();
+        User user = this.userRepository.findById(userId).orElseThrow((
                 () -> new UserNotFound("Usuário não encontrado"))
         );
 
