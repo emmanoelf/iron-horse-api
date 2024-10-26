@@ -9,6 +9,7 @@ import com.ironhorse.repository.UserRepository;
 import com.ironhorse.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,14 +19,16 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
     public UserResponseDto save(UserDto userDto) {
         User user = UserMapper.toModel(userDto);
+        String hashedPassword = this.passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
 
         User savedUser = this.userRepository.save(user);
-
         return UserMapper.toDto(savedUser);
     }
 
@@ -58,13 +61,25 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFound("Usuário não encontrado");
         }
 
+        String hashedPassword = this.passwordEncoder.encode(userDto.password());
         User updatedUser = user.get();
         updatedUser.setName(userDto.name());
         updatedUser.setEmail(userDto.email());
-        updatedUser.setPassword(userDto.password());
+        updatedUser.setPassword(hashedPassword);
         updatedUser.setPhone(userDto.phone());
 
         this.userRepository.save(updatedUser);
         return UserMapper.toDto(updatedUser);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        User user = this.userRepository.findByEmail(email);
+
+        if(user == null) {
+            throw new UserNotFound("Usuário não encontrado");
+        }
+
+        return user;
     }
 }

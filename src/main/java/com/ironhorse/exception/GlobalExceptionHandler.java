@@ -11,6 +11,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -134,6 +135,22 @@ public class GlobalExceptionHandler {
         ).build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    protected ResponseEntity<ProblemDetail> handleBadCredentialsException(BadCredentialsException ex) {
+        ProblemType problemType = ProblemType.BAD_CREDENTIALS;
+
+        String detail = "Email ou senha inválidos";
+
+        ProblemDetail problemDetail = createProblemDetailBuilder(
+                HttpStatus.UNAUTHORIZED,
+                problemType,
+                detail
+        ).build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problemDetail);
     }
 
     private ProblemDetail.ProblemDetailBuilder createProblemDetailBuilder(HttpStatus status, ProblemType problemType, String detail){

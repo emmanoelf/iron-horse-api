@@ -7,7 +7,7 @@ import com.ironhorse.repository.projection.CarResumeProjection;
 import java.util.List;
 
 public interface CarService {
-    CarResponseDto save(CarDto carDto, Long id);
+    CarResponseDto save(CarDto carDto);
     CarResponseDto findById(Long id);
     Long deleteById(Long id);
     CarResponseDto update(CarDto carDto, Long carId, Long userId);

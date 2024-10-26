@@ -11,6 +11,7 @@ import com.ironhorse.model.User;
 import com.ironhorse.model.UserInfo;
 import com.ironhorse.repository.UserInfoRepository;
 import com.ironhorse.repository.UserRepository;
+import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.UserInfoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,12 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     private final UserInfoRepository userInfoRepository;
     private final UserRepository userRepository;
+    private final AuthenticatedService authenticatedService;
 
     @Override
     @Transactional
-    public UserInfoResponseDto save(UserInfoCreateDto userInfoCreateDto, Long userId) {
+    public UserInfoResponseDto save(UserInfoCreateDto userInfoCreateDto) {
+        Long userId = this.authenticatedService.getCurrentUserId();
         User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFound("Usuário não encontrado"));
 
         UserInfo userInfo = UserInfoMapper.toModel(userInfoCreateDto);
@@ -36,7 +39,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public UserInfoResponseDto findByUserId(Long userId) {
+    public UserInfoResponseDto findByUserId() {
+        Long userId = this.authenticatedService.getCurrentUserId();
         this.userRepository.findById(userId).orElseThrow(() -> new UserNotFound("Usuário não encontrado"));
 
         UserInfo userInfo = this.userInfoRepository.findByUserId(userId)
@@ -64,7 +68,8 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     @Transactional
-    public UserInfoResponseDto update(UserInfoDto userInfoDto, Long userId) {
+    public UserInfoResponseDto update(UserInfoDto userInfoDto) {
+        Long userId = this.authenticatedService.getCurrentUserId();
         UserInfo userInfo = this.userInfoRepository.findById(userId)
                 .orElseThrow(() -> new UserInfoNotFoundException("Informações do usuário não encontradas"));
 

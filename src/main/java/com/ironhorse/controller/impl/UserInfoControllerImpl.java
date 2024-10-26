@@ -4,6 +4,7 @@ import com.ironhorse.controller.UserInfoController;
 import com.ironhorse.dto.UserInfoCreateDto;
 import com.ironhorse.dto.UserInfoDto;
 import com.ironhorse.dto.UserInfoResponseDto;
+import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.UserInfoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,18 +22,18 @@ public class UserInfoControllerImpl implements UserInfoController {
     }
 
     @Override
-    @PostMapping("/{userId}")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserInfoResponseDto> save(@RequestBody @Valid UserInfoCreateDto userInfoCreateDto, @PathVariable Long userId) {
-        UserInfoResponseDto userInfoResponseDto = this.userInfoService.save(userInfoCreateDto, userId);
+    public ResponseEntity<UserInfoResponseDto> save(@RequestBody @Valid UserInfoCreateDto userInfoCreateDto) {
+        UserInfoResponseDto userInfoResponseDto = this.userInfoService.save(userInfoCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(userInfoResponseDto);
     }
 
     @Override
-    @GetMapping("/{userId}")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserInfoResponseDto> findByUserId(@PathVariable Long userId) {
-        UserInfoResponseDto userInfoResponseDto = this.userInfoService.findByUserId(userId);
+    public ResponseEntity<UserInfoResponseDto> findByUserId() {
+        UserInfoResponseDto userInfoResponseDto = this.userInfoService.findByUserId();
         return ResponseEntity.status(HttpStatus.OK).body(userInfoResponseDto);
     }
 
@@ -44,10 +45,9 @@ public class UserInfoControllerImpl implements UserInfoController {
     }
 
     @Override
-    @PutMapping("/{userId}")
-    public ResponseEntity<UserInfoResponseDto> update(@RequestBody @Valid UserInfoDto userInfoDto,
-                                                      @PathVariable Long userId) {
-        UserInfoResponseDto userInfoResponseDto = this.userInfoService.update(userInfoDto, userId);
+    @PutMapping()
+    public ResponseEntity<UserInfoResponseDto> update(@RequestBody @Valid UserInfoDto userInfoDto) {
+        UserInfoResponseDto userInfoResponseDto = this.userInfoService.update(userInfoDto);
         return ResponseEntity.status(HttpStatus.OK).body(userInfoResponseDto);
     }
 }

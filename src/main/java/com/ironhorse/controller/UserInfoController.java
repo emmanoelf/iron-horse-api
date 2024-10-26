@@ -20,7 +20,7 @@ public interface UserInfoController {
                     description = "Create a user info",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserInfoCreateDto.class))}),
     })
-    ResponseEntity<UserInfoResponseDto> save(UserInfoCreateDto userInfoCreateDto, Long userId);
+    ResponseEntity<UserInfoResponseDto> save(UserInfoCreateDto userInfoCreateDto);
 
     @Operation(summary = "Find user info by ID")
     @ApiResponses(value = {
@@ -28,7 +28,7 @@ public interface UserInfoController {
                     description = "User info found",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserInfoResponseDto.class))}),
     })
-    ResponseEntity<UserInfoResponseDto> findByUserId(Long userId);
+    ResponseEntity<UserInfoResponseDto> findByUserId();
 
     @Operation(summary = "Delete user info by ID")
     @ApiResponses(value = {
@@ -43,5 +43,5 @@ public interface UserInfoController {
                     description = "User info updated",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserInfoResponseDto.class))}),
     })
-    ResponseEntity<UserInfoResponseDto> update(UserInfoDto userInfoDto, Long userId);
+    ResponseEntity<UserInfoResponseDto> update(UserInfoDto userInfoDto);
 }

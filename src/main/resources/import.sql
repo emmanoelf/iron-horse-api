@@ -1,10 +1,6 @@
--- Inserindo roles
-INSERT INTO role (created_at, id, updated_at, name) VALUES (NOW(), 1, NOW(), 'Renter');
-INSERT INTO role (created_at, id, updated_at, name) VALUES (NOW(), 22, NOW(), 'Owner');
-
 -- Inserindo um usuário
-INSERT INTO user (created_at, updated_at, email, name, password, phone) VALUES ('2024-10-08 01:10:00', '2024-10-08 01:10:00', 'user1@example.com', 'Alice Silva', 'password123', '1234567890');
-INSERT INTO user (created_at, updated_at, email, name, password, phone) VALUES ('2024-10-08 01:10:00', '2024-10-08 01:10:00', 'user2@example.com', 'Diovana Silva', 'password12323', '2131231243');
+INSERT INTO user (created_at, updated_at, email, name, password, phone, role) VALUES ('2024-10-08 01:10:00', '2024-10-08 01:10:00', 'user1@example.com', 'Alice Silva', '$2a$10$5y2QutxOnBjHhE0fstJi6O8QTKPrU5Na40s73sbBY0C8NaHJ1H8ie', '1234567890', 'ADMIN');
+INSERT INTO user (created_at, updated_at, email, name, password, phone, role) VALUES ('2024-10-08 01:10:00', '2024-10-08 01:10:00', 'user2@example.com', 'Diovana Silva', '$2a$10$5y2QutxOnBjHhE0fstJi6O8QTKPrU5Na40s73sbBY0C8NaHJ1H8ie', '2131231243', 'USER');
 
 -- Inserindo informações do usuário
 INSERT INTO user_info (created_at, updated_at, cpf, street_address, street_name, street_number, district, zipcode, city, state, driver_license, accept_comunication, is_terms_user, is_regularized, is_real_information, user_id) VALUES (NOW(), NOW(), '123.456.789-00', 'Rua A', 'Rua A', 123, 'Centro', '01000-000', 'São Paulo', 'SP', 'ABC123456', true, true, true, true, 1);

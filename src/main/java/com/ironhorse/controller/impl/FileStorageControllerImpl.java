@@ -19,26 +19,26 @@ public class FileStorageControllerImpl implements FileStorageController {
     }
 
     @Override
-    @PostMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> uploadFile(MultipartFile file, @PathVariable Long userId) {
-        this.fileStorageService.uploadFile(file, userId);
+    public ResponseEntity<Void> uploadFile(MultipartFile file) {
+        this.fileStorageService.uploadFile(file);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override
-    @DeleteMapping("/{userId}")
+    @DeleteMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deleteUserProfileFile(@PathVariable Long userId) {
-        this.fileStorageService.deleteUserProfileFile(userId);
+    public ResponseEntity<Void> deleteUserProfileFile() {
+        this.fileStorageService.deleteUserProfileFile();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override
-    @GetMapping("/{userId}")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<FileStorageDto> getUserProfile(@PathVariable Long userId) {
-        FileStorageDto fileStorageDto = this.fileStorageService.getUserProfile(userId);
+    public ResponseEntity<FileStorageDto> getUserProfile() {
+        FileStorageDto fileStorageDto = this.fileStorageService.getUserProfile();
         return ResponseEntity.status(HttpStatus.OK).body(fileStorageDto);
     }
 }
