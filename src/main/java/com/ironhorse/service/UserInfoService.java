@@ -5,8 +5,8 @@ import com.ironhorse.dto.UserInfoDto;
 import com.ironhorse.dto.UserInfoResponseDto;
 
 public interface UserInfoService {
-    UserInfoResponseDto save(UserInfoCreateDto userInfoCreateDto, Long userId);
-    UserInfoResponseDto findByUserId(Long userId);
+    UserInfoResponseDto save(UserInfoCreateDto userInfoCreateDto);
+    UserInfoResponseDto findByUserId();
     Long deleteByUserId(Long userId);
-    UserInfoResponseDto update(UserInfoDto userInfoDto, Long userId);
+    UserInfoResponseDto update(UserInfoDto userInfoDto);
 }

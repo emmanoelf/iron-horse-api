@@ -27,8 +27,7 @@ public class UserInfoControllerImpl implements UserInfoController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserInfoResponseDto> save(@RequestBody @Valid UserInfoCreateDto userInfoCreateDto) {
-        Long userId = this.authenticatedService.getCurrentUserId();
-        UserInfoResponseDto userInfoResponseDto = this.userInfoService.save(userInfoCreateDto, userId);
+        UserInfoResponseDto userInfoResponseDto = this.userInfoService.save(userInfoCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(userInfoResponseDto);
     }
 
@@ -36,8 +35,7 @@ public class UserInfoControllerImpl implements UserInfoController {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserInfoResponseDto> findByUserId() {
-        Long userId = this.authenticatedService.getCurrentUserId();
-        UserInfoResponseDto userInfoResponseDto = this.userInfoService.findByUserId(userId);
+        UserInfoResponseDto userInfoResponseDto = this.userInfoService.findByUserId();
         return ResponseEntity.status(HttpStatus.OK).body(userInfoResponseDto);
     }
 
@@ -51,8 +49,7 @@ public class UserInfoControllerImpl implements UserInfoController {
     @Override
     @PutMapping()
     public ResponseEntity<UserInfoResponseDto> update(@RequestBody @Valid UserInfoDto userInfoDto) {
-        Long userId = this.authenticatedService.getCurrentUserId();
-        UserInfoResponseDto userInfoResponseDto = this.userInfoService.update(userInfoDto, userId);
+        UserInfoResponseDto userInfoResponseDto = this.userInfoService.update(userInfoDto);
         return ResponseEntity.status(HttpStatus.OK).body(userInfoResponseDto);
     }
 }
