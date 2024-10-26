@@ -12,7 +12,6 @@ import com.ironhorse.model.UserInfo;
 import com.ironhorse.repository.UserInfoRepository;
 import com.ironhorse.repository.UserRepository;
 import com.ironhorse.service.AuthenticatedService;
-import com.ironhorse.service.AuthenticationService;
 import com.ironhorse.service.UserInfoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

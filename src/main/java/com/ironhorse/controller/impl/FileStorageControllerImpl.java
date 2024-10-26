@@ -2,7 +2,6 @@ package com.ironhorse.controller.impl;
 
 import com.ironhorse.controller.FileStorageController;
 import com.ironhorse.dto.FileStorageDto;
-import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.FileStorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,19 +13,16 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/v1/users/upload")
 public class FileStorageControllerImpl implements FileStorageController {
     private final FileStorageService fileStorageService;
-    private final AuthenticatedService authenticatedService;
 
-    public FileStorageControllerImpl(FileStorageService fileStorageService, AuthenticatedService authenticatedService) {
+    public FileStorageControllerImpl(FileStorageService fileStorageService) {
         this.fileStorageService = fileStorageService;
-        this.authenticatedService = authenticatedService;
     }
 
     @Override
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> uploadFile(MultipartFile file) {
-        Long userId = this.authenticatedService.getCurrentUserId();
-        this.fileStorageService.uploadFile(file, userId);
+        this.fileStorageService.uploadFile(file);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -34,8 +30,7 @@ public class FileStorageControllerImpl implements FileStorageController {
     @DeleteMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteUserProfileFile() {
-        Long userId = this.authenticatedService.getCurrentUserId();
-        this.fileStorageService.deleteUserProfileFile(userId);
+        this.fileStorageService.deleteUserProfileFile();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -43,8 +38,7 @@ public class FileStorageControllerImpl implements FileStorageController {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<FileStorageDto> getUserProfile() {
-        Long userId = this.authenticatedService.getCurrentUserId();
-        FileStorageDto fileStorageDto = this.fileStorageService.getUserProfile(userId);
+        FileStorageDto fileStorageDto = this.fileStorageService.getUserProfile();
         return ResponseEntity.status(HttpStatus.OK).body(fileStorageDto);
     }
 }

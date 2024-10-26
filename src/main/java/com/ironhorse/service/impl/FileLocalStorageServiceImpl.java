@@ -8,6 +8,7 @@ import com.ironhorse.model.FileStorage;
 import com.ironhorse.model.UserInfo;
 import com.ironhorse.repository.FileStorageRepository;
 import com.ironhorse.repository.UserInfoRepository;
+import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.FileStorageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ import java.io.IOException;
 public class FileLocalStorageServiceImpl implements FileStorageService {
     private final FileStorageRepository fileStorageRepository;
     private final UserInfoRepository userInfoRepository;
+    private final AuthenticatedService authenticatedService;
+
     private static final String CONTENT_PNG = "image/png";
     private static final String CONTENT_JPEG = "image/jpeg";
     private static final String PREFIX_FILENAME = "profile";
@@ -33,15 +36,16 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
 
     @Override
     @Transactional
-    public void uploadFile(MultipartFile file, Long userId){
+    public void uploadFile(MultipartFile file){
         try{
             this.validateFile(file);
+            Long userId = this.authenticatedService.getCurrentUserId();
 
             UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
                     () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
             if(userInfo.getUserPicture() != null){
-                this.deleteUserProfileFile(userId);
+                this.deleteUserProfileFile();
             }
 
             String fileName = this.generateFilename(file.getOriginalFilename());
@@ -59,7 +63,8 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
 
     @Override
     @Transactional
-    public void deleteUserProfileFile(Long userId) {
+    public void deleteUserProfileFile() {
+        Long userId = this.authenticatedService.getCurrentUserId();
         UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
                 () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
@@ -78,7 +83,9 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public FileStorageDto getUserProfile(Long userId) {
+    public FileStorageDto getUserProfile() {
+        Long userId = this.authenticatedService.getCurrentUserId();
+
         UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
                 () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 

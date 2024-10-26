@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserInfoControllerImpl implements UserInfoController {
 
     private final UserInfoService userInfoService;
-    private final AuthenticatedService authenticatedService;
 
-    public UserInfoControllerImpl(UserInfoService userInfoService, AuthenticatedService authenticatedService) {
+    public UserInfoControllerImpl(UserInfoService userInfoService) {
         this.userInfoService = userInfoService;
-        this.authenticatedService = authenticatedService;
     }
 
     @Override
