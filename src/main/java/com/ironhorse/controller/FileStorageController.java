@@ -18,7 +18,7 @@ public interface FileStorageController {
                     description = "Upload a file for user",
                     content = {@Content(mediaType = "application/json")}),
     })
-    ResponseEntity<Void> uploadFile(MultipartFile file, Long userId);
+    ResponseEntity<Void> uploadFile(MultipartFile file);
 
     @Operation(summary = "Delete file user profile")
     @ApiResponses(value = {
@@ -26,7 +26,7 @@ public interface FileStorageController {
                     description = "Delete file",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = FileStorageDto.class))}),
     })
-    ResponseEntity<Void> deleteUserProfileFile(Long userId);
+    ResponseEntity<Void> deleteUserProfileFile();
 
     @Operation(summary = "Get specific file from user")
     @ApiResponses(value = {
@@ -34,5 +34,5 @@ public interface FileStorageController {
                     description = "Get specific file from user id",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = FileStorageDto.class))}),
     })
-    ResponseEntity<FileStorageDto> getUserProfile(Long userId);
+    ResponseEntity<FileStorageDto> getUserProfile();
 }
