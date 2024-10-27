@@ -18,10 +18,8 @@ public interface CarRepository extends JpaRepository<Car, Long> {
                 c.model,
                 c.manufactureYear,
                 ui.city,
-                ui.state,
-                ui.streetAddress,
-                ui.streetName,
-                ui.streetNumber,
+                ui.latitude,
+                ui.longitude,
                 AVG(r.rate),
                 co.numberTrips,
                 co.price
@@ -32,7 +30,7 @@ public interface CarRepository extends JpaRepository<Car, Long> {
             INNER JOIN CarOverview co ON c.id = co.id
             INNER JOIN Review r ON c.id = r.car.id
             WHERE co.isAvailable = true AND ui.city = :city
-            GROUP BY c.id, c.brand, c.model, ui.city, ui.state, co.numberTrips, co.price
+            GROUP BY c.id, c.brand, c.model, ui.city, co.numberTrips, co.price
             """)
     List<CarResumeProjection> findCarResumesByCity(@Param("city") String city);
 }

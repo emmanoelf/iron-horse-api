@@ -3,6 +3,7 @@ package com.ironhorse.service.impl;
 import com.ironhorse.dto.UserInfoCreateDto;
 import com.ironhorse.dto.UserInfoDto;
 import com.ironhorse.dto.UserInfoResponseDto;
+import com.ironhorse.dto.googleGeoCode.LocationDto;
 import com.ironhorse.exception.ForbiddenAccessException;
 import com.ironhorse.exception.UserInfoNotFoundException;
 import com.ironhorse.exception.UserNotFound;
@@ -12,6 +13,7 @@ import com.ironhorse.model.UserInfo;
 import com.ironhorse.repository.UserInfoRepository;
 import com.ironhorse.repository.UserRepository;
 import com.ironhorse.service.AuthenticatedService;
+import com.ironhorse.service.GeocodeService;
 import com.ironhorse.service.UserInfoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     private final UserInfoRepository userInfoRepository;
     private final UserRepository userRepository;
     private final AuthenticatedService authenticatedService;
+    private final GeocodeService geocodeService;
 
     @Override
     @Transactional
@@ -33,8 +36,14 @@ public class UserInfoServiceImpl implements UserInfoService {
 
         UserInfo userInfo = UserInfoMapper.toModel(userInfoCreateDto);
         userInfo.setUser(user);
-        userInfo = this.userInfoRepository.save(userInfo);
 
+        this.setLatitudeAndLongitude(userInfo,
+                userInfoCreateDto.streetAddress(),
+                userInfoCreateDto.streetName(),
+                userInfoCreateDto.city(),
+                userInfoCreateDto.state());
+
+        userInfo = this.userInfoRepository.save(userInfo);
         return UserInfoMapper.toDto(userInfo);
     }
 
@@ -83,7 +92,25 @@ public class UserInfoServiceImpl implements UserInfoService {
         userInfo.setState(userInfoDto.state());
         userInfo.setDriverLicense(userInfoDto.driverLicense());
 
+        this.setLatitudeAndLongitude(userInfo,
+                userInfoDto.streetAddress(),
+                userInfoDto.streetName(),
+                userInfoDto.city(),
+                userInfoDto.state());
+
         this.userInfoRepository.flush();
         return UserInfoMapper.toDto(userInfo);
+    }
+
+    private void setLatitudeAndLongitude(UserInfo userInfo, String streetAddress, String streetName, String city, String state) {
+        String addresss = String.format("%s, %s, %s, %s",
+                streetAddress,
+                streetName,
+                city,
+                state);
+
+        LocationDto locationDto = this.geocodeService.getLatitudeAndLongitude(addresss);
+        userInfo.setLatitude(locationDto.lat());
+        userInfo.setLongitude(locationDto.lng());
     }
 }

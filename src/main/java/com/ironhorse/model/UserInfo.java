@@ -44,6 +44,12 @@ public class UserInfo {
     private String state;
 
     @Column(nullable = false)
+    private Double latitude;
+
+    @Column(nullable = false)
+    private Double longitude;
+
+    @Column(nullable = false)
     private String driverLicense;
 
     @Column(nullable = false)
