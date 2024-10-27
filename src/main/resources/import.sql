@@ -3,7 +3,7 @@ INSERT INTO user (created_at, updated_at, email, name, password, phone, role) VA
 INSERT INTO user (created_at, updated_at, email, name, password, phone, role) VALUES ('2024-10-08 01:10:00', '2024-10-08 01:10:00', 'user2@example.com', 'Diovana Silva', '$2a$10$5y2QutxOnBjHhE0fstJi6O8QTKPrU5Na40s73sbBY0C8NaHJ1H8ie', '2131231243', 'USER');
 
 -- Inserindo informações do usuário
-INSERT INTO user_info (created_at, updated_at, cpf, street_address, street_name, street_number, district, zipcode, city, state, driver_license, accept_comunication, is_terms_user, is_regularized, is_real_information, user_id) VALUES (NOW(), NOW(), '123.456.789-00', 'Rua A', 'Rua A', 123, 'Centro', '01000-000', 'São Paulo', 'SP', 'ABC123456', true, true, true, true, 1);
+INSERT INTO user_info (created_at, updated_at, cpf, street_address, street_name, street_number, district, zipcode, city, state, latitude, longitude, driver_license, accept_comunication, is_terms_user, is_regularized, is_real_information, user_id) VALUES (NOW(), NOW(), '123.456.789-00', 'Rua A', 'Rua A', 123, 'Centro', '01000-000', 'São Paulo', 'SP', -23.5489, -46.6388, 'ABC123456', true, true, true, true, 1);
 
 -- Inserindo dados em Car
 INSERT INTO car (created_at, updated_at, brand, model, manufacture_year, user_id) VALUES (NOW(), NOW(), 'Honda', 'Civic', 2021, 1);
