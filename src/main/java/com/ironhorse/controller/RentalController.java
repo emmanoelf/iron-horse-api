@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 @Tag(name = "Rental controller")
 public interface RentalController {
 
@@ -20,4 +22,12 @@ public interface RentalController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RentalResponseDto.class))}),
     })
     ResponseEntity<RentalResponseDto> save(RentalDto rentalDto, Long carId);
+
+    @Operation(summary = "Get all rentals")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Get all rentals by logged user id",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RentalResponseDto.class))}),
+    })
+    ResponseEntity<List<RentalResponseDto>> findAllByLoggedUserId();
 }
