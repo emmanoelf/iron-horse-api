@@ -15,6 +15,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class RentalServiceImpl implements RentalService {
@@ -36,5 +39,13 @@ public class RentalServiceImpl implements RentalService {
 
         this.rentalRepository.save(rental);
         return RentalMapper.toDto(rental);
+    }
+
+    @Override
+    public List<RentalResponseDto> getAllRentalsByLoggedUser() {
+        Long userId = this.authenticatedService.getCurrentUserId();
+        List<Rental> rentals = this.rentalRepository.findByUserId(userId);
+
+        return rentals.stream().map(RentalMapper::toDto).collect(Collectors.toList());
     }
 }
