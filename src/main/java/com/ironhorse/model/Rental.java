@@ -1,10 +1,7 @@
 package com.ironhorse.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Rental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +27,9 @@ public class Rental {
     @Column(nullable = true)
     private LocalDateTime realEndDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private RentalStatus status;
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
@@ -47,4 +46,9 @@ public class Rental {
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.status = RentalStatus.ACTIVE;
+    }
 }
