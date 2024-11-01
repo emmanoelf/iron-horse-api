@@ -2,10 +2,8 @@ package com.ironhorse.service.impl;
 
 import com.ironhorse.dto.CarInfoDto;
 import com.ironhorse.exception.CarNotFound;
-import com.ironhorse.exception.ForbiddenAccessException;
 import com.ironhorse.exception.UserNotFound;
 import com.ironhorse.mapper.CarInfoMapper;
-import com.ironhorse.mapper.CarMapper;
 import com.ironhorse.model.Car;
 import com.ironhorse.model.CarInfo;
 import com.ironhorse.repository.CarInfoRepository;
@@ -14,8 +12,6 @@ import com.ironhorse.service.CarInfoService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -70,28 +66,10 @@ public class carInfoServiceImpl implements CarInfoService {
   existingCarInfo.setDirectionType(carInfoDto.directionType());
   existingCarInfo.setChassi(carInfoDto.chassi());
   existingCarInfo.setEngineNumber(carInfoDto.engineNumber());
-  existingCarInfo.setEngineHorsePower(carInfoDto.engineHorsePower());
+  existingCarInfo.setCylinderDisplacement(carInfoDto.cylinderDisplacement());
   existingCarInfo.setMileage(carInfoDto.mileage());
   existingCarInfo.setFuelType(carInfoDto.fuelType());
   existingCarInfo.setRenavam(carInfoDto.renavam());
-  existingCarInfo.setInsuranceName(carInfoDto.insuranceName());
-  existingCarInfo.setInsurance(carInfoDto.insurance());
-  existingCarInfo.setInsulfilm(carInfoDto.insulfilm());
-  existingCarInfo.setTagPike(carInfoDto.tagPike());
-  existingCarInfo.setAntiTheftSecret(carInfoDto.antiTheftSecret());
-  existingCarInfo.setMultimedia(carInfoDto.multimedia());
-  existingCarInfo.setAirConditioner(carInfoDto.airConditioner());
-  existingCarInfo.setElectricWindowsAndLocks(carInfoDto.electricWindowsAndLocks());
-  existingCarInfo.setTriangle(carInfoDto.triangle());
-  existingCarInfo.setMonkey(carInfoDto.monkey());
-  existingCarInfo.setWheelWrench(carInfoDto.wheelWrench());
-  existingCarInfo.setSpareTire(carInfoDto.spareTire());
-  existingCarInfo.setFireExtinguisher(carInfoDto.fireExtinguisher());
-  existingCarInfo.setAlarm(carInfoDto.alarm());
-  existingCarInfo.setSmokersAccepted(carInfoDto.smokersAccepted());
-  existingCarInfo.setTagActivated(carInfoDto.tagActivated());
-  existingCarInfo.setIsFinesBelongToTheOffender(carInfoDto.isFinesBelongToTheOffender());
-  existingCarInfo.setIsTermsUser(carInfoDto.isTermsUser());
 
   carInfoRepository.save(existingCarInfo);
 
