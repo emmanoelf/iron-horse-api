@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -35,7 +36,7 @@ public class CarInfo {
     private String engineNumber;
 
     @Column(nullable = false)
-    private String engineHorsePower;
+    private String cylinderDisplacement;
 
     @Column(nullable = false)
     private String mileage;
@@ -46,59 +47,13 @@ public class CarInfo {
     @Column(nullable = false)
     private String renavam;
 
-    @Column(nullable = false)
-    private String insuranceName;
 
-    @Column(nullable = false)
-    private boolean insurance;
+    @OneToMany(mappedBy = "carInfo",cascade = CascadeType.ALL)
+    private List<CarImages> carImages;
 
-    @Column(nullable = false)
-    private boolean insulfilm;
-
-    @Column(nullable = false)
-    private boolean tagPike;
-
-    @Column(nullable = false)
-    private boolean antiTheftSecret;
-
-    @Column(nullable = false)
-    private boolean multimedia;
-
-    @Column(nullable = false)
-    private boolean airConditioner;
-
-    @Column(nullable = false)
-    private boolean electricWindowsAndLocks;
-
-    @Column(nullable = false)
-    private boolean triangle;
-
-    @Column(nullable = false)
-    private boolean monkey;
-
-    @Column(nullable = false)
-    private boolean wheelWrench;
-
-    @Column(nullable = false)
-    private boolean spareTire;
-
-    @Column(nullable = false)
-    private boolean fireExtinguisher;
-
-    @Column(nullable = false)
-    private boolean alarm;
-
-    @Column(nullable = false)
-    private boolean smokersAccepted;
-
-    @Column(nullable = false)
-    private boolean tagActivated;
-
-    @Column(nullable = false)
-    private boolean isFinesBelongToTheOffender;
-
-    @Column(nullable = false)
-    private boolean isTermsUser;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "car_features_id", referencedColumnName = "id")
+    private CarFeatures carFeatures;
 
     @OneToOne
     @JoinColumn(name = "car_id", nullable = false)
@@ -112,12 +67,4 @@ public class CarInfo {
     @Column(name = "updated_at")
     private LocalDateTime updated_at;
 
-
-    public void setIsFinesBelongToTheOffender(Boolean finesBelongToTheOffender) {
-        this.isFinesBelongToTheOffender = finesBelongToTheOffender;
-    }
-
-    public void setIsTermsUser(Boolean termsUser) {
-        this.isTermsUser = termsUser;
-    }
 }
