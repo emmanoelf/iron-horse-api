@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected ResponseEntity<ProblemDetail> handleValidations(MethodArgumentNotValidException ex){
+    protected ResponseEntity<ProblemDetail> handleValidations(MethodArgumentNotValidException ex) {
         ProblemType problemType = ProblemType.INVALID_DATA;
         String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
                     String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
                     String name = objectError.getObjectName();
 
-                    if(objectError instanceof FieldError){
+                    if (objectError instanceof FieldError) {
                         name = ((FieldError) objectError).getField();
                     }
 
@@ -153,7 +153,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problemDetail);
     }
 
-    private ProblemDetail.ProblemDetailBuilder createProblemDetailBuilder(HttpStatus status, ProblemType problemType, String detail){
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<ProblemDetail> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ProblemType problemType = ProblemType.INVALID_DATA;
+
+        String detail = ex.getMessage();
+
+        ProblemDetail problemDetail = createProblemDetailBuilder(
+                HttpStatus.BAD_REQUEST,
+                problemType,
+                detail
+        ).build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
+    }
+
+    private ProblemDetail.ProblemDetailBuilder createProblemDetailBuilder(HttpStatus status, ProblemType problemType, String detail) {
         return ProblemDetail.builder()
                 .status(status.value())
                 .type(problemType.getUri())
