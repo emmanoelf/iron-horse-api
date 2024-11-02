@@ -10,12 +10,13 @@ import com.ironhorse.repository.RentalRepository;
 import com.ironhorse.repository.UserRepository;
 import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.RentalService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,11 +31,16 @@ public class RentalServiceImpl implements RentalService {
     @Transactional
     public RentalResponseDto save(RentalDto rentalDto, Long carId) {
         Long userId = this.authenticatedService.getCurrentUserId();
-        Car car = this.carRepository.findById(carId).orElseThrow(
-                () -> new EntityNotFoundException("Carro não encontrado"));
+
+        this.validateDates(rentalDto.startDate(), rentalDto.expectedEndDate());
+
+        Optional<Car> car = this.carRepository.isCarAvailableWithinDates(carId, rentalDto.startDate(), rentalDto.expectedEndDate());
+        if(car.isEmpty()) {
+            throw new IllegalArgumentException("Este carro não está disponível para locação na data escolhida.");
+        }
 
         Rental rental = RentalMapper.toModel(rentalDto);
-        rental.setCar(car);
+        rental.setCar(car.get());
         rental.setUser(userRepository.findById(userId).orElseThrow());
 
         this.rentalRepository.save(rental);
@@ -47,5 +53,11 @@ public class RentalServiceImpl implements RentalService {
         List<Rental> rentals = this.rentalRepository.findByUserId(userId);
 
         return rentals.stream().map(RentalMapper::toDto).collect(Collectors.toList());
+    }
+
+    private void validateDates(LocalDateTime startDate, LocalDateTime endDate) {
+        if(endDate.isBefore(startDate)) {
+            throw new IllegalArgumentException("A data de devolução não pode ser maior que a data de início");
+        }
     }
 }
