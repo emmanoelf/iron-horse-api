@@ -55,4 +55,24 @@ public class CarOverviewServiceImpl implements CarOverviewService {
         this.carOverviewRepository.save(carOverview);
         return CarOverviewMapper.toDto(carOverview);
     }
+
+    @Override
+    @Transactional
+    public void setIsActive(Long carId, boolean isActive) {
+        CarOverview carOverview = this.carOverviewRepository.findCarOverviewByCarId(carId).orElseThrow(
+                () -> new EntityNotFoundException("Detalhes do carro não encontrado"));
+
+        carOverview.setActive(isActive);
+        this.carOverviewRepository.save(carOverview);
+    }
+
+    @Override
+    @Transactional
+    public void setIsAvailable(Long carId, boolean isAvailable) {
+        CarOverview carOverview = this.carOverviewRepository.findCarOverviewByCarId(carId).orElseThrow(
+                () -> new EntityNotFoundException("Detalhes do carro não encontrado"));
+
+        carOverview.setActive(isAvailable);
+        this.carOverviewRepository.save(carOverview);
+    }
 }
