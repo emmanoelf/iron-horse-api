@@ -34,4 +34,12 @@ public class RentalControllerImpl implements RentalController {
         List<RentalResponseDto> rentalResponseDto = this.rentalService.getAllRentalsByLoggedUser();
         return ResponseEntity.status(HttpStatus.OK).body(rentalResponseDto);
     }
+
+    @Override
+    @PatchMapping("/{rentalId}/cancel")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> cancelRental(@PathVariable Long rentalId) {
+        this.rentalService.cancelRental(rentalId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

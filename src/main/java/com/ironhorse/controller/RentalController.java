@@ -30,4 +30,12 @@ public interface RentalController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RentalResponseDto.class))}),
     })
     ResponseEntity<List<RentalResponseDto>> findAllByLoggedUserId();
+
+    @Operation(summary = "Cancel rental")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Cancel rental if you are renter or owner",
+                    content = {@Content(mediaType = "application/json")}),
+    })
+    ResponseEntity<Void> cancelRental(Long rentalId);
 }
