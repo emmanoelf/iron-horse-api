@@ -40,11 +40,19 @@ public interface RentalController {
     })
     ResponseEntity<Void> cancelRental(Long rentalId);
 
-    @Operation(summary = "Show Details")
+    @Operation(summary = "Show details")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Show more details from an rental if you are render or owner",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RentalResponseDetailsDto.class))}),
     })
     ResponseEntity<RentalResponseDetailsDto> findRentalById(Long rentalId);
+
+    @Operation(summary = "Finish rental")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Finish an retal",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RentalResponseDto.class))}),
+    })
+    ResponseEntity<RentalResponseDto> finishRental(Long rentalId);
 }
