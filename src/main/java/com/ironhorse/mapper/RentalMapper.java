@@ -1,8 +1,10 @@
 package com.ironhorse.mapper;
 
 import com.ironhorse.dto.RentalDto;
+import com.ironhorse.dto.RentalResponseDetailsDto;
 import com.ironhorse.dto.RentalResponseDto;
 import com.ironhorse.model.Rental;
+import com.ironhorse.repository.projection.RentalDetailsProjection;
 
 public class RentalMapper {
 
@@ -21,6 +23,22 @@ public class RentalMapper {
                 rental.getCar().getId(),
                 rental.getCreatedAt(),
                 rental.getUpdatedAt()
+        );
+    }
+
+    public static RentalResponseDetailsDto toDto(RentalDetailsProjection rentalDetailsProjection) {
+        return new RentalResponseDetailsDto(
+                rentalDetailsProjection.getId(),
+                rentalDetailsProjection.getStartDate(),
+                rentalDetailsProjection.getExpectedEndDate(),
+                rentalDetailsProjection.getStatus(),
+                rentalDetailsProjection.getCarId(),
+                rentalDetailsProjection.getCarBrand(),
+                rentalDetailsProjection.getCarModel(),
+                rentalDetailsProjection.getCarManufactureYear(),
+                rentalDetailsProjection.getPrice(),
+                rentalDetailsProjection.getDaysRented(),
+                rentalDetailsProjection.getTotalPrice()
         );
     }
 }
