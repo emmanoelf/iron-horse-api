@@ -169,6 +169,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
     }
 
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<ProblemDetail> handleBusinessException(BusinessException ex) {
+        ProblemType problemType = ProblemType.INVALID_DATA;
+
+        String detail = ex.getMessage();
+
+        ProblemDetail problemDetail = createProblemDetailBuilder(
+                HttpStatus.BAD_REQUEST,
+                problemType,
+                detail
+        ).build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
+    }
+
     private ProblemDetail.ProblemDetailBuilder createProblemDetailBuilder(HttpStatus status, ProblemType problemType, String detail) {
         return ProblemDetail.builder()
                 .status(status.value())
