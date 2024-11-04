@@ -1,6 +1,7 @@
 package com.ironhorse.controller;
 
 import com.ironhorse.dto.RentalDto;
+import com.ironhorse.dto.RentalResponseDetailsDto;
 import com.ironhorse.dto.RentalResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,4 +39,12 @@ public interface RentalController {
                     content = {@Content(mediaType = "application/json")}),
     })
     ResponseEntity<Void> cancelRental(Long rentalId);
+
+    @Operation(summary = "Show Details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Show more details from an rental if you are render or owner",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RentalResponseDetailsDto.class))}),
+    })
+    ResponseEntity<RentalResponseDetailsDto> findRentalById(Long rentalId);
 }

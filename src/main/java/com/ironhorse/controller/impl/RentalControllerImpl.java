@@ -2,6 +2,7 @@ package com.ironhorse.controller.impl;
 
 import com.ironhorse.controller.RentalController;
 import com.ironhorse.dto.RentalDto;
+import com.ironhorse.dto.RentalResponseDetailsDto;
 import com.ironhorse.dto.RentalResponseDto;
 import com.ironhorse.service.RentalService;
 import org.springframework.http.HttpStatus;
@@ -41,5 +42,12 @@ public class RentalControllerImpl implements RentalController {
     public ResponseEntity<Void> cancelRental(@PathVariable Long rentalId) {
         this.rentalService.cancelRental(rentalId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/{rentalId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<RentalResponseDetailsDto> findRentalById(@PathVariable Long rentalId) {
+        RentalResponseDetailsDto rentalDetails = this.rentalService.getRentalDetails(rentalId);
+        return ResponseEntity.status(HttpStatus.OK).body(rentalDetails);
     }
 }
