@@ -1,6 +1,7 @@
 package com.ironhorse.service.impl;
 
 import com.ironhorse.dto.RentalDto;
+import com.ironhorse.dto.RentalResponseDetailsDto;
 import com.ironhorse.dto.RentalResponseDto;
 import com.ironhorse.exception.ForbiddenAccessException;
 import com.ironhorse.mapper.RentalMapper;
@@ -10,13 +11,16 @@ import com.ironhorse.model.RentalStatus;
 import com.ironhorse.repository.CarRepository;
 import com.ironhorse.repository.RentalRepository;
 import com.ironhorse.repository.UserRepository;
+import com.ironhorse.repository.projection.RentalDetailsProjection;
 import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.CarOverviewService;
 import com.ironhorse.service.RentalService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -72,6 +76,22 @@ public class RentalServiceImpl implements RentalService {
         this.carOverviewService.setIsAvailable(rental.getCar().getId(), true);
         rental.setStatus(RentalStatus.CANCELED);
         this.rentalRepository.save(rental);
+    }
+
+    @Override
+    public RentalResponseDetailsDto getRentalDetails(Long rentalId) {
+        Long userId = this.authenticatedService.getCurrentUserId();
+        Optional<RentalDetailsProjection> rentalDetails = this.rentalRepository.findRentalWithDetails(rentalId, userId);
+
+        if(rentalDetails.isEmpty()){
+            throw new EntityNotFoundException("Locação não encontrada");
+        }
+
+        BigDecimal totalPrice = rentalDetails.get().getPrice()
+                .multiply(BigDecimal.valueOf(rentalDetails.get().getDaysRented()));
+        rentalDetails.get().setTotalPrice(totalPrice);
+
+        return RentalMapper.toDto(rentalDetails.get());
     }
 
     private void validateDates(LocalDateTime startDate, LocalDateTime endDate) {
