@@ -10,4 +10,5 @@ public interface CarOverviewService {
     CarOverviewResponseDto update(CarOverviewCreateDto carOverviewCreateDto, Long carId);
     void setIsActive(Long carId, boolean isActive);
     void setIsAvailable(Long carId, boolean isAvailable);
+    void increaseNumberOfTrips(Long carId);
 }

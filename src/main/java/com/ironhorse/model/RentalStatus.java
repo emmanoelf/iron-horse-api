@@ -5,5 +5,6 @@ public enum RentalStatus {
     INACTIVE,
     PENDING,
     FINISHED,
+    FINISHED_LATE,
     CANCELED
 }
