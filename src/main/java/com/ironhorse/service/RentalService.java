@@ -11,4 +11,5 @@ public interface RentalService {
     List<RentalResponseDto> getAllRentalsByLoggedUser();
     void cancelRental(Long rentalId);
     RentalResponseDetailsDto getRentalDetails(Long rentalId);
+    RentalResponseDto finishRental(Long rentalId);
 }
