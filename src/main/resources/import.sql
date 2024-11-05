@@ -12,7 +12,19 @@ INSERT INTO car (created_at, updated_at, brand, model, manufacture_year, user_id
 
 
 -- Inserindo dados em car_info
-INSERT INTO car_info (created_at, updated_at, license_plate, transmission, direction_type, chassi, engine_number, engine_horse_power, mileage, fuel_type, renavam, insurance_name, insurance, insulfilm, tag_pike, anti_theft_secret, multimedia, air_conditioner, electric_windows_and_locks, triangle, monkey, wheel_wrench, spare_tire, fire_extinguisher, alarm, smokers_accepted, tag_activated, is_fines_belong_to_the_offender, is_terms_user, car_id) VALUES (NOW(), NOW(), 'ABC-1234', 'Automatic', 'Hydraulic', '1HGBH41JXMN109186', 'ENG123456', '150', '10000', 'Gasoline', 'REN123456', 'Insurance Co', TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, 1), (NOW(), NOW(), 'XYZ-5678', 'Manual', 'Electric', '2HGBH41JXMN109187', 'ENG654321', '120', '20000', 'Diesel', 'REN654321', 'Another Insurance', FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, 2);
+INSERT INTO car_info (license_plate, transmission, direction_type, chassi, engine_number, cylinder_displacement, mileage, fuel_type, renavam, car_id, created_at, updated_at)VALUES('ABC1234', 'Automático', 'Direção Hidráulica', '1A2B3C4D5E6F7G8H9', 'ENG123456', '2.0', '15000', 'Gasolina', 'REN123456', 1, NOW(), NOW()),('XYZ5678', 'Manual', 'Direção Elétrica', '9H8G7F6E5D4C3B2A1', 'ENG987654', '1.8', '20000', 'Álcool', 'REN987654', 2, NOW(), NOW());
+
+
+-- Inserindo dados em car_features
+INSERT INTO car_features (insurance_name, insurance, insulfilm, tag_pike, anti_theft_secret, multimedia, air_conditioner, electric_windows_and_locks, triangle, jack, wheel_wrench, spare_tire, fire_extinguisher, alarm, smokers_accepted, tag_activated, is_fines_belong_to_the_offender, is_terms_user, car_info_id, created_at, updated_at)VALUES('Seguro Completo', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, 1, NOW(), NOW()),('Seguro Parcial', FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE, 2, NOW(), NOW());
+
+
+-- Inserindo dados em car_images
+INSERT INTO car_images (name, path, size, car_info_id, created_at, updated_at)VALUES('imagem1.jpg', '/imagens/cars/ABC1234/imagem1.jpg', 1024, 1, NOW(), NOW()),('imagem2.jpg', '/imagens/cars/ABC1234/imagem2.jpg', 2048, 1, NOW(), NOW()),('imagem3.jpg', '/imagens/cars/XYZ5678/imagem1.jpg', 512, 2, NOW(), NOW()),('imagem4.jpg', '/imagens/cars/XYZ5678/imagem2.jpg', 1536, 2, NOW(), NOW());
+
+
+
+
 
 -- Inserindo em car_overview
 INSERT INTO `car_overview` (is_active, is_available, number_trips, price, car_id, created_at, updated_at, description) VALUES ( 1, 1, 10, 150.00, 1, NOW(), NOW(), 'Carro em ótimo estado, pronto para viagens.'),(1, 0, 5, 200.50, 2, NOW(), NOW(), 'Carro disponível apenas para reservas antecipadas.');
