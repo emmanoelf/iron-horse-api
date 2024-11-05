@@ -36,6 +36,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     private static final String CONTENT_PNG = "image/png";
     private static final String CONTENT_JPEG = "image/jpeg";
     private static final String PREFIX_FILENAME = "profile";
+    private static final String PREFIX_CARIMAGEFILE = "car_image";
     private static final int MAX_FILES = 7;
 
     @Value("${upload.dir}")
@@ -69,35 +70,74 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     }
 
     //car-image multipart files
+//    @Transactional
+//    public void uploadCarImagesFiles(List<MultipartFile> files, Long id){
+//        try{
+//            this.validateFiles(files);
+//            Long userId = this.authenticatedService.getCurrentUserId();
+//
+//            UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
+//                    () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
+//
+//            if(userInfo.getUser().getCars().stream()
+//                    .filter(carro -> carro.getId().equals(id))
+//                    .findFirst()
+//                    .orElse(null) != null){
+//                this.deleteCarImageFile(id);
+//            }
+//
+//            if (files.size() > MAX_FILES) {
+//                throw new FileUploadException("Serão necessarias 7 imagens e voce forneceu"+files.size());
+//            }
+//
+//            for (MultipartFile file : files){
+//                String fileName = this.generateFilename(file.getOriginalFilename());
+//                File uploadFile = new File(uploadDir + fileName);
+//                file.transferTo(uploadFile);
+//                CarImages carImagesStorage = this.createImageStorage(fileName, uploadFile.getAbsolutePath(), file.getSize());
+//                this.carImagesRepository.save(carImagesStorage);
+//            }
+//        }catch (IOException e){
+//            e.getCause();
+//        }
+//    }
+
     @Transactional
-    public void uploadCarImagesFiles(List<MultipartFile> files, Long id){
-        try{
+    public void uploadCarImagesFiles(List<MultipartFile> files, Long carId) {
+        try {
             this.validateFiles(files);
+
             Long userId = this.authenticatedService.getCurrentUserId();
+            UserInfo userInfo = this.userInfoRepository.findByUserId(userId)
+                    .orElseThrow(() -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
-            UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
-                    () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
-
-            if(userInfo.getUser().getCars().stream()
-                    .filter(carro -> carro.getId().equals(id))
+            // Verifica se o carro pertence ao usuário
+            Car car = userInfo.getUser().getCars().stream()
+                    .filter(c -> c.getId().equals(carId))
                     .findFirst()
-                    .orElse(null) != null){
-                this.deleteCarImageFile(id);
-            }
+                    .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado"));
+
+            System.out.println(car.getCarInfo().getCarImages());
+
+//            if (car.getCarInfo().getCarImages()) {
+//                this.deleteCarImageFile(carId);
+//            }
 
             if (files.size() > MAX_FILES) {
-                throw new FileUploadException("Serão necessarias 7 imagens e voce forneceu"+files.size());
+                throw new FileUploadException("Serão necessárias no máximo " + MAX_FILES + " imagens, você forneceu " + files.size());
             }
 
-            for (MultipartFile file : files){
-                String fileName = this.generateFilename(file.getOriginalFilename());
+            for (MultipartFile file : files) {
+                String fileName = this.generateCarImageFileName(file.getOriginalFilename());
                 File uploadFile = new File(uploadDir + fileName);
                 file.transferTo(uploadFile);
+
                 CarImages carImagesStorage = this.createImageStorage(fileName, uploadFile.getAbsolutePath(), file.getSize());
+                carImagesStorage.setCarInfo(car.getCarInfo()); // Associe a imagem ao carro
                 this.carImagesRepository.save(carImagesStorage);
             }
-        }catch (IOException e){
-            e.getCause();
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao fazer upload das imagens", e);
         }
     }
 
@@ -145,33 +185,23 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     //CarImageFIle
     @Transactional
     public void deleteCarImageFile(Long id) {
-        Long userId = this.authenticatedService.getCurrentUserId();
-        UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
-                () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
+        Long userId = authenticatedService.getCurrentUserId();
+        UserInfo userInfo = userInfoRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
-        if(userInfo.getUser().getCars().stream()
-                .filter(carro -> carro.getId().equals(id))
-                .findFirst().isEmpty()){
-            throw new IllegalArgumentException("Não há carros para excluir suas imagens");
-        }
-
-        if(userInfo.getUser().getCars().stream()
-                .filter(carro -> carro.getId().equals(id))
-                .findFirst()
-                .orElse(null) != null){
-            this.deleteCarImageFile(id);
-        }
         Car car = userInfo.getUser().getCars().stream()
                 .filter(carro -> carro.getId().equals(id))
-                .findFirst().orElseThrow();
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Não há carros para excluir suas imagens"));
 
-        CarImages carImages = this.carImagesRepository.findById(car.getId()).orElseThrow(
-                () -> new FileStorageNotFoundException("Arquivo não encontrado"));
+        CarImages carImages = carImagesRepository.findById(car.getId())
+                .orElseThrow(() -> new FileStorageNotFoundException("Arquivo não encontrado"));
 
-        this.deleteCarImageFile(carImages);
-        this.fileStorageRepository.deleteById(car.getId());
-        this.fileStorageRepository.flush();
+        deleteCarImageFile(carImages);
+        fileStorageRepository.deleteById(car.getId());
+        fileStorageRepository.flush();
     }
+
 
 
     @Override
@@ -194,6 +224,11 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     private String generateFilename(String originalFilename){
         long timestamp = System.currentTimeMillis();
         return String.format("%s_%d_%s", PREFIX_FILENAME, timestamp, originalFilename);
+    }
+
+    private String generateCarImageFileName(String originalFilename){
+        long timestamp = System.currentTimeMillis();
+        return String.format("%s_%d_%s", PREFIX_CARIMAGEFILE, timestamp, originalFilename);
     }
 
     private boolean isValidContentType(String contentType) {
