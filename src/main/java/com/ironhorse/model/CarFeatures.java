@@ -74,7 +74,8 @@ public class CarFeatures {
     @Column(nullable = false)
     private boolean isTermsUser;
 
-    @OneToOne(mappedBy = "carInfo")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "car_features_id", referencedColumnName = "id")
     private CarInfo carInfo;
 
     @CreationTimestamp

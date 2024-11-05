@@ -3,9 +3,6 @@ package com.ironhorse.mapper;
 
 import com.ironhorse.dto.CarFeaturesDto;
 import com.ironhorse.model.CarFeatures;
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public class CarFeaturesMapper {
     public static CarFeatures toModel(CarFeaturesDto carFeaturesDto) {

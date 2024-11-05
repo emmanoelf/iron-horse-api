@@ -51,8 +51,7 @@ public class CarInfo {
     @OneToMany(mappedBy = "carInfo",cascade = CascadeType.ALL)
     private List<CarImages> carImages;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "car_features_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "carInfo")
     private CarFeatures carFeatures;
 
     @OneToOne
