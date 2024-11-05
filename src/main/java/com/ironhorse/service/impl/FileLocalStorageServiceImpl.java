@@ -69,39 +69,6 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         }
     }
 
-    //car-image multipart files
-//    @Transactional
-//    public void uploadCarImagesFiles(List<MultipartFile> files, Long id){
-//        try{
-//            this.validateFiles(files);
-//            Long userId = this.authenticatedService.getCurrentUserId();
-//
-//            UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
-//                    () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
-//
-//            if(userInfo.getUser().getCars().stream()
-//                    .filter(carro -> carro.getId().equals(id))
-//                    .findFirst()
-//                    .orElse(null) != null){
-//                this.deleteCarImageFile(id);
-//            }
-//
-//            if (files.size() > MAX_FILES) {
-//                throw new FileUploadException("Serão necessarias 7 imagens e voce forneceu"+files.size());
-//            }
-//
-//            for (MultipartFile file : files){
-//                String fileName = this.generateFilename(file.getOriginalFilename());
-//                File uploadFile = new File(uploadDir + fileName);
-//                file.transferTo(uploadFile);
-//                CarImages carImagesStorage = this.createImageStorage(fileName, uploadFile.getAbsolutePath(), file.getSize());
-//                this.carImagesRepository.save(carImagesStorage);
-//            }
-//        }catch (IOException e){
-//            e.getCause();
-//        }
-//    }
-
     @Transactional
     public void uploadCarImagesFiles(List<MultipartFile> files, Long carId) {
         try {
@@ -111,17 +78,16 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
             UserInfo userInfo = this.userInfoRepository.findByUserId(userId)
                     .orElseThrow(() -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
-            // Verifica se o carro pertence ao usuário
             Car car = userInfo.getUser().getCars().stream()
                     .filter(c -> c.getId().equals(carId))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado"));
 
-            System.out.println(car.getCarInfo().getCarImages());
-
-//            if (car.getCarInfo().getCarImages()) {
-//                this.deleteCarImageFile(carId);
-//            }
+            if (car.getCarInfo() != null &&
+                    car.getCarInfo().getCarImages() != null &&
+                    !car.getCarInfo().getCarImages().isEmpty()) {
+                this.deleteCarImageFile(carId);
+            }
 
             if (files.size() > MAX_FILES) {
                 throw new FileUploadException("Serão necessárias no máximo " + MAX_FILES + " imagens, você forneceu " + files.size());
@@ -140,25 +106,6 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
             throw new RuntimeException("Erro ao fazer upload das imagens", e);
         }
     }
-
-//
-//    @Transactional
-//    public void uploadFiles(List<MultipartFile> files, Long id){
-//        try{
-//            this.validateFiles(files);
-//            Long userId = this.authenticatedService.getCurrentUserId();
-//
-//            UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
-//                    () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
-//
-//            if(userInfo.getUser() != null){
-//                this.deleteUserProfileFile();
-//            }
-//
-//        }catch (IOException e){
-//            e.getCause();
-//        }
-//    }
 
     @Override
     @Transactional
@@ -181,8 +128,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         this.fileStorageRepository.flush();
     }
 
-
-    //CarImageFIle
+    //Os patchs dos arquivos nao estao sendo excluidos do banco de dados acarretando problema na segunda para a terceira request de nao achar os arquivos para apagar
     @Transactional
     public void deleteCarImageFile(Long id) {
         Long userId = authenticatedService.getCurrentUserId();
@@ -194,14 +140,32 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Não há carros para excluir suas imagens"));
 
-        CarImages carImages = carImagesRepository.findById(car.getId())
-                .orElseThrow(() -> new FileStorageNotFoundException("Arquivo não encontrado"));
+        List<CarImages> carImagesList = carImagesRepository.findByCarInfoId(car.getId());
 
-        deleteCarImageFile(carImages);
-        fileStorageRepository.deleteById(car.getId());
-        fileStorageRepository.flush();
+        if (carImagesList.isEmpty()) {
+            throw new FileStorageNotFoundException("Nenhuma imagem encontrada para excluir.");
+        }
+
+        for (CarImages carImage : carImagesList) {
+            deleteImageFileFromStorage(carImage.getPath());
+            carImagesRepository.delete(carImage);
+        }
+        System.out.println("Chamando flush após exclusão de imagens");
+        carImagesRepository.flush();
     }
 
+    private void deleteImageFileFromStorage(String path) {
+        String cleanedPath = path.trim();
+        File file = new File(cleanedPath);
+
+        if (file.exists()) {
+            if (!file.delete()) {
+                throw new RuntimeException("Falha ao excluir o arquivo: " + path);
+            }
+        } else {
+            throw new RuntimeException("Arquivo não encontrado: " + path);
+        }
+    }
 
 
     @Override
