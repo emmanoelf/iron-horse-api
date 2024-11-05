@@ -19,13 +19,6 @@ INSERT INTO car_info (license_plate, transmission, direction_type, chassi, engin
 INSERT INTO car_features (insurance_name, insurance, insulfilm, tag_pike, anti_theft_secret, multimedia, air_conditioner, electric_windows_and_locks, triangle, jack, wheel_wrench, spare_tire, fire_extinguisher, alarm, smokers_accepted, tag_activated, is_fines_belong_to_the_offender, is_terms_user, car_info_id, created_at, updated_at)VALUES('Seguro Completo', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, 1, NOW(), NOW()),('Seguro Parcial', FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE, 2, NOW(), NOW());
 
 
--- Inserindo dados em car_images
-INSERT INTO car_images (name, path, size, car_info_id, created_at, updated_at)VALUES('imagem1.jpg', '/imagens/cars/ABC1234/imagem1.jpg', 1024, 1, NOW(), NOW()),('imagem2.jpg', '/imagens/cars/ABC1234/imagem2.jpg', 2048, 1, NOW(), NOW()),('imagem3.jpg', '/imagens/cars/XYZ5678/imagem1.jpg', 512, 2, NOW(), NOW()),('imagem4.jpg', '/imagens/cars/XYZ5678/imagem2.jpg', 1536, 2, NOW(), NOW());
-
-
-
-
-
 -- Inserindo em car_overview
 INSERT INTO `car_overview` (is_active, is_available, number_trips, price, car_id, created_at, updated_at, description) VALUES ( 1, 1, 10, 150.00, 1, NOW(), NOW(), 'Carro em ótimo estado, pronto para viagens.'),(1, 0, 5, 200.50, 2, NOW(), NOW(), 'Carro disponível apenas para reservas antecipadas.');
 
