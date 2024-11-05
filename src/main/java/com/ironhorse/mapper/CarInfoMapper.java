@@ -2,8 +2,6 @@ package com.ironhorse.mapper;
 
 import com.ironhorse.dto.CarInfoDto;
 import com.ironhorse.model.CarInfo;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public class CarInfoMapper {
 
