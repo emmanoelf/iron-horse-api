@@ -4,8 +4,11 @@ import com.ironhorse.dto.FileStorageDto;
 import com.ironhorse.exception.FileStorageNotFoundException;
 import com.ironhorse.exception.UserInfoNotFoundException;
 import com.ironhorse.mapper.FileStorageMapper;
+import com.ironhorse.model.Car;
+import com.ironhorse.model.CarImages;
 import com.ironhorse.model.FileStorage;
 import com.ironhorse.model.UserInfo;
+import com.ironhorse.repository.CarImagesRepository;
 import com.ironhorse.repository.FileStorageRepository;
 import com.ironhorse.repository.UserInfoRepository;
 import com.ironhorse.service.AuthenticatedService;
@@ -19,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +31,12 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     private final FileStorageRepository fileStorageRepository;
     private final UserInfoRepository userInfoRepository;
     private final AuthenticatedService authenticatedService;
+    private final CarImagesRepository carImagesRepository;
 
     private static final String CONTENT_PNG = "image/png";
     private static final String CONTENT_JPEG = "image/jpeg";
     private static final String PREFIX_FILENAME = "profile";
+    private static final int MAX_FILES = 7;
 
     @Value("${upload.dir}")
     private String uploadDir;
@@ -61,6 +68,58 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         }
     }
 
+    //car-image multipart files
+    @Transactional
+    public void uploadCarImagesFiles(List<MultipartFile> files, Long id){
+        try{
+            this.validateFiles(files);
+            Long userId = this.authenticatedService.getCurrentUserId();
+
+            UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
+                    () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
+
+            if(userInfo.getUser().getCars().stream()
+                    .filter(carro -> carro.getId().equals(id))
+                    .findFirst()
+                    .orElse(null) != null){
+                this.deleteCarImageFile(id);
+            }
+
+            if (files.size() > MAX_FILES) {
+                throw new FileUploadException("Serão necessarias 7 imagens e voce forneceu"+files.size());
+            }
+
+            for (MultipartFile file : files){
+                String fileName = this.generateFilename(file.getOriginalFilename());
+                File uploadFile = new File(uploadDir + fileName);
+                file.transferTo(uploadFile);
+                CarImages carImagesStorage = this.createImageStorage(fileName, uploadFile.getAbsolutePath(), file.getSize());
+                this.carImagesRepository.save(carImagesStorage);
+            }
+        }catch (IOException e){
+            e.getCause();
+        }
+    }
+
+//
+//    @Transactional
+//    public void uploadFiles(List<MultipartFile> files, Long id){
+//        try{
+//            this.validateFiles(files);
+//            Long userId = this.authenticatedService.getCurrentUserId();
+//
+//            UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
+//                    () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
+//
+//            if(userInfo.getUser() != null){
+//                this.deleteUserProfileFile();
+//            }
+//
+//        }catch (IOException e){
+//            e.getCause();
+//        }
+//    }
+
     @Override
     @Transactional
     public void deleteUserProfileFile() {
@@ -81,6 +140,39 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         this.fileStorageRepository.deleteById(fileStorage.getId());
         this.fileStorageRepository.flush();
     }
+
+
+    //CarImageFIle
+    @Transactional
+    public void deleteCarImageFile(Long id) {
+        Long userId = this.authenticatedService.getCurrentUserId();
+        UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
+                () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
+
+        if(userInfo.getUser().getCars().stream()
+                .filter(carro -> carro.getId().equals(id))
+                .findFirst().isEmpty()){
+            throw new IllegalArgumentException("Não há carros para excluir suas imagens");
+        }
+
+        if(userInfo.getUser().getCars().stream()
+                .filter(carro -> carro.getId().equals(id))
+                .findFirst()
+                .orElse(null) != null){
+            this.deleteCarImageFile(id);
+        }
+        Car car = userInfo.getUser().getCars().stream()
+                .filter(carro -> carro.getId().equals(id))
+                .findFirst().orElseThrow();
+
+        CarImages carImages = this.carImagesRepository.findById(car.getId()).orElseThrow(
+                () -> new FileStorageNotFoundException("Arquivo não encontrado"));
+
+        this.deleteCarImageFile(carImages);
+        this.fileStorageRepository.deleteById(car.getId());
+        this.fileStorageRepository.flush();
+    }
+
 
     @Override
     public FileStorageDto getUserProfile() {
@@ -118,6 +210,20 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         }
     }
 
+    //validate files
+    private void validateFiles(List<MultipartFile> files) throws FileUploadException {
+        if (files.isEmpty()) {
+            throw new FileUploadException("Arquivo não encontrado");
+        }
+
+        for(MultipartFile file : files ){
+            String contentType = file.getContentType();
+            if(!this.isValidContentType(contentType)){
+                throw new FileUploadException("A imagem deve ser de PNG ou JPEG");
+            }
+        }
+    }
+
     private FileStorage createFileStorage(String fileName, String absolutePath, Long size){
         FileStorage fileStorage = new FileStorage();
         fileStorage.setName(fileName);
@@ -127,8 +233,30 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         return fileStorage;
     }
 
+    private CarImages createImageStorage(String fileName, String absolutePath, Long size){
+        CarImages carImages = new CarImages();
+        carImages.setName(fileName);
+        carImages.setPath(absolutePath);
+        carImages.setSize(size);
+
+        return carImages;
+    }
+
     private File deleteFileStorage(FileStorage fileStorage){
         File deleteFile = new File(fileStorage.getPath());
+        if(deleteFile.exists()){
+            boolean deleted = deleteFile.delete();
+            if(!deleted){
+                throw new IllegalArgumentException("Ocorreu um erro ao excluir a foto");
+            }
+        }
+
+        return deleteFile;
+    }
+
+    //car images file storage
+    private File deleteCarImageFile(CarImages carImages){
+        File deleteFile = new File(carImages.getPath());
         if(deleteFile.exists()){
             boolean deleted = deleteFile.delete();
             if(!deleted){
