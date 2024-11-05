@@ -41,6 +41,11 @@ public class CarInfoControllerImpl implements CarInfoController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @DeleteMapping("/image/{carId}")
+    public ResponseEntity<Void> deleteCarImageFile(@PathVariable Long carId) {
+        this.fileLocalStorageService.deleteCarImageFile(carId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
     @Override
     @GetMapping("/{carId}")
