@@ -1,5 +1,6 @@
 package com.ironhorse.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "car_images")
 public class CarImages {
 
     @Id
@@ -30,6 +30,7 @@ public class CarImages {
 
     @ManyToOne
     @JoinColumn(name = "car_info_id")
+    @JsonBackReference
     private CarInfo carInfo;
 
     @CreationTimestamp

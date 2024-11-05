@@ -1,5 +1,6 @@
 package com.ironhorse.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -49,6 +50,7 @@ public class CarInfo {
 
 
     @OneToMany(mappedBy = "carInfo",cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<CarImages> carImages;
 
     @OneToOne(mappedBy = "carInfo")

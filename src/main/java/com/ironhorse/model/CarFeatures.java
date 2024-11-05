@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "car_optionals")
 public class CarFeatures {
 
     @Id
@@ -75,7 +74,7 @@ public class CarFeatures {
     private boolean isTermsUser;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "car_features_id", referencedColumnName = "id")
+    @JoinColumn(name = "car_info_id", referencedColumnName = "id")
     private CarInfo carInfo;
 
     @CreationTimestamp
