@@ -3,6 +3,7 @@ package com.ironhorse.service.impl;
 import com.ironhorse.dto.FileStorageDto;
 import com.ironhorse.exception.FileStorageNotFoundException;
 import com.ironhorse.exception.UserInfoNotFoundException;
+import com.ironhorse.mapper.CarImageMapper;
 import com.ironhorse.mapper.FileStorageMapper;
 import com.ironhorse.model.Car;
 import com.ironhorse.model.CarImages;
@@ -18,12 +19,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +33,14 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     private final AuthenticatedService authenticatedService;
     private final CarImagesRepository carImagesRepository;
 
+    @Value("${spring.servlet.multipart.max-file-size}")
+    private Long maxFileSize;
     private static final String CONTENT_PNG = "image/png";
     private static final String CONTENT_JPEG = "image/jpeg";
     private static final String PREFIX_FILENAME = "profile";
     private static final String PREFIX_CARIMAGEFILE = "car_image";
     private static final int MAX_FILES = 7;
+
 
     @Value("${upload.dir}")
     private String uploadDir;
@@ -70,6 +73,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     }
 
     @Transactional
+    @Override
     public void uploadCarImagesFiles(List<MultipartFile> files, Long carId) {
         try {
             this.validateFiles(files);
@@ -128,8 +132,8 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         this.fileStorageRepository.flush();
     }
 
-    //Os patchs dos arquivos nao estao sendo excluidos do banco de dados acarretando problema na segunda para a terceira request de nao achar os arquivos para apagar
     @Transactional
+    @Override
     public void deleteCarImageFile(Long id) {
         Long userId = authenticatedService.getCurrentUserId();
         UserInfo userInfo = userInfoRepository.findByUserId(userId)
@@ -150,7 +154,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
             deleteImageFileFromStorage(carImage.getPath());
             carImagesRepository.delete(carImage);
         }
-        System.out.println("Chamando flush após exclusão de imagens");
+        car.getCarInfo().setCarImages(null);
         carImagesRepository.flush();
     }
 
@@ -167,6 +171,26 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         }
     }
 
+    @Override
+    public List<FileStorageDto> getCarImages(Long id) {
+        Long userId = this.authenticatedService.getCurrentUserId();
+
+        UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
+                () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
+
+        Car car = userInfo.getUser().getCars().stream()
+                .filter(carro -> carro.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Não há carros para excluir suas imagens"));
+
+        List<CarImages> carImagesList = carImagesRepository.findByCarInfoId(car.getId());
+
+        if (carImagesList.isEmpty()) {
+            throw new FileStorageNotFoundException("Nenhuma imagem encontrada para excluir.");
+        }
+
+        return CarImageMapper.toCarDTOList(carImagesList);
+    }
 
     @Override
     public FileStorageDto getUserProfile() {
@@ -200,6 +224,12 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     }
 
     private void validateFile(MultipartFile file) throws FileUploadException {
+
+        System.out.println(maxFileSize);
+        if(file.getSize() > maxFileSize){
+            throw new MaxUploadSizeExceededException(file.getSize());
+        }
+
         if (file.isEmpty()) {
             throw new FileUploadException("Arquivo não encontrado");
         }
@@ -209,10 +239,15 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         }
     }
 
-    //validate files
     private void validateFiles(List<MultipartFile> files) throws FileUploadException {
         if (files.isEmpty()) {
             throw new FileUploadException("Arquivo não encontrado");
+        }
+
+        for(MultipartFile file : files){
+            if(file.getSize() > maxFileSize){
+                throw new MaxUploadSizeExceededException(file.getSize());
+            }
         }
 
         for(MultipartFile file : files ){
@@ -253,16 +288,4 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         return deleteFile;
     }
 
-    //car images file storage
-    private File deleteCarImageFile(CarImages carImages){
-        File deleteFile = new File(carImages.getPath());
-        if(deleteFile.exists()){
-            boolean deleted = deleteFile.delete();
-            if(!deleted){
-                throw new IllegalArgumentException("Ocorreu um erro ao excluir a foto");
-            }
-        }
-
-        return deleteFile;
-    }
 }
