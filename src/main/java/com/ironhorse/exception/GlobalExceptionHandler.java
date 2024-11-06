@@ -6,6 +6,7 @@ import com.ironhorse.dto.ProblemType;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,6 +27,8 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @Value("${spring.servlet.multipart.max-file-size}")
+    private Long maxFileSize;
     private final MessageSource messageSource;
 
     public GlobalExceptionHandler(@Qualifier("messageSource") MessageSource messageSource) {
@@ -126,7 +129,8 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ProblemDetail> handleMaxUploadSizeException(MaxUploadSizeExceededException ex) {
         ProblemType problemType = ProblemType.FILE_SIZE_EXCEEDED;
 
-        String detail = "Tamanho do arquivo excedido. Tente enviar um arquivo menor que 12MB.";
+        String detail = "Tamanho do arquivo excedido. Tente enviar um arquivo menor que "
+                + (maxFileSize / (1024.0 * 1024.0)) + " MB";
 
         ProblemDetail problemDetail = createProblemDetailBuilder(
                 HttpStatus.BAD_REQUEST,
