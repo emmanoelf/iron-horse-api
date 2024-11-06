@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -66,6 +67,11 @@ public class S3FileStorageImpl implements FileStorageService {
     }
 
     @Override
+    public void uploadCarImagesFiles(List<MultipartFile> files, Long carId) {
+
+    }
+
+    @Override
     @Transactional
     public void deleteUserProfileFile() {
         Long userId = this.authenticatedService.getCurrentUserId();
@@ -85,6 +91,16 @@ public class S3FileStorageImpl implements FileStorageService {
         userInfo.setUserPicture(null);
         this.fileStorageRepository.deleteById(fileStorage.getId());
         this.fileStorageRepository.flush();
+    }
+
+    @Override
+    public void deleteCarImageFile(Long id) {
+
+    }
+
+    @Override
+    public List<FileStorageDto> getCarImages(Long id) {
+        return List.of();
     }
 
     @Override
