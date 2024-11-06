@@ -2,7 +2,7 @@ package com.ironhorse.mapper;
 
 import com.ironhorse.dto.FileStorageDto;
 import com.ironhorse.model.CarImages;
-import com.ironhorse.model.FileStorage;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
