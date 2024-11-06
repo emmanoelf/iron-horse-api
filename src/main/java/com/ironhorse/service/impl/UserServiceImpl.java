@@ -1,11 +1,13 @@
 package com.ironhorse.service.impl;
 
+import com.ironhorse.dto.EmailDto;
 import com.ironhorse.dto.UserDto;
 import com.ironhorse.dto.UserResponseDto;
 import com.ironhorse.exception.UserNotFound;
 import com.ironhorse.mapper.UserMapper;
 import com.ironhorse.model.User;
 import com.ironhorse.repository.UserRepository;
+import com.ironhorse.service.EmailService;
 import com.ironhorse.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Transactional
     @Override
@@ -28,6 +31,8 @@ public class UserServiceImpl implements UserService {
         String hashedPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
 
+        EmailDto email = new EmailDto(user.getEmail(), "Bem vindo!", "email-template-confirmation");
+        this.emailService.sendEmail(email);
         User savedUser = this.userRepository.save(user);
         return UserMapper.toDto(savedUser);
     }
