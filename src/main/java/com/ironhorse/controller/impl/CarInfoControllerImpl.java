@@ -32,7 +32,7 @@ public class CarInfoControllerImpl implements CarInfoController {
     @ResponseStatus(HttpStatus.CREATED)
     @Override
     public ResponseEntity<CarInfoDto> save(@RequestBody @Valid CarInfoDto carInfoDto, @PathVariable Long carId) {
-        CarInfoDto carInfo = this.carInfoService.save(carInfoDto, carId);
+        CarInfoDto carInfo = this.carInfoService.save(carInfoDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(carInfo);
     }
 
