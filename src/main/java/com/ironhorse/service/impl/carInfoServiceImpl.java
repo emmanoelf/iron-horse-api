@@ -6,13 +6,11 @@ import com.ironhorse.exception.CarNotFound;
 import com.ironhorse.exception.UserNotFound;
 import com.ironhorse.mapper.CarFeaturesMapper;
 import com.ironhorse.mapper.CarInfoMapper;
-import com.ironhorse.model.Car;
-import com.ironhorse.model.CarFeatures;
-import com.ironhorse.model.CarInfo;
-import com.ironhorse.repository.CarFeaturesRepository;
-import com.ironhorse.repository.CarInfoRepository;
-import com.ironhorse.repository.CarRepository;
+import com.ironhorse.model.*;
+import com.ironhorse.repository.*;
+import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.CarInfoService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +22,8 @@ public class carInfoServiceImpl implements CarInfoService {
  private final CarInfoRepository carInfoRepository;
  private final CarRepository carRepository;
  private final CarFeaturesRepository carFeaturesRepository;
+ private final AuthenticatedService authenticatedService;
+ private final UserRepository userRepository;
 
  @Override
  public CarInfoDto findCarById(Long carId) {
@@ -46,21 +46,26 @@ public class carInfoServiceImpl implements CarInfoService {
   return affectedRow;
  }
 
- @Override
  @Transactional
- public CarInfoDto save(CarInfoDto carDto, Long id) {
-  Car car = this.carRepository.findById(id).orElseThrow((
-          () -> new UserNotFound("informacoes do veiculo nao encontradas"))
+ @Override
+ public CarInfoDto save(CarInfoDto carInfoDto, Long id) {
+
+  Car car = this.carRepository.findById(id).orElseThrow(() ->
+          new EntityNotFoundException("Carro não encontrado com ID: " + id)
   );
 
-  CarInfo carInfo = CarInfoMapper.toModel(carDto);
+  CarInfo carInfo = CarInfoMapper.toModel(carInfoDto);
   carInfo.setCar(car);
   this.carInfoRepository.save(carInfo);
+
+  CarFeatures carFeatures = carInfo.getCarFeatures();
+  if (carFeatures != null) {
+   this.carFeaturesRepository.save(carFeatures);
+  }
 
   return CarInfoMapper.toDto(carInfo);
  }
 
- //Salvar os consentimentos na carFeatures
  @Transactional
  @Override
  public CarInfoConsentsDto saveConsents(CarInfoConsentsDto carInfoConsentsDto, Long id) {
@@ -73,8 +78,6 @@ public class carInfoServiceImpl implements CarInfoService {
   this.carFeaturesRepository.save(carFeatures);
   return CarFeaturesMapper.toPartialDto(carFeatures);
  }
-
-
 
  @Override
  @Transactional

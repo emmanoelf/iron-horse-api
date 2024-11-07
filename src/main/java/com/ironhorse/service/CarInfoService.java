@@ -10,7 +10,8 @@ import jakarta.transaction.Transactional;
 public interface CarInfoService {
     CarInfoDto findCarById(Long carId);
     Long deleteByCarId(Long carId);
-    CarInfoDto save(CarInfoDto carInfoDtoDto, Long id);
+
+    CarInfoDto save(CarInfoDto carInfoDto, Long id);
 
     CarInfoConsentsDto saveConsents(CarInfoConsentsDto carDto, Long id);
 
