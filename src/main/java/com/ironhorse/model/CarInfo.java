@@ -59,7 +59,7 @@ public class CarInfo {
     @JsonManagedReference
     private List<CarImages> carImages;
 
-    @OneToOne(mappedBy = "carInfo")
+    @OneToOne(mappedBy = "carInfo",cascade = CascadeType.ALL)
     private CarFeatures carFeatures;
 
     @OneToOne

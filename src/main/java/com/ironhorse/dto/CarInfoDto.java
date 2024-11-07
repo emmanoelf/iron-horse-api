@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CarInfoDto(
+        Boolean insurance,
+        String insuranceName,
         @NotNull @NotBlank String renavam,
         @NotNull @NotBlank String licensePlate,
         @NotNull @NotBlank String transmission,
@@ -12,6 +14,7 @@ public record CarInfoDto(
         @NotNull @NotBlank String engineNumber,
         @NotNull @NotBlank String cylinderDisplacement,
         @NotNull @NotBlank String mileage,
-        @NotNull @NotBlank String fuelType
+        @NotNull @NotBlank String fuelType,
+        @NotNull CarFeaturesDto carFeaturesDto
         ) {
 }
