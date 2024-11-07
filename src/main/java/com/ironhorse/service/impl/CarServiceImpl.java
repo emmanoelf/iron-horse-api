@@ -1,17 +1,19 @@
 package com.ironhorse.service.impl;
 
 import com.ironhorse.dto.CarDto;
-import com.ironhorse.dto.CarInfoDto;
 import com.ironhorse.dto.CarResponseDto;
 import com.ironhorse.dto.CarSaveDto;
 import com.ironhorse.exception.CarNotFound;
 import com.ironhorse.exception.ForbiddenAccessException;
 import com.ironhorse.exception.UserNotFound;
+import com.ironhorse.mapper.CarFeaturesMapper;
 import com.ironhorse.mapper.CarInfoMapper;
 import com.ironhorse.mapper.CarMapper;
 import com.ironhorse.model.Car;
+import com.ironhorse.model.CarFeatures;
 import com.ironhorse.model.CarInfo;
 import com.ironhorse.model.User;
+import com.ironhorse.repository.CarFeaturesRepository;
 import com.ironhorse.repository.CarInfoRepository;
 import com.ironhorse.repository.CarRepository;
 import com.ironhorse.repository.UserRepository;
@@ -33,22 +35,35 @@ public class CarServiceImpl implements CarService {
     private final UserRepository userRepository;
     private final AuthenticatedService authenticatedService;
     private final CarInfoRepository carInfoRepository;
+    private final CarFeaturesRepository carFeaturesRepository;
 
     @Override
     @Transactional
     public CarSaveDto save(CarSaveDto carSaveDto) {
+
         Long userId = authenticatedService.getCurrentUserId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFound("Usuário não encontrado"));
 
-        Car car = CarMapper.toSaveModel(carSaveDto);
+        Car car = CarMapper.toModelWithNoCarInfos(carSaveDto);
         car.setUser(user);
+
+        user.getCars().add(car);
+
         Car savedCar = carRepository.saveAndFlush(car);
+
         CarInfo carInfo = CarInfoMapper.toModel(carSaveDto.carInfoDto());
         carInfo.setCar(savedCar);
+
+        CarFeatures carFeatures = CarFeaturesMapper.toModel(carSaveDto.carInfoDto().carFeaturesDto());
+        carInfo.setCarFeatures(carFeatures);
+        carFeatures.setCarInfo(carInfo);
+
         CarInfo savedCarInfo = carInfoRepository.saveAndFlush(carInfo);
+
         savedCar.setCarInfo(savedCarInfo);
         carRepository.save(savedCar);
+
         return CarMapper.toSaveDto(savedCar);
     }
 

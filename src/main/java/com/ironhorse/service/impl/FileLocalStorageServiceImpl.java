@@ -103,7 +103,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
                 file.transferTo(uploadFile);
 
                 CarImages carImagesStorage = this.createImageStorage(fileName, uploadFile.getAbsolutePath(), file.getSize());
-                carImagesStorage.setCarInfo(car.getCarInfo()); // Associe a imagem ao carro
+                carImagesStorage.setCarInfo(car.getCarInfo());
                 this.carImagesRepository.save(carImagesStorage);
             }
         } catch (IOException e) {

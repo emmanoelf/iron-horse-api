@@ -75,15 +75,26 @@ public class carInfoServiceImpl implements CarInfoService {
  @Transactional
  @Override
  public CarInfoConsentsDto saveConsents(CarInfoConsentsDto carInfoConsentsDto, Long id) {
-  Car car = this.carRepository.findById(id).orElseThrow((
-          () -> new UserNotFound("informacoes do veiculo nao encontradas"))
-  );
 
-  CarFeatures carFeatures = CarFeaturesMapper.toPartialModel(carInfoConsentsDto);
+  Car car = this.carRepository.findById(id).orElseThrow(
+          () -> new UserNotFound("Informações do veículo não encontradas"));
+
+  CarFeatures carFeatures = this.carFeaturesRepository.findByCarInfoId(car.getCarInfo().getId()).orElseThrow(
+          () -> new UserNotFound("Características do veículo não encontradas"));
+
+  carFeatures.setSmokersAccepted(carInfoConsentsDto.smokersAccepted());
+  carFeatures.setTagActivated(carInfoConsentsDto.tagActivated());
+  carFeatures.setFinesBelongToTheOffender(carInfoConsentsDto.finesBelongToTheOffender());
+  carFeatures.setVeicleModified(carInfoConsentsDto.veicleModified());
+  carFeatures.setTrueInformation(carInfoConsentsDto.trueInformation());
+  carFeatures.setDocsUptoDate(carInfoConsentsDto.docsUptoDate());
 
   this.carFeaturesRepository.save(carFeatures);
+
   return CarFeaturesMapper.toPartialDto(carFeatures);
  }
+
+
 
  @Override
  @Transactional
