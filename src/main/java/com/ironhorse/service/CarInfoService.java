@@ -11,7 +11,7 @@ public interface CarInfoService {
     CarInfoDto findCarById(Long carId);
     Long deleteByCarId(Long carId);
 
-    CarInfoDto save(CarInfoDto carInfoDto, Long id);
+    CarInfoDto save(CarInfoDto carInfoDto);
 
     CarInfoConsentsDto saveConsents(CarInfoConsentsDto carDto, Long id);
 

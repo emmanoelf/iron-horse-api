@@ -1,13 +1,18 @@
 package com.ironhorse.service.impl;
 
 import com.ironhorse.dto.CarDto;
+import com.ironhorse.dto.CarInfoDto;
 import com.ironhorse.dto.CarResponseDto;
+import com.ironhorse.dto.CarSaveDto;
 import com.ironhorse.exception.CarNotFound;
 import com.ironhorse.exception.ForbiddenAccessException;
 import com.ironhorse.exception.UserNotFound;
+import com.ironhorse.mapper.CarInfoMapper;
 import com.ironhorse.mapper.CarMapper;
 import com.ironhorse.model.Car;
+import com.ironhorse.model.CarInfo;
 import com.ironhorse.model.User;
+import com.ironhorse.repository.CarInfoRepository;
 import com.ironhorse.repository.CarRepository;
 import com.ironhorse.repository.UserRepository;
 import com.ironhorse.repository.projection.CarResumeProjection;
@@ -27,21 +32,27 @@ public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final UserRepository userRepository;
     private final AuthenticatedService authenticatedService;
+    private final CarInfoRepository carInfoRepository;
 
     @Override
     @Transactional
-    public CarResponseDto save(CarDto carDto) {
-        Long userId = this.authenticatedService.getCurrentUserId();
-        User user = this.userRepository.findById(userId).orElseThrow((
-                () -> new UserNotFound("Usuário não encontrado"))
-        );
+    public CarSaveDto save(CarSaveDto carSaveDto) {
+        Long userId = authenticatedService.getCurrentUserId();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFound("Usuário não encontrado"));
 
-        Car car = CarMapper.toModel(carDto);
+        Car car = CarMapper.toSaveModel(carSaveDto);
         car.setUser(user);
-        this.carRepository.save(car);
-
-        return CarMapper.toDto(car);
+        Car savedCar = carRepository.saveAndFlush(car);
+        CarInfo carInfo = CarInfoMapper.toModel(carSaveDto.carInfoDto());
+        carInfo.setCar(savedCar);
+        CarInfo savedCarInfo = carInfoRepository.saveAndFlush(carInfo);
+        savedCar.setCarInfo(savedCarInfo);
+        carRepository.save(savedCar);
+        return CarMapper.toSaveDto(savedCar);
     }
+
+
 
     @Override
     public CarResponseDto findById(Long id) {

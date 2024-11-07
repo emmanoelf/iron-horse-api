@@ -3,6 +3,7 @@ package com.ironhorse.service.impl;
 import com.ironhorse.dto.CarInfoConsentsDto;
 import com.ironhorse.dto.CarInfoDto;
 import com.ironhorse.exception.CarNotFound;
+import com.ironhorse.exception.UserInfoNotFoundException;
 import com.ironhorse.exception.UserNotFound;
 import com.ironhorse.mapper.CarFeaturesMapper;
 import com.ironhorse.mapper.CarInfoMapper;
@@ -48,11 +49,14 @@ public class carInfoServiceImpl implements CarInfoService {
 
  @Transactional
  @Override
- public CarInfoDto save(CarInfoDto carInfoDto, Long id) {
+ public CarInfoDto save(CarInfoDto carInfoDto) {
 
-  Car car = this.carRepository.findById(id).orElseThrow(() ->
-          new EntityNotFoundException("Carro não encontrado com ID: " + id)
-  );
+  Long userId = authenticatedService.getCurrentUserId();
+  User user = userRepository.findById(userId)
+          .orElseThrow(() -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
+
+ Car car = new Car();
+ car.setUser(user);
 
   CarInfo carInfo = CarInfoMapper.toModel(carInfoDto);
   carInfo.setCar(car);
@@ -63,6 +67,8 @@ public class carInfoServiceImpl implements CarInfoService {
    this.carFeaturesRepository.save(carFeatures);
   }
 
+  user.getCars().add(car);
+  userRepository.save(user);
   return CarInfoMapper.toDto(carInfo);
  }
 
