@@ -1,5 +1,6 @@
 package com.ironhorse.mapper;
 
+import com.ironhorse.dto.CarInfoConsentsDto;
 import com.ironhorse.dto.CarInfoDto;
 import com.ironhorse.model.CarInfo;
 
@@ -32,4 +33,6 @@ public class CarInfoMapper {
                 carInfo.getRenavam()
         );
     }
+
+
 }
