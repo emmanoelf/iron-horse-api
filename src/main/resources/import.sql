@@ -12,17 +12,13 @@ INSERT INTO car (created_at, updated_at, brand, model, manufacture_year, user_id
 
 
 -- Inserindo dados em car_info
-INSERT INTO car_info (license_plate, transmission, direction_type, chassi, engine_number, cylinder_displacement, mileage, fuel_type, renavam, car_id, created_at, updated_at)VALUES('ABC1234', 'Automático', 'Direção Hidráulica', '1A2B3C4D5E6F7G8H9', 'ENG123456', '2.0', '15000', 'Gasolina', 'REN123456', 1, NOW(), NOW()),('XYZ5678', 'Manual', 'Direção Elétrica', '9H8G7F6E5D4C3B2A1', 'ENG987654', '1.8', '20000', 'Álcool', 'REN987654', 2, NOW(), NOW());
-
+INSERT INTO car_info(insurance, car_id, created_at, updated_at, chassi, cylinder_displacement, direction_type,engine_number, fuel_type, insurance_name, license_plate, mileage, renavam, transmission)VALUES(TRUE, 1, NOW(), NOW(), '1A2B3C4D5E67890', '2.0', 'Left', 'EN1234567890', 'Electric','Tesla Insurance', 'ABC-1234', '10000 km', '1234567890123', 'Automatic'),(FALSE, 2, NOW(), NOW(), '2B3C4D5E6F78901', '3.5', 'Right', 'EN0987654321', 'Gasoline','Ford Insurance', 'XYZ-5678', '15000 km', '9876543210987', 'Manual')
 
 -- Inserindo dados em car_features
-INSERT INTO car_features (insurance_name, insurance, insulfilm, tag_pike, anti_theft_secret, multimedia, air_conditioner, electric_windows_and_locks, triangle, jack, wheel_wrench, spare_tire, fire_extinguisher, alarm, smokers_accepted, tag_activated, is_fines_belong_to_the_offender, is_terms_user, car_info_id, created_at, updated_at)VALUES('Seguro Completo', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, 1, NOW(), NOW()),('Seguro Parcial', FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE, 2, NOW(), NOW());
-
+INSERT INTO car_features (air_conditioner, alarm, anti_theft_secret, electric_windows_and_locks, fire_extinguisher, insulfilm, is_docs_upto_date, is_fines_belong_to_the_offender, is_smokers_accepted, is_tag_activated, is_true_information, is_veicle_modified, jack, multimedia, spare_tire, tag_pike, triangle, wheel_wrench, car_info_id, created_at, updated_at) VALUES (true, true, false, true, false, true, true, false, true, true, true, false, true, true, false, false, true, true, 1, NOW(), NOW()), (false, true, true, false, true, false, false, true, false, false, false, true, false, false, true, true, false, false, 2, NOW(), NOW());
 
 -- Inserindo em car_overview
 INSERT INTO `car_overview` (is_active, is_available, number_trips, price, car_id, created_at, updated_at, description) VALUES ( 1, 1, 10, 150.00, 1, NOW(), NOW(), 'Carro em ótimo estado, pronto para viagens.'),(1, 0, 5, 200.50, 2, NOW(), NOW(), 'Carro disponível apenas para reservas antecipadas.');
 
 -- Inserindo em review
-
 INSERT INTO `review` (car_id, created_at, rate, updated_at, user_id, pros, cons) VALUES (1, NOW(), 4, NOW(), 1, 'Ótima experiência! O carro estava em excelentes condições.', 'Carro meio ruim mas tudo bem'), (1, NOW(), 5, NOW(), 2, 'Carro muito confortável e fácil de dirigir.', 'Carro fusca né mano sobe em morro azul'), (2, NOW(), 3, NOW(), 1, 'Bom carro, mas o consumo de combustível poderia ser melhor.', 'Só tava afim de reclamar mas gostei do carro'), (2, NOW(), 4, NOW(), 2, 'Serviço excelente, carro em ótimo estado.', 'Era melhor ter usado o carro do pelé');
-
