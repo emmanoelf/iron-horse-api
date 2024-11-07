@@ -1,11 +1,15 @@
 package com.ironhorse.service.impl;
 
+import com.ironhorse.dto.CarInfoConsentsDto;
 import com.ironhorse.dto.CarInfoDto;
 import com.ironhorse.exception.CarNotFound;
 import com.ironhorse.exception.UserNotFound;
+import com.ironhorse.mapper.CarFeaturesMapper;
 import com.ironhorse.mapper.CarInfoMapper;
 import com.ironhorse.model.Car;
+import com.ironhorse.model.CarFeatures;
 import com.ironhorse.model.CarInfo;
+import com.ironhorse.repository.CarFeaturesRepository;
 import com.ironhorse.repository.CarInfoRepository;
 import com.ironhorse.repository.CarRepository;
 import com.ironhorse.service.CarInfoService;
@@ -19,6 +23,7 @@ public class carInfoServiceImpl implements CarInfoService {
 
  private final CarInfoRepository carInfoRepository;
  private final CarRepository carRepository;
+ private final CarFeaturesRepository carFeaturesRepository;
 
  @Override
  public CarInfoDto findCarById(Long carId) {
@@ -54,6 +59,22 @@ public class carInfoServiceImpl implements CarInfoService {
 
   return CarInfoMapper.toDto(carInfo);
  }
+
+ //Salvar os consentimentos na carFeatures
+ @Transactional
+ @Override
+ public CarInfoConsentsDto saveConsents(CarInfoConsentsDto carInfoConsentsDto, Long id) {
+  Car car = this.carRepository.findById(id).orElseThrow((
+          () -> new UserNotFound("informacoes do veiculo nao encontradas"))
+  );
+
+  CarFeatures carFeatures = CarFeaturesMapper.toPartialModel(carInfoConsentsDto);
+
+  this.carFeaturesRepository.save(carFeatures);
+  return CarFeaturesMapper.toPartialDto(carFeatures);
+ }
+
+
 
  @Override
  @Transactional

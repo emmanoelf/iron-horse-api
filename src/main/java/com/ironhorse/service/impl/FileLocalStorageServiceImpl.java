@@ -186,7 +186,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         List<CarImages> carImagesList = carImagesRepository.findByCarInfoId(car.getId());
 
         if (carImagesList.isEmpty()) {
-            throw new FileStorageNotFoundException("Nenhuma imagem encontrada para excluir.");
+            throw new FileStorageNotFoundException("EU SOU UMA ANTA.");
         }
 
         return CarImageMapper.toCarDTOList(carImagesList);
