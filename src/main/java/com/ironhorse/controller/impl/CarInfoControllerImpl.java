@@ -1,7 +1,6 @@
 package com.ironhorse.controller.impl;
 
 import com.ironhorse.controller.CarInfoController;
-
 import com.ironhorse.dto.CarInfoConsentsDto;
 import com.ironhorse.dto.CarInfoDto;
 import com.ironhorse.dto.FileStorageDto;
@@ -29,10 +28,10 @@ public class CarInfoControllerImpl implements CarInfoController {
 
     }
 
-    @Override
     @PostMapping("/{carId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CarInfoDto> save(@RequestBody @Valid  CarInfoDto carInfoDto,@PathVariable Long carId) {
+    @Override
+    public ResponseEntity<CarInfoDto> save(@RequestBody @Valid CarInfoDto carInfoDto, @PathVariable Long carId) {
         CarInfoDto carInfo = this.carInfoService.save(carInfoDto, carId);
         return ResponseEntity.status(HttpStatus.CREATED).body(carInfo);
     }
@@ -57,6 +56,11 @@ public class CarInfoControllerImpl implements CarInfoController {
     public ResponseEntity<List<FileStorageDto>> getCarImages(@PathVariable Long carId) {
         List<FileStorageDto> fileStorageDto = this.fileStorageService.getCarImages(carId);
         return ResponseEntity.status(HttpStatus.OK).body(fileStorageDto);
+    }
+
+    @Override
+    public ResponseEntity<CarInfoDto> save(CarInfoDto carDto) {
+        return null;
     }
 
     @Override
