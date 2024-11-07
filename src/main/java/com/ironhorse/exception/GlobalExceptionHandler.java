@@ -35,38 +35,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({EntityNotFound.class, EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     protected ResponseEntity<ProblemDetail> handleEntityNotFound(EntityNotFoundException ex) {
-        ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
-
-        ProblemDetail problemDetail = createProblemDetailBuilder(
-                HttpStatus.NOT_FOUND,
-                problemType,
-                ex.getMessage()
-        ).build();
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
+        String detail = ex.getMessage();
+        return this.buildProblemDetail(HttpStatus.NOT_FOUND, ProblemType.RESOURCE_NOT_FOUND, detail);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     protected ResponseEntity<ProblemDetail> handleNoResourceFound(HttpServletRequest request) {
-        ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
-
         String detail = String.format("O recurso %s que você tentou acessar não foi encontrado", request.getRequestURI());
-
-
-        ProblemDetail problemDetail = createProblemDetailBuilder(
-                HttpStatus.NOT_FOUND,
-                problemType,
-                detail
-        ).build();
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
+        return this.buildProblemDetail(HttpStatus.NOT_FOUND, ProblemType.RESOURCE_NOT_FOUND, detail);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<ProblemDetail> handleValidations(MethodArgumentNotValidException ex){
-        ProblemType problemType = ProblemType.INVALID_DATA;
         String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 
         List<ProblemObject> problemObjects = ex.getBindingResult().getAllErrors().stream()
@@ -85,79 +67,51 @@ public class GlobalExceptionHandler {
                 })
                 .collect(Collectors.toList());
 
-        ProblemDetail problemDetail = createProblemDetailBuilder(HttpStatus.BAD_REQUEST, problemType, detail)
-                .problemObjects(problemObjects)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
+        return this.buildProblemDetail(HttpStatus.BAD_REQUEST, ProblemType.INVALID_DATA, detail, problemObjects);
     }
 
     @ExceptionHandler(ForbiddenAccessException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     protected ResponseEntity<ProblemDetail> handleForbiddenAccess(ForbiddenAccessException ex) {
-        ProblemType problemType = ProblemType.FORBIDDEN_ACCESS;
-
-        ProblemDetail problemDetail = createProblemDetailBuilder(
-                HttpStatus.FORBIDDEN,
-                problemType,
-                ex.getMessage()
-        ).build();
-
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
+        String detail = ex.getMessage();
+        return this.buildProblemDetail(HttpStatus.FORBIDDEN, ProblemType.FORBIDDEN_ACCESS, detail);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     protected ResponseEntity<ProblemDetail> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        ProblemType problemType = ProblemType.DUPLICATED_DATA;
         String detail = "Já constam registros deste tipo.";
-
-        ProblemDetail problemDetail = createProblemDetailBuilder(
-                HttpStatus.CONFLICT,
-                problemType,
-                detail
-        ).build();
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
+        return this.buildProblemDetail(HttpStatus.CONFLICT, ProblemType.DUPLICATED_DATA, detail);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<ProblemDetail> handleMaxUploadSizeException(MaxUploadSizeExceededException ex) {
-        ProblemType problemType = ProblemType.FILE_SIZE_EXCEEDED;
-
         String detail = "Tamanho do arquivo excedido. Tente enviar um arquivo menor que 12MB.";
-
-        ProblemDetail problemDetail = createProblemDetailBuilder(
-                HttpStatus.BAD_REQUEST,
-                problemType,
-                detail
-        ).build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
+        return this.buildProblemDetail(HttpStatus.BAD_REQUEST, ProblemType.FILE_SIZE_EXCEEDED, detail);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     protected ResponseEntity<ProblemDetail> handleBadCredentialsException(BadCredentialsException ex) {
-        ProblemType problemType = ProblemType.BAD_CREDENTIALS;
-
         String detail = "Email ou senha inválidos";
-
-        ProblemDetail problemDetail = createProblemDetailBuilder(
-                HttpStatus.UNAUTHORIZED,
-                problemType,
-                detail
-        ).build();
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problemDetail);
+        return this.buildProblemDetail(HttpStatus.UNAUTHORIZED, ProblemType.BAD_CREDENTIALS, detail);
     }
 
-    private ProblemDetail.ProblemDetailBuilder createProblemDetailBuilder(HttpStatus status, ProblemType problemType, String detail){
-        return ProblemDetail.builder()
+    private ResponseEntity<ProblemDetail> buildProblemDetail(HttpStatus status, ProblemType problemType, String detail){
+        return buildProblemDetail(status, problemType, detail, null);
+    }
+
+    private ResponseEntity<ProblemDetail> buildProblemDetail(HttpStatus status, ProblemType problemType, String detail,
+                                                              List<ProblemObject> problemObjects) {
+        ProblemDetail problemDetail = ProblemDetail.builder()
                 .status(status.value())
                 .type(problemType.getUri())
                 .title(problemType.getTitle())
-                .detail(detail);
+                .detail(detail)
+                .problemObjects(problemObjects)
+                .build();
+
+        return ResponseEntity.status(status).body(problemDetail);
     }
 }
