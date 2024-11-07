@@ -2,6 +2,7 @@ package com.ironhorse.controller.impl;
 
 import com.ironhorse.controller.CarInfoController;
 
+import com.ironhorse.dto.CarInfoConsentsDto;
 import com.ironhorse.dto.CarInfoDto;
 import com.ironhorse.dto.FileStorageDto;
 import com.ironhorse.service.CarInfoService;
@@ -38,10 +39,12 @@ public class CarInfoControllerImpl implements CarInfoController {
 
     @PostMapping(value ="/image/{id}" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> saveCarImages(@RequestBody List<MultipartFile> files,@PathVariable Long id) {
+    public ResponseEntity<Void> saveCarImages(@RequestParam("files") List<MultipartFile> files,@PathVariable Long id, @RequestPart("carInfoConsentsDto") CarInfoConsentsDto carInfoConsentsDto) {
+        this.carInfoService.saveConsents(carInfoConsentsDto,id);
         this.fileStorageService.uploadCarImagesFiles(files, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 
     @DeleteMapping("/image/{carId}")
     public ResponseEntity<Void> deleteCarImageFile(@PathVariable Long carId) {
