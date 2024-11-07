@@ -62,7 +62,7 @@ public class CarInfo {
     @OneToOne(mappedBy = "carInfo",cascade = CascadeType.ALL)
     private CarFeatures carFeatures;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
 
