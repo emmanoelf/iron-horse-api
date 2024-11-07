@@ -30,7 +30,7 @@ public class Car {
     @Column(nullable = false)
     private Long manufactureYear;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

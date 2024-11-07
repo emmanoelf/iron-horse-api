@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CarSaveDto(
+
         @NotNull @NotBlank String brand,
         @NotNull @NotBlank String model,
         @NotNull(message = "O ano de fabricação não pode ser nulo.")

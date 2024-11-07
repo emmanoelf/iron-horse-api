@@ -15,6 +15,14 @@ public class CarMapper {
                 .build();
     }
 
+    public static Car toModelWithNoCarInfos(CarSaveDto carSaveDtoDtoDto) {
+        return Car.builder()
+                .brand(carSaveDtoDtoDto.brand())
+                .model(carSaveDtoDtoDto.model())
+                .manufactureYear(carSaveDtoDtoDto.manufactureYear())
+                .build();
+    }
+
     public static CarResponseDto toDto(Car car) {
         return new CarResponseDto(
                 car.getBrand(),
