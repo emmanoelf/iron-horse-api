@@ -48,6 +48,12 @@ public class CarInfo {
     @Column(nullable = false)
     private String renavam;
 
+    @Column(nullable = false)
+    private String insuranceName;
+
+    @Column(nullable = false)
+    private boolean insurance;
+
 
     @OneToMany(mappedBy = "carInfo",cascade = CascadeType.ALL)
     @JsonManagedReference

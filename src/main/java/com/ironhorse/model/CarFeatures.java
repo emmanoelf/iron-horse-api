@@ -20,12 +20,6 @@ public class CarFeatures {
     private Long id;
 
     @Column(nullable = false)
-    private String insuranceName;
-
-    @Column(nullable = false)
-    private boolean insurance;
-
-    @Column(nullable = false)
     private boolean insulfilm;
 
     @Column(nullable = false)
@@ -62,16 +56,23 @@ public class CarFeatures {
     private boolean alarm;
 
     @Column(nullable = false)
-    private boolean smokersAccepted;
+    private boolean isDocsUptoDate;
 
     @Column(nullable = false)
-    private boolean tagActivated;
+    private boolean isSmokersAccepted;
+
+    @Column(nullable = false)
+    private boolean isTagActivated;
 
     @Column(nullable = false)
     private boolean isFinesBelongToTheOffender;
 
     @Column(nullable = false)
-    private boolean isTermsUser;
+    private boolean isVeicleModified;
+
+    @Column(nullable = false)
+    private boolean isTrueInformation;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "car_info_id", referencedColumnName = "id")
