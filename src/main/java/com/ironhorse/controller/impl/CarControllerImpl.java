@@ -31,6 +31,7 @@ public class CarControllerImpl implements CarController {
         return ResponseEntity.status(HttpStatus.CREATED).body(carSaveDto);
     }
 
+    //testar ou modificar
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<CarResponseDto> findById(@PathVariable Long id) {
@@ -44,6 +45,7 @@ public class CarControllerImpl implements CarController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    //refazer totalmente
     @Override
     @PutMapping("/{carId}/{userId}")
     public ResponseEntity<CarResponseDto> update(@RequestBody @Valid CarDto carDto,

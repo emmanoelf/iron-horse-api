@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Tag(name = "Car Info Controller")
 public interface CarInfoController {
-    @PostMapping("/{carId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    ResponseEntity<CarInfoDto> save(@RequestBody @Valid CarInfoDto carInfoDto, @PathVariable Long carId);
+
+
 
     @Operation(summary = "Create Car info")
     @ApiResponses(value = {
@@ -28,7 +27,7 @@ public interface CarInfoController {
                     description = "Create car",
                     content = {@Content(mediaType = "application/json")})
     })
-    ResponseEntity<CarInfoDto> save(CarInfoDto carDto);
+    ResponseEntity<CarInfoDto> save(@RequestBody @Valid CarInfoDto carInfoDto, @PathVariable Long carId);
 
     @Operation(summary = "Find car info by CarId")
     @ApiResponses(value = {
@@ -36,7 +35,7 @@ public interface CarInfoController {
                     description = "Car info found",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CarInfoDto.class))}),
     })
-    ResponseEntity<CarInfoDto> findCarById(Long id);
+    ResponseEntity<CarInfoDto> findInfoByCarId(Long id);
 
     @Operation(summary = "Delete car info by carID")
     @ApiResponses(value = {
