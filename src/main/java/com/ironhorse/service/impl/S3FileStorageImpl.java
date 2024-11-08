@@ -161,6 +161,15 @@ public class S3FileStorageImpl implements FileStorageService {
     }
 
     @Override
+    public void deleteOnlyFromStorage(Car car) {
+        List<CarImages> carImagesList = car.getCarInfo().getCarImages();
+
+        for (CarImages carImage : carImagesList) {
+            amazonS3.deleteObject(bucketName, carImage.getName());
+        }
+    }
+
+    @Override
     public List<FileStorageDto> getCarImages(Long id) {
         Long userId = this.authenticatedService.getCurrentUserId();
 

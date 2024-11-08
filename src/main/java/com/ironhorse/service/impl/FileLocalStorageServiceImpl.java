@@ -158,10 +158,17 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         carImagesRepository.flush();
     }
 
+    @Override
+    public void deleteOnlyFromStorage(Car car) {
+        List<CarImages> carImagesList = car.getCarInfo().getCarImages();
+        for (CarImages carImage : carImagesList) {
+            deleteImageFileFromStorage(carImage.getPath());
+        }
+    }
+
     private void deleteImageFileFromStorage(String path) {
         String cleanedPath = path.trim();
         File file = new File(cleanedPath);
-
         if (file.exists()) {
             if (!file.delete()) {
                 throw new RuntimeException("Falha ao excluir o arquivo: " + path);
