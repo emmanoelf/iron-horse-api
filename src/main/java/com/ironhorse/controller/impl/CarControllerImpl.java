@@ -1,9 +1,9 @@
 package com.ironhorse.controller.impl;
 
 import com.ironhorse.controller.CarController;
-import com.ironhorse.dto.CarDto;
 import com.ironhorse.dto.CarResponseDto;
 import com.ironhorse.dto.CarSaveDto;
+import com.ironhorse.dto.CarUpdateDto;
 import com.ironhorse.repository.projection.CarResumeProjection;
 import com.ironhorse.service.CarService;
 import jakarta.validation.Valid;
@@ -46,12 +46,11 @@ public class CarControllerImpl implements CarController {
     }
 
     //refazer totalmente
+    @PutMapping("/{carId}")
     @Override
-    @PutMapping("/{carId}/{userId}")
-    public ResponseEntity<CarResponseDto> update(@RequestBody @Valid CarDto carDto,
-                                                 @PathVariable Long carId,
-                                                 @PathVariable Long userId) {
-        CarResponseDto carResponseDto = this.carService.update(carDto, carId, userId);
+    public ResponseEntity<CarUpdateDto> update(@RequestBody @Valid CarUpdateDto carUpdateDto,
+                                                 @PathVariable Long carId) {
+        CarUpdateDto carResponseDto = this.carService.update(carUpdateDto, carId);
         return ResponseEntity.status(HttpStatus.OK).body(carResponseDto);
     }
 
