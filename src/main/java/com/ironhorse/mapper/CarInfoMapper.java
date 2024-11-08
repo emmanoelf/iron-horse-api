@@ -1,6 +1,7 @@
 package com.ironhorse.mapper;
 
 import com.ironhorse.dto.CarInfoDto;
+import com.ironhorse.dto.CarInfoUpdateDto;
 import com.ironhorse.model.Car;
 import com.ironhorse.model.CarInfo;
 
@@ -64,5 +65,43 @@ public class CarInfoMapper {
                 CarFeaturesMapper.toDto(carInfo.getCarFeatures())  // CarFeatures
         );
     }
+
+    public static CarInfo toUpdateModel(CarInfoUpdateDto carInfoUpdateDto) {
+
+        return  CarInfo.builder()
+                .insurance(carInfoUpdateDto.insurance())
+                .insuranceName(carInfoUpdateDto.insuranceName())
+                .renavam(carInfoUpdateDto.renavam())
+                .licensePlate(carInfoUpdateDto.licensePlate())
+                .transmission(carInfoUpdateDto.transmission())
+                .directionType(carInfoUpdateDto.directionType())
+                .chassi(carInfoUpdateDto.chassi())
+                .engineNumber(carInfoUpdateDto.engineNumber())
+                .cylinderDisplacement(carInfoUpdateDto.cylinderDisplacement())
+                .mileage(carInfoUpdateDto.mileage())
+                .fuelType(carInfoUpdateDto.fuelType())
+                .carFeatures(CarFeaturesMapper.toUpdateModel(carInfoUpdateDto.carFeaturesUpdateDto()))
+                .build();
+    }
+
+
+
+    public static CarInfoUpdateDto toUpdateDto(CarInfo carInfo) {
+        return new CarInfoUpdateDto(
+                carInfo.isInsurance(),
+                carInfo.getInsuranceName(),
+                carInfo.getRenavam(),
+                carInfo.getLicensePlate(),
+                carInfo.getTransmission(),
+                carInfo.getDirectionType(),
+                carInfo.getChassi(),
+                carInfo.getEngineNumber(),
+                carInfo.getCylinderDisplacement(),
+                carInfo.getMileage(),
+                carInfo.getFuelType(),
+                CarFeaturesMapper.toUpdateDto(carInfo.getCarFeatures())  // CarFeatures
+        );
+    }
+
 
 }

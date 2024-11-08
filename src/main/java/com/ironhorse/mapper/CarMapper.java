@@ -3,6 +3,7 @@ package com.ironhorse.mapper;
 import com.ironhorse.dto.CarDto;
 import com.ironhorse.dto.CarResponseDto;
 import com.ironhorse.dto.CarSaveDto;
+import com.ironhorse.dto.CarUpdateDto;
 import com.ironhorse.model.Car;
 
 public class CarMapper {
@@ -47,6 +48,23 @@ public class CarMapper {
                 car.getModel(),
                 car.getManufactureYear(),
                 CarInfoMapper.toDto(car.getCarInfo())
+        );
+    }
+    public static Car toUpdateModel(CarUpdateDto carUpdateDto) {
+        return Car.builder()
+                .brand(carUpdateDto.brand())
+                .model(carUpdateDto.model())
+                .manufactureYear(carUpdateDto.manufactureYear())
+                .carInfo(CarInfoMapper.toUpdateModel(carUpdateDto.carInfoUpdateDto()))
+                .build();
+    }
+
+    public static CarUpdateDto carUpdateDto(Car car) {
+        return new CarUpdateDto(
+                car.getBrand(),
+                car.getModel(),
+                car.getManufactureYear(),
+                CarInfoMapper.toUpdateDto(car.getCarInfo())
         );
     }
 }
