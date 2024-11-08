@@ -59,10 +59,10 @@ public class CarInfo {
     @JsonManagedReference
     private List<CarImages> carImages;
 
-    @OneToOne(mappedBy = "carInfo",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "carInfo",cascade = CascadeType.ALL,orphanRemoval = true)
     private CarFeatures carFeatures;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
 
