@@ -4,27 +4,21 @@ import com.ironhorse.dto.CarDto;
 import com.ironhorse.dto.CarResponseDto;
 import com.ironhorse.dto.CarSaveDto;
 import com.ironhorse.dto.FileStorageDto;
-import com.ironhorse.exception.CarImagesNotFound;
-import com.ironhorse.exception.CarNotFound;
-import com.ironhorse.exception.ForbiddenAccessException;
-import com.ironhorse.exception.UserNotFound;
+import com.ironhorse.exception.*;
 import com.ironhorse.mapper.CarFeaturesMapper;
+import com.ironhorse.mapper.CarImageMapper;
 import com.ironhorse.mapper.CarInfoMapper;
 import com.ironhorse.mapper.CarMapper;
-import com.ironhorse.model.Car;
-import com.ironhorse.model.CarFeatures;
-import com.ironhorse.model.CarInfo;
-import com.ironhorse.model.User;
-import com.ironhorse.repository.CarFeaturesRepository;
-import com.ironhorse.repository.CarInfoRepository;
-import com.ironhorse.repository.CarRepository;
-import com.ironhorse.repository.UserRepository;
+import com.ironhorse.model.*;
+import com.ironhorse.repository.*;
 import com.ironhorse.repository.projection.CarResumeProjection;
 import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.CarService;
 import com.ironhorse.service.FileStorageService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Var;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,6 +33,7 @@ public class CarServiceImpl implements CarService {
     private final AuthenticatedService authenticatedService;
     private final CarInfoRepository carInfoRepository;
     private final FileStorageService fileStorageService;
+    private final FileStorageRepository fileStorageRepository;
 
     @Override
     @Transactional
@@ -84,15 +79,11 @@ public class CarServiceImpl implements CarService {
     @Override
     @Transactional
     public Long deleteById(Long id) {
+        Car car = this.carRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Carro não encontrado"));
         Long affectedRow = this.carRepository.deleteCarById(id);
-        List<FileStorageDto> carImages = this.fileStorageService.getCarImages(id);
-        if(!(carImages.isEmpty())){
-            this.fileStorageService.deleteCarImageFile(id);
-        }
-        if(affectedRow == 0){
-            throw new CarNotFound("Carro não encontrado");
-        }
-
+        this.fileStorageService.deleteOnlyFromStorage(car);
+        this.carRepository.deleteById(id);
+        this.carRepository.flush();
         return affectedRow;
     }
 
