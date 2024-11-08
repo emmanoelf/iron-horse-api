@@ -15,6 +15,6 @@ public record CarInfoUpdateDto(
         @NotNull @NotBlank String cylinderDisplacement,
         @NotNull @NotBlank String mileage,
         @NotNull @NotBlank String fuelType,
-        @NotNull CarFeaturesDto carFeaturesUpdateDto
+        @NotNull CarFeaturesUpdateDto carFeaturesUpdateDto
 ) {
 }

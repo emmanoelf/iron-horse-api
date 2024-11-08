@@ -10,6 +10,6 @@ public record CarUpdateDto(
         @NotNull(message = "O ano de fabricação não pode ser nulo.")
         @Min(value = 1900, message = "O ano de fabricação deve ser maior ou igual a 1900.")
         Long manufactureYear,
-        @NotNull CarInfoDto carInfoUpdateDto
+        @NotNull CarInfoUpdateDto carInfoUpdateDto
 ) {
 }
