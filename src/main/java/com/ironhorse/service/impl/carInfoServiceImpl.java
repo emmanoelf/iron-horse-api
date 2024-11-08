@@ -27,7 +27,7 @@ public class carInfoServiceImpl implements CarInfoService {
  private final UserRepository userRepository;
 
  @Override
- public CarInfoDto findCarById(Long carId) {
+ public CarInfoDto findByCarId(Long carId) {
   return this.carInfoRepository.findByCarId(carId)
           .map(CarInfoMapper::toDto)
           .orElseThrow(
@@ -93,8 +93,6 @@ public class carInfoServiceImpl implements CarInfoService {
 
   return CarFeaturesMapper.toPartialDto(carFeatures);
  }
-
-
 
  @Override
  @Transactional

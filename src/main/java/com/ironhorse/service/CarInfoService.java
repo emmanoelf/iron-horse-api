@@ -8,7 +8,7 @@ import com.ironhorse.model.CarInfo;
 import jakarta.transaction.Transactional;
 
 public interface CarInfoService {
-    CarInfoDto findCarById(Long carId);
+    CarInfoDto findByCarId(Long carId);
     Long deleteByCarId(Long carId);
 
     CarInfoDto save(CarInfoDto carInfoDto);
