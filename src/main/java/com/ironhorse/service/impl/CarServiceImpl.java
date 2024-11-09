@@ -70,13 +70,23 @@ public class CarServiceImpl implements CarService {
                 );
     }
 
-    @Transactional
     @Override
+    @Transactional
     public Long deleteById(Long id) {
+        Long userId = this.authenticatedService.getCurrentUserId();
 
-        Car car = this.carRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Carro não encontrado"));
+        User user = this.userRepository.findById(userId).orElseThrow(
+                () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
+
+        Car car = user.getCars().stream()
+                .filter(carro -> carro.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ForbiddenAccessException("Você não possui privilegios para excluir carros alheios!"));
+
         Long affectedRow = this.carRepository.deleteCarById(id);
-        this.fileStorageService.deleteOnlyFromStorage(car);
+        if(car.getCarInfo() != null){
+            this.fileStorageService.deleteOnlyFromStorage(car);
+        }
         this.carRepository.deleteById(id);
         this.carRepository.flush();
         return affectedRow;
