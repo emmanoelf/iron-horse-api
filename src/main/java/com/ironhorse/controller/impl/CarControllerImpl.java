@@ -31,15 +31,16 @@ public class CarControllerImpl implements CarController {
         return ResponseEntity.status(HttpStatus.CREATED).body(carSaveDto);
     }
 
-    //testar ou modificar
     @Override
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CarResponseDto> findById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(this.carService.findById(id));
     }
 
     @Override
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         this.carService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -47,6 +48,7 @@ public class CarControllerImpl implements CarController {
 
     @PutMapping("/{carId}")
     @Override
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CarUpdateDto> update(@RequestBody @Valid CarUpdateDto carUpdateDto,
                                                  @PathVariable Long carId) {
         CarUpdateDto carResponseDto = this.carService.update(carUpdateDto, carId);
@@ -55,6 +57,7 @@ public class CarControllerImpl implements CarController {
 
     @Override
     @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<CarResumeProjection>> findAllCarsByCity(@RequestParam String city) {
         List<CarResumeProjection> projection = this.carService.findAllCarsByCity(city);
         return ResponseEntity.status(HttpStatus.OK).body(projection);

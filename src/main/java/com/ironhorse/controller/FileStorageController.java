@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Upload File Controller")
 public interface FileStorageController {
+
     @Operation(summary = "Upload file user profile")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",

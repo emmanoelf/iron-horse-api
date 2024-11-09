@@ -8,10 +8,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 
+@Tag(name = "Car Overview Controller")
 public interface CarOverviewController {
+
         @Operation(summary = "Create a new car overview")
         @ApiResponses(value = {
                 @ApiResponse(responseCode = "201",
@@ -34,5 +37,5 @@ public interface CarOverviewController {
                         description = "Get car overview by id with all details",
                         content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CarOverviewListDto.class))}),
         })
-        ResponseEntity<CarOverviewListDto> getCarOverviewByCarId(@PathVariable Long carId);
+        ResponseEntity<CarOverviewListDto> getCarOverviewByCarId(Long carId);
 }

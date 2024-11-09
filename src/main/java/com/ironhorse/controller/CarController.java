@@ -10,21 +10,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 import java.util.List;
 
 @Tag(name = "Car Controller")
 public interface CarController {
 
-    @Operation(summary = "Create Car")
+    @Operation(summary = "Create Car with all informations")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Create car",
-                    content = {@Content(mediaType = "application/json")})
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CarSaveDto.class))})
     })
     ResponseEntity<CarSaveDto> save(CarSaveDto carSaveDto);
 
@@ -47,11 +45,9 @@ public interface CarController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Car updated",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CarResponseDto.class))}),
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CarUpdateDto.class))}),
     })
-
-    ResponseEntity<CarUpdateDto> update(@RequestBody @Valid CarUpdateDto carUpdateDto,
-                                          @PathVariable Long carId);
+    ResponseEntity<CarUpdateDto> update(CarUpdateDto carUpdateDto, Long carId);
 
     @Operation(summary = "Get all cars by city")
     @ApiResponses(value = {

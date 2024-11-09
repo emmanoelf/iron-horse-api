@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 @Tag(name = "Authentication Controller")
 public interface AuthController {
+
     @Operation(summary = "Authenticate an user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
