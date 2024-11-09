@@ -70,9 +70,10 @@ public class CarServiceImpl implements CarService {
                 );
     }
 
-    @Override
     @Transactional
+    @Override
     public Long deleteById(Long id) {
+
         Car car = this.carRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Carro não encontrado"));
         Long affectedRow = this.carRepository.deleteCarById(id);
         this.fileStorageService.deleteOnlyFromStorage(car);
