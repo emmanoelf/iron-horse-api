@@ -47,15 +47,15 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
 
     @Override
     @Transactional
-    public void uploadFile(MultipartFile file){
-        try{
+    public void uploadFile(MultipartFile file) {
+        try {
             this.validateFile(file);
             Long userId = this.authenticatedService.getCurrentUserId();
 
             UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
                     () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
-            if(userInfo.getUserPicture() != null){
+            if (userInfo.getUserPicture() != null) {
                 this.deleteUserProfileFile();
             }
 
@@ -67,8 +67,8 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
             userInfo.setUserPicture(fileStorage);
 
             this.fileStorageRepository.save(fileStorage);
-        }catch (IOException e){
-             e.getCause();
+        } catch (IOException e) {
+            e.getCause();
         }
     }
 
@@ -118,7 +118,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
                 () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
-        if(userInfo.getUserPicture() == null){
+        if (userInfo.getUserPicture() == null) {
             throw new IllegalArgumentException("Não há foto de perfil para ser deletada");
         }
 
@@ -206,7 +206,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         UserInfo userInfo = this.userInfoRepository.findByUserId(userId).orElseThrow(
                 () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
 
-        if(userInfo.getUserPicture() == null){
+        if (userInfo.getUserPicture() == null) {
             throw new IllegalArgumentException("O usuário não possui foto");
         }
 
@@ -216,12 +216,12 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         return FileStorageMapper.toDto(fileStorage);
     }
 
-    private String generateFilename(String originalFilename){
+    private String generateFilename(String originalFilename) {
         long timestamp = System.currentTimeMillis();
         return String.format("%s_%d_%s", PREFIX_FILENAME, timestamp, originalFilename);
     }
 
-    private String generateCarImageFileName(String originalFilename){
+    private String generateCarImageFileName(String originalFilename) {
         long timestamp = System.currentTimeMillis();
         return String.format("%s_%d_%s", PREFIX_CARIMAGEFILE, timestamp, originalFilename);
     }
@@ -233,7 +233,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
     private void validateFile(MultipartFile file) throws FileUploadException {
 
         System.out.println(maxFileSize);
-        if(file.getSize() > maxFileSize){
+        if (file.getSize() > maxFileSize) {
             throw new MaxUploadSizeExceededException(file.getSize());
         }
 
@@ -251,21 +251,21 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
             throw new FileUploadException("Arquivo não encontrado");
         }
 
-        for(MultipartFile file : files){
-            if(file.getSize() > maxFileSize){
+        for (MultipartFile file : files) {
+            if (file.getSize() > maxFileSize) {
                 throw new MaxUploadSizeExceededException(file.getSize());
             }
         }
 
-        for(MultipartFile file : files ){
+        for (MultipartFile file : files) {
             String contentType = file.getContentType();
-            if(!this.isValidContentType(contentType)){
+            if (!this.isValidContentType(contentType)) {
                 throw new FileUploadException("A imagem deve ser de PNG ou JPEG");
             }
         }
     }
 
-    private FileStorage createFileStorage(String fileName, String absolutePath, Long size){
+    private FileStorage createFileStorage(String fileName, String absolutePath, Long size) {
         FileStorage fileStorage = new FileStorage();
         fileStorage.setName(fileName);
         fileStorage.setPath(absolutePath);
@@ -274,7 +274,7 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         return fileStorage;
     }
 
-    private CarImages createImageStorage(String fileName, String absolutePath, Long size){
+    private CarImages createImageStorage(String fileName, String absolutePath, Long size) {
         CarImages carImages = new CarImages();
         carImages.setName(fileName);
         carImages.setPath(absolutePath);
@@ -283,11 +283,11 @@ public class FileLocalStorageServiceImpl implements FileStorageService {
         return carImages;
     }
 
-    private File deleteFileStorage(FileStorage fileStorage){
+    private File deleteFileStorage(FileStorage fileStorage) {
         File deleteFile = new File(fileStorage.getPath());
-        if(deleteFile.exists()){
+        if (deleteFile.exists()) {
             boolean deleted = deleteFile.delete();
-            if(!deleted){
+            if (!deleted) {
                 throw new IllegalArgumentException("Ocorreu um erro ao excluir a foto");
             }
         }
