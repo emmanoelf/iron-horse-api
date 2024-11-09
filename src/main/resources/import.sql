@@ -5,14 +5,22 @@ INSERT INTO user (created_at, updated_at, email, name, password, phone, role) VA
 -- Inserindo informações do usuário
 INSERT INTO user_info (created_at, updated_at, cpf, street_address, street_name, street_number, district, zipcode, city, state, latitude, longitude, driver_license, accept_comunication, is_terms_user, is_regularized, is_real_information, user_id) VALUES (NOW(), NOW(), '123.456.789-00', 'Rua A', 'Rua A', 123, 'Centro', '01000-000', 'São Paulo', 'SP', -23.5489, -46.6388, 'ABC123456', true, true, true, true, 1);
 
--- Inserindo dados em Car
-INSERT INTO car (created_at, updated_at, brand, model, manufacture_year, user_id) VALUES (NOW(), NOW(), 'Honda', 'Civic', 2021, 1);
-INSERT INTO car (created_at, updated_at, brand, model, manufacture_year, user_id) VALUES (NOW(), NOW(), 'Wolksvagen', 'Fusca', 2050, 2);
-INSERT INTO car (created_at, updated_at, brand, model, manufacture_year, user_id) VALUES (NOW(), NOW(), 'Ford', 'Focus', 2019, 2);
+-- Inserindo dados para o user 1
+INSERT INTO car (created_at, updated_at, brand, model, manufacture_year, user_id)VALUES (NOW(), NOW(), 'Honda', 'Civic', 2021, 1);
+
+INSERT INTO car (created_at, updated_at, brand, model, manufacture_year, user_id)VALUES (NOW(), NOW(), 'Ford', 'Fiesta', 2018, 1);
+
+-- Inserindo dados para o user 2
+INSERT INTO car (created_at, updated_at, brand, model, manufacture_year, user_id)VALUES (NOW(), NOW(), 'Volkswagen', 'Fusca', 1970, 2);
+
+INSERT INTO car (created_at, updated_at, brand, model, manufacture_year, user_id)VALUES (NOW(), NOW(), 'Chevrolet', 'Corsa', 2005, 2);
 
 
 -- Inserindo dados em car_info
-INSERT INTO car_info (created_at, updated_at, license_plate, transmission, direction_type, chassi, engine_number, engine_horse_power, mileage, fuel_type, renavam, insurance_name, insurance, insulfilm, tag_pike, anti_theft_secret, multimedia, air_conditioner, electric_windows_and_locks, triangle, monkey, wheel_wrench, spare_tire, fire_extinguisher, alarm, smokers_accepted, tag_activated, is_fines_belong_to_the_offender, is_terms_user, car_id) VALUES (NOW(), NOW(), 'ABC-1234', 'Automatic', 'Hydraulic', '1HGBH41JXMN109186', 'ENG123456', '150', '10000', 'Gasoline', 'REN123456', 'Insurance Co', TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, 1), (NOW(), NOW(), 'XYZ-5678', 'Manual', 'Electric', '2HGBH41JXMN109187', 'ENG654321', '120', '20000', 'Diesel', 'REN654321', 'Another Insurance', FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, 2);
+INSERT INTO car_info(insurance, car_id, created_at, updated_at, chassi, cylinder_displacement, direction_type,engine_number, fuel_type, insurance_name, license_plate, mileage, renavam, transmission)VALUES(TRUE, 1, NOW(), NOW(), '1A2B3C4D5E67890', '2.0', 'Left', 'EN1234567890', 'Electric','Tesla Insurance', 'ABC-1234', '10000 km', '1234567890123', 'Automatic'),(FALSE, 2, NOW(), NOW(), '2B3C4D5E6F78901', '3.5', 'Right', 'EN0987654321', 'Gasoline','Ford Insurance', 'XYZ-5678', '15000 km', '9876543210987', 'Manual')
+
+-- Inserindo dados em car_features
+INSERT INTO car_features (air_conditioner, alarm, anti_theft_secret, electric_windows_and_locks, fire_extinguisher, insulfilm, is_docs_upto_date, is_fines_belong_to_the_offender, is_smokers_accepted, is_tag_activated, is_true_information, is_veicle_modified, jack, multimedia, spare_tire, tag_pike, triangle, wheel_wrench, car_info_id, created_at, updated_at) VALUES (true, true, false, true, false, true, true, false, true, true, true, false, true, true, false, false, true, true, 1, NOW(), NOW()), (false, true, true, false, true, false, false, true, false, false, false, true, false, false, true, true, false, false, 2, NOW(), NOW());
 
 -- Inserindo em car_overview
 INSERT INTO `car_overview` (is_active, is_available, number_trips, price, car_id, created_at, updated_at, description) VALUES ( 1, 1, 10, 150.00, 1, NOW(), NOW(), 'Carro em ótimo estado, pronto para viagens.'),(1, 0, 5, 200.50, 2, NOW(), NOW(), 'Carro disponível apenas para reservas antecipadas.');

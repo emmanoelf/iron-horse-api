@@ -4,7 +4,6 @@ import com.ironhorse.controller.UserInfoController;
 import com.ironhorse.dto.UserInfoCreateDto;
 import com.ironhorse.dto.UserInfoDto;
 import com.ironhorse.dto.UserInfoResponseDto;
-import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.UserInfoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
