@@ -46,6 +46,9 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
+    @OneToMany(mappedBy = "user")
+    private List<Rental> rentals;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime created_at;
