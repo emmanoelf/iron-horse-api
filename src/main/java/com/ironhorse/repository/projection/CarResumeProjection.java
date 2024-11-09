@@ -15,6 +15,7 @@ public record CarResumeProjection(
         Double longitude,
         Double rate,
         Integer numberTrips,
-        BigDecimal price
+        BigDecimal price,
+        String path
 ) {
 }

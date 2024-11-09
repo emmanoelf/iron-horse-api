@@ -48,15 +48,21 @@ public class CarInfo {
     @Column(nullable = false)
     private String renavam;
 
+    @Column(nullable = false)
+    private String insuranceName;
+
+    @Column(nullable = false)
+    private boolean insurance;
+
 
     @OneToMany(mappedBy = "carInfo",cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<CarImages> carImages;
 
-    @OneToOne(mappedBy = "carInfo")
+    @OneToOne(mappedBy = "carInfo",cascade = CascadeType.ALL,orphanRemoval = true)
     private CarFeatures carFeatures;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
 

@@ -1,8 +1,9 @@
 package com.ironhorse.controller.impl;
 
 import com.ironhorse.controller.CarController;
-import com.ironhorse.dto.CarDto;
 import com.ironhorse.dto.CarResponseDto;
+import com.ironhorse.dto.CarSaveDto;
+import com.ironhorse.dto.CarUpdateDto;
 import com.ironhorse.repository.projection.CarResumeProjection;
 import com.ironhorse.service.CarService;
 import jakarta.validation.Valid;
@@ -25,11 +26,12 @@ public class CarControllerImpl implements CarController {
     @Override
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CarResponseDto> save(@RequestBody @Valid CarDto carDto) {
-        CarResponseDto carResponseDto = this.carService.save(carDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(carResponseDto);
+    public ResponseEntity<CarSaveDto> save(@RequestBody @Valid CarSaveDto carSaveDto) {
+        CarSaveDto carSaved = this.carService.save(carSaveDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(carSaveDto);
     }
 
+    //testar ou modificar
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<CarResponseDto> findById(@PathVariable Long id) {
@@ -43,12 +45,11 @@ public class CarControllerImpl implements CarController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PutMapping("/{carId}")
     @Override
-    @PutMapping("/{carId}/{userId}")
-    public ResponseEntity<CarResponseDto> update(@RequestBody @Valid CarDto carDto,
-                                                 @PathVariable Long carId,
-                                                 @PathVariable Long userId) {
-        CarResponseDto carResponseDto = this.carService.update(carDto, carId, userId);
+    public ResponseEntity<CarUpdateDto> update(@RequestBody @Valid CarUpdateDto carUpdateDto,
+                                                 @PathVariable Long carId) {
+        CarUpdateDto carResponseDto = this.carService.update(carUpdateDto, carId);
         return ResponseEntity.status(HttpStatus.OK).body(carResponseDto);
     }
 
