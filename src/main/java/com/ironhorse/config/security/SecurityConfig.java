@@ -32,6 +32,8 @@ public class SecurityConfig{
                         .requestMatchers("/v1/cars/search").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/car-overviews/").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/users").permitAll()
+                        .requestMatchers("/v1/payment/**").permitAll()
+                        .requestMatchers("/v1/rentals/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -43,7 +45,7 @@ public class SecurityConfig{
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://localhost:3000", "http://localhost:5173/"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
