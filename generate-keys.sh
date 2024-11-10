@@ -10,11 +10,11 @@ if [ ! -f "$RESOURCE_DIR/app.key" ] || [ ! -f "$RESOURCE_DIR/app.pub" ]; then
     # Criação da pasta resources caso não exista
     mkdir -p $RESOURCE_DIR
 
-    # Gerar chave privada (app.key)
-    openssl genrsa > app.key
+    # Gerar chave privada (app.key) no diretório correto
+    openssl genrsa -out "$RESOURCE_DIR/app.key" 4096
 
-    # Gerar chave pública (app.pub)
-    openssl rsa -in $RESOURCE_DIR/app.key -pubout -out $RESOURCE_DIR/app.pub
+    # Gerar chave pública (app.pub) a partir da chave privada
+    openssl rsa -in "$RESOURCE_DIR/app.key" -pubout -out "$RESOURCE_DIR/app.pub"
 
     echo "Chaves RSA geradas com sucesso!"
 else
