@@ -31,6 +31,7 @@
         <springdoc-openapi.version>2.5.0</springdoc-openapi.version>
         <aws-java-jdk-s3.version>1.12.772</aws-java-jdk-s3.version>
         <open-feign.version>4.1.3</open-feign.version>
+        <stripe.version>27.1.2</stripe.version>
     </properties>
     <dependencies>
         <dependency>
@@ -99,6 +100,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>${stripe.version}</version>
         </dependency>
     </dependencies>
 
