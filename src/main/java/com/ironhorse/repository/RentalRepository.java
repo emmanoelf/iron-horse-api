@@ -1,6 +1,7 @@
 package com.ironhorse.repository;
 
 import com.ironhorse.model.Rental;
+import com.ironhorse.model.RentalStatus;
 import com.ironhorse.repository.projection.RentalDetailsProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,4 +33,5 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     Optional<RentalDetailsProjection> findRentalWithDetails(@Param("rentalId") Long rentalId,
                                                             @Param("userId") Long userId);
     List<Rental> findByUserId(Long userId);
+    Optional<Rental> findByCarIdAndStatus(Long carId, RentalStatus status);
 }

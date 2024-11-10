@@ -1,8 +1,6 @@
 package com.ironhorse.service.impl;
 
-import com.ironhorse.dto.RentalDto;
-import com.ironhorse.dto.RentalResponseDetailsDto;
-import com.ironhorse.dto.RentalResponseDto;
+import com.ironhorse.dto.*;
 import com.ironhorse.exception.BusinessException;
 import com.ironhorse.exception.ForbiddenAccessException;
 import com.ironhorse.mapper.RentalMapper;
@@ -15,7 +13,9 @@ import com.ironhorse.repository.UserRepository;
 import com.ironhorse.repository.projection.RentalDetailsProjection;
 import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.CarOverviewService;
+import com.ironhorse.service.PaymentService;
 import com.ironhorse.service.RentalService;
+import com.stripe.exception.StripeException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class RentalServiceImpl implements RentalService {
     private final UserRepository userRepository;
     private final AuthenticatedService authenticatedService;
     private final CarOverviewService carOverviewService;
+    private final PaymentService paymentService;
 
     @Override
     @Transactional
@@ -54,9 +56,31 @@ public class RentalServiceImpl implements RentalService {
         rental.setUser(userRepository.findById(userId).orElseThrow());
 
         this.carOverviewService.setIsAvailable(carId, false);
+        try{
+            long rentalDays = this.calculateDays(rentalDto.startDate(), rentalDto.expectedEndDate());
+            PaymentDto paymentDto = this.mountPaymentDto(car.get(), rentalDays);
+            PaymentResponseDto url = this.paymentService.createPaymentLink(paymentDto);
+            this.rentalRepository.save(rental);
 
-        this.rentalRepository.save(rental);
-        return RentalMapper.toDto(rental);
+            return RentalMapper.toDtoWithPaymentUrl(rental, url.url());
+        }catch (StripeException e){
+            this.carOverviewService.setIsAvailable(carId, true);
+            throw new IllegalStateException("Erro ao processar o pagamento: " + e.getMessage(), e);
+        }
+    }
+
+    @Transactional
+    public void confirmRental(Long carId) {
+        Optional<Rental> rentalOptional = this.rentalRepository.findByCarIdAndStatus(carId, RentalStatus.PENDING);
+        if (rentalOptional.isPresent()) {
+            Rental rental = rentalOptional.get();
+            rental.setStatus(RentalStatus.ACTIVE);
+            rentalRepository.save(rental);
+
+            carOverviewService.setIsAvailable(carId, false);
+        } else {
+            throw new IllegalStateException("Locação não encontrada ou já confirmada.");
+        }
     }
 
     @Override
@@ -137,6 +161,20 @@ public class RentalServiceImpl implements RentalService {
             return false;
         }
         return true;
+    }
+
+    private long calculateDays(LocalDateTime startDate, LocalDateTime expectedEndDate){
+        return ChronoUnit.DAYS.between(startDate, expectedEndDate);
+    }
+
+    private PaymentDto mountPaymentDto(Car car, long rentalDays){
+        Long id = car.getId();
+        String name = car.getModel() + " " + car.getBrand() + " " + car.getManufactureYear();
+        Long totalPrice = car.getCarOverview().getPrice().longValue() * rentalDays;
+        String description = car.getCarOverview().getDescription();
+        //String image = car.getCarInfo().getCarImages().get(0).getPath();
+
+        return new PaymentDto(id, name, 1L, totalPrice, description);
     }
 
 }

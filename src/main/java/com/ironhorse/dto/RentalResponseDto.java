@@ -14,6 +14,7 @@ public record RentalResponseDto(
         LocalDateTime createdAt,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        String url
 ) {
 }

@@ -22,7 +22,20 @@ public class RentalMapper {
                 rental.getStatus().toString(),
                 rental.getCar().getId(),
                 rental.getCreatedAt(),
-                rental.getUpdatedAt()
+                rental.getUpdatedAt(),
+                null
+        );
+    }
+
+    public static RentalResponseDto toDtoWithPaymentUrl(Rental rental, String paymentUrl) {
+        return new RentalResponseDto(
+                rental.getStartDate(),
+                rental.getExpectedEndDate(),
+                rental.getStatus().toString(),
+                rental.getCar().getId(),
+                rental.getCreatedAt(),
+                rental.getUpdatedAt(),
+                paymentUrl
         );
     }
 

@@ -49,6 +49,6 @@ public class Rental {
 
     @PrePersist
     protected void onCreate() {
-        this.status = RentalStatus.ACTIVE;
+        this.status = RentalStatus.PENDING;
     }
 }
