@@ -1,12 +1,11 @@
 package com.ironhorse.dto;
 
-import java.util.List;
-
 public record PaymentDto(
+        Long id,
         String name,
         Long quantity,
         Long totalPrice,
-        String description,
-        List<String> images
+        String description
+        //String image
 ) {
 }
