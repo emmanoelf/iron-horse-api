@@ -34,6 +34,7 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.POST, "/v1/users").permitAll()
                         .requestMatchers("/v1/payment/**").permitAll()
                         .requestMatchers("/v1/rentals/**").permitAll()
+                        .requestMatchers("/webhook/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
