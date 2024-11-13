@@ -33,5 +33,7 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     Optional<RentalDetailsProjection> findRentalWithDetails(@Param("rentalId") Long rentalId,
                                                             @Param("userId") Long userId);
     List<Rental> findByUserId(Long userId);
-    Optional<Rental> findByCarIdAndStatus(Long carId, RentalStatus status);
+
+    @Query("SELECT r FROM Rental r WHERE r.car.id = :carId AND r.status IN :statuses")
+    Optional<Rental> findByCarIdAndStatus(@Param("carId") Long carId, @Param("statuses") List<RentalStatus> statuses);
 }

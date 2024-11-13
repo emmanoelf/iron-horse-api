@@ -70,17 +70,46 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Transactional
+    @Override
     public void confirmRental(Long carId) {
-        Optional<Rental> rentalOptional = this.rentalRepository.findByCarIdAndStatus(carId, RentalStatus.PENDING);
-        if (rentalOptional.isPresent()) {
-            Rental rental = rentalOptional.get();
-            rental.setStatus(RentalStatus.ACTIVE);
-            rentalRepository.save(rental);
-
-            carOverviewService.setIsAvailable(carId, false);
-        } else {
+        Optional<Rental> rentalOptional = this.findPendingOrCanceledRental(carId);
+        if (rentalOptional.isEmpty()) {
             throw new IllegalStateException("Locação não encontrada ou já confirmada.");
         }
+
+        Rental rental = rentalOptional.get();
+        rental.setStatus(RentalStatus.ACTIVE);
+        this.rentalRepository.save(rental);
+
+        this.carOverviewService.setIsAvailable(carId, false);
+    }
+
+    @Transactional
+    @Override
+    public void cancelRentalByCarId(Long carId) {
+        Optional<Rental> rentalOptional = this.findPendingOrCanceledRental(carId);
+        if(rentalOptional.isEmpty()) {
+            throw new IllegalArgumentException("Locação não encontrada ou já confirmada.");
+        }
+
+        Rental rental = rentalOptional.get();
+        rental.setStatus(RentalStatus.CANCELED);
+        this.rentalRepository.save(rental);
+        this.carOverviewService.setIsAvailable(carId, true);
+    }
+
+    @Transactional
+    @Override
+    public void expiredRental(Long carId) {
+        Optional<Rental> rentalOptional = this.findPendingOrCanceledRental(carId);
+        if(rentalOptional.isEmpty()) {
+            throw new IllegalArgumentException("Locação não encontrada ou já confirmada.");
+        }
+
+        Rental rental = rentalOptional.get();
+        rental.setStatus(RentalStatus.EXPIRED);
+        this.rentalRepository.save(rental);
+        this.carOverviewService.setIsAvailable(carId, true);
     }
 
     @Override
@@ -175,6 +204,11 @@ public class RentalServiceImpl implements RentalService {
         //String image = car.getCarInfo().getCarImages().get(0).getPath();
 
         return new PaymentDto(id, name, 1L, totalPrice, description);
+    }
+
+    private Optional<Rental> findPendingOrCanceledRental(Long carId) {
+        List<RentalStatus> statuses = List.of(RentalStatus.PENDING, RentalStatus.CANCELED);
+        return rentalRepository.findByCarIdAndStatus(carId, statuses);
     }
 
 }
