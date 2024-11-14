@@ -73,22 +73,33 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public Long deleteById(Long id) {
         Long userId = this.authenticatedService.getCurrentUserId();
-
         User user = this.userRepository.findById(userId).orElseThrow(
-                () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
+                () -> new UserInfoNotFoundException("Informações do usuário não encontradas"));
 
-        Car car = user.getCars().stream()
-                .filter(carro -> carro.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ForbiddenAccessException("Você não possui privilegios para excluir carros alheios!"));
+        Car car = this.carRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Carro não encontrado"));
 
-        Long affectedRow = this.carRepository.deleteCarById(id);
-        if(car.getCarInfo() != null){
-            this.fileStorageService.deleteOnlyFromStorage(car);
+        if (!car.getUser().getId().equals(userId)) {
+            throw new ForbiddenAccessException("Você não possui privilégios para excluir carros alheios!");
         }
-        this.carRepository.deleteById(id);
-        this.carRepository.flush();
-        return affectedRow;
+
+        if (car.getCarOverview() != null) {
+            car.setCarOverview(null);
+        }
+
+        if (car.getCarInfo() != null) {
+            if (car.getCarInfo().getCarImages() != null) {
+                this.fileStorageService.deleteOnlyFromStorage(car);
+            }
+            car.setCarInfo(null);
+        }
+
+        car.getReviews().clear();
+        car.getRentals().clear();
+
+        this.carRepository.delete(car);
+
+        return 1L;
     }
 
     @Transactional
