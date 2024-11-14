@@ -11,7 +11,6 @@ import com.ironhorse.repository.projection.CarResumeProjection;
 import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.CarService;
 import com.ironhorse.service.FileStorageService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -130,7 +129,11 @@ public class CarServiceImpl implements CarService {
         carInfo.setMileage(carUpdateDto.carInfoUpdateDto().mileage());
         carInfo.setRenavam(carUpdateDto.carInfoUpdateDto().renavam());
         carInfo.setTransmission(carUpdateDto.carInfoUpdateDto().transmission());
-
+        carInfo.setColor(carUpdateDto.carInfoUpdateDto().color());
+        carInfo.setNumDoors(carUpdateDto.carInfoUpdateDto().numDoors());
+        carInfo.setNumSeats(carUpdateDto.carInfoUpdateDto().numSeats());
+        carInfo.setHeadlightBulb(carUpdateDto.carInfoUpdateDto().headlightBulb());
+        carInfo.setTrunkCapacity(carUpdateDto.carInfoUpdateDto().trunkCapacity());
         CarFeatures carFeatures = carInfo.getCarFeatures();
         if (carFeatures == null) {
             carFeatures = new CarFeatures();
