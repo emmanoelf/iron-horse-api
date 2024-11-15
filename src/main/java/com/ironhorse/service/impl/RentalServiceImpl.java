@@ -1,7 +1,6 @@
 package com.ironhorse.service.impl;
 
 import com.ironhorse.dto.*;
-import com.ironhorse.exception.BusinessException;
 import com.ironhorse.exception.ForbiddenAccessException;
 import com.ironhorse.mapper.RentalMapper;
 import com.ironhorse.model.Car;
@@ -11,10 +10,7 @@ import com.ironhorse.repository.CarRepository;
 import com.ironhorse.repository.RentalRepository;
 import com.ironhorse.repository.UserRepository;
 import com.ironhorse.repository.projection.RentalDetailsProjection;
-import com.ironhorse.service.AuthenticatedService;
-import com.ironhorse.service.CarOverviewService;
-import com.ironhorse.service.PaymentService;
-import com.ironhorse.service.RentalService;
+import com.ironhorse.service.*;
 import com.stripe.exception.StripeException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -38,6 +34,7 @@ public class RentalServiceImpl implements RentalService {
     private final AuthenticatedService authenticatedService;
     private final CarOverviewService carOverviewService;
     private final PaymentService paymentService;
+    private final OneTimePasswordService oneTimePasswordService;
 
     @Override
     @Transactional
@@ -152,13 +149,12 @@ public class RentalServiceImpl implements RentalService {
 
     @Transactional
     @Override
-    public RentalResponseDto finishRental(Long rentalId) {
-        Long userId = this.authenticatedService.getCurrentUserId();
+    public RentalResponseDto finishRental(Long rentalId, String oneTimePassword) {
         Rental rental  = this.rentalRepository.findById(rentalId).orElseThrow(
                 () -> new EntityNotFoundException("Locação não encontrada"));
 
-        if(!Objects.equals(userId, rental.getCar().getUser().getId())){
-            throw new BusinessException("Somente o proprietário pode finalizar a locação.");
+        if(!this.oneTimePasswordService.validateOneTimePassword(rentalId, oneTimePassword)){
+            throw new IllegalArgumentException("Código inválido");
         }
 
         Long carId = rental.getCar().getId();
@@ -170,9 +166,8 @@ public class RentalServiceImpl implements RentalService {
         boolean isOverdue = this.validateDeliveryDate(rental.getExpectedEndDate(), realEndDate);
         if(isOverdue){
             rental.setStatus(RentalStatus.FINISHED_LATE);
-        }else{
-            rental.setStatus(RentalStatus.FINISHED);
         }
+        rental.setStatus(RentalStatus.FINISHED);
 
         rental.setRealEndDate(realEndDate);
         this.rentalRepository.save(rental);
@@ -186,10 +181,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     private boolean validateDeliveryDate(LocalDateTime expectedEndDate, LocalDateTime realEndDate){
-        if(realEndDate.isBefore(expectedEndDate) || realEndDate.isEqual(expectedEndDate)){
-            return false;
-        }
-        return true;
+        return !realEndDate.isBefore(expectedEndDate) && !realEndDate.isEqual(expectedEndDate);
     }
 
     private long calculateDays(LocalDateTime startDate, LocalDateTime expectedEndDate){

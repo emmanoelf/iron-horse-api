@@ -1,5 +1,6 @@
 package com.ironhorse.controller;
 
+import com.ironhorse.dto.OneTimePasswordDto;
 import com.ironhorse.dto.RentalDto;
 import com.ironhorse.dto.RentalResponseDetailsDto;
 import com.ironhorse.dto.RentalResponseDto;
@@ -54,5 +55,5 @@ public interface RentalController {
                     description = "Finish an retal",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RentalResponseDto.class))}),
     })
-    ResponseEntity<RentalResponseDto> finishRental(Long rentalId);
+    ResponseEntity<RentalResponseDto> finishRental(Long rentalId, OneTimePasswordDto oneTimePasswordDto);
 }
