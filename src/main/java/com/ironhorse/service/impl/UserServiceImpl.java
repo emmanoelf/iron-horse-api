@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
         String hashedPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
 
-        EmailDto email = new EmailDto(user.getEmail(), "Bem vindo!", "email-template-confirmation");
+        EmailDto email = new EmailDto(user.getEmail(), "Bem vindo!", "email-template-confirmation", null);
         this.emailService.sendEmail(email);
         User savedUser = this.userRepository.save(user);
         return UserMapper.toDto(savedUser);
