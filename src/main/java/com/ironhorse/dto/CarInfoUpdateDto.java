@@ -1,5 +1,6 @@
 package com.ironhorse.dto;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,6 +16,11 @@ public record CarInfoUpdateDto(
         @NotNull @NotBlank String cylinderDisplacement,
         @NotNull @NotBlank String mileage,
         @NotNull @NotBlank String fuelType,
+        @NotNull @NotBlank String color,
+        @NotNull @NotBlank Long numDoors,
+        @NotNull @NotBlank Long numSeats,
+        @NotNull @NotBlank String headlightBulb,
+        @NotNull @NotBlank String trunkCapacity,
         @NotNull CarFeaturesUpdateDto carFeaturesUpdateDto
 ) {
 }
