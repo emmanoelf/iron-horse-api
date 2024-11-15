@@ -7,6 +7,7 @@ import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -23,6 +24,7 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager(Caffeine caffeine) {
         CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
+        caffeineCacheManager.setCacheNames(Collections.singletonList("oneTimePassword"));
         caffeineCacheManager.setCaffeine(caffeine);
         return caffeineCacheManager;
     }
