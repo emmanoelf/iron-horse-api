@@ -34,6 +34,21 @@ public class CarInfo {
     private String chassi;
 
     @Column(nullable = false)
+    private String color;
+
+    @Column(nullable = false)
+    private Long numDoors;
+
+    @Column(nullable = false)
+    private Long numSeats;
+
+    @Column(nullable = false)
+    private String headlightBulb;
+
+    @Column(nullable = false)
+    private String trunkCapacity;
+
+    @Column(nullable = false)
     private String engineNumber;
 
     @Column(nullable = false)
