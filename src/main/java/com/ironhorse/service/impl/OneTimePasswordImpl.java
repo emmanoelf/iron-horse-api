@@ -36,10 +36,7 @@ public class OneTimePasswordImpl implements OneTimePasswordService {
 
         Cache cache = this.cacheManager.getCache("oneTimePassword");
         if (cache != null) {
-            cache.put(rentalId, oneTimePassword);
-            cache.put(rental.get().getUser().getId(), oneTimePassword);
-            cache.put(rental.get().getCar().getId(), oneTimePassword);
-            cache.put(rental.get().getCar().getUser().getId(), oneTimePassword);
+            cache.put(oneTimePassword, rentalId);
         }
 
         return oneTimePassword;
@@ -49,8 +46,11 @@ public class OneTimePasswordImpl implements OneTimePasswordService {
     public boolean validateOneTimePassword(Long rentalId, String oneTimePassword) {
         Cache cache = cacheManager.getCache("oneTimePassword");
         if (cache != null) {
-            String cachedOtp = cache.get(rentalId, String.class);
-            return cachedOtp != null && cachedOtp.equals(oneTimePassword);
+            Long cachedOtp = cache.get(oneTimePassword, Long.class);
+            if(cachedOtp != null && cachedOtp.equals(rentalId)) {
+                cache.evict(oneTimePassword);
+                return true;
+            }
         }
         return false;
     }
