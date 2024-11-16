@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public record RentalResponseDto(
         LocalDateTime startDate,
         LocalDateTime expectedEndDate,
+        LocalDateTime realEndDate,
         String status,
         Long carId,
 

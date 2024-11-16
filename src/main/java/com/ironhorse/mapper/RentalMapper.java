@@ -19,6 +19,7 @@ public class RentalMapper {
         return new RentalResponseDto(
                 rental.getStartDate(),
                 rental.getExpectedEndDate(),
+                rental.getRealEndDate(),
                 rental.getStatus().toString(),
                 rental.getCar().getId(),
                 rental.getCreatedAt(),
@@ -31,6 +32,7 @@ public class RentalMapper {
         return new RentalResponseDto(
                 rental.getStartDate(),
                 rental.getExpectedEndDate(),
+                rental.getRealEndDate(),
                 rental.getStatus().toString(),
                 rental.getCar().getId(),
                 rental.getCreatedAt(),
