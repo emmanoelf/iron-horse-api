@@ -10,7 +10,7 @@ public interface RentalService {
     RentalResponseDto save(RentalDto rentalDto, Long carId);
     List<RentalResponseDto> getAllRentalsByLoggedUser();
     RentalResponseDetailsDto getRentalDetails(Long rentalId);
-    RentalResponseDto finishRental(Long rentalId);
+    RentalResponseDto finishRental(Long rentalId, String oneTimePassword);
     void confirmRental(Long carId);
     void cancelRental(Long rentalId);
     void cancelRentalByCarId(Long carId);

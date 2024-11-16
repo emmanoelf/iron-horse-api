@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface RentalRepository extends JpaRepository<Rental, Long> {
     @Query("""
@@ -33,6 +34,8 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     Optional<RentalDetailsProjection> findRentalWithDetails(@Param("rentalId") Long rentalId,
                                                             @Param("userId") Long userId);
     List<Rental> findByUserId(Long userId);
+
+    Optional<Rental> findByUserIdAndCarIdAndStatusIn(Long userId, Long carId, Set<RentalStatus> statuses);
 
     @Query("SELECT r FROM Rental r WHERE r.car.id = :carId AND r.status IN :statuses")
     Optional<Rental> findByCarIdAndStatus(@Param("carId") Long carId, @Param("statuses") List<RentalStatus> statuses);

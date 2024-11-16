@@ -30,7 +30,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional
-    public CarSaveDto save(CarSaveDto carSaveDto) {
+    public CarSaveResponseDto save(CarSaveDto carSaveDto) {
 
         Long userId = authenticatedService.getCurrentUserId();
         User user = userRepository.findById(userId)
@@ -55,7 +55,7 @@ public class CarServiceImpl implements CarService {
         savedCar.setCarInfo(savedCarInfo);
         carRepository.save(savedCar);
 
-        return CarMapper.toSaveDto(savedCar);
+        return CarMapper.toSaveResponseDto(savedCar);
     }
 
 

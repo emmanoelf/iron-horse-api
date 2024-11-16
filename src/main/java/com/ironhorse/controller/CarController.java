@@ -2,6 +2,7 @@ package com.ironhorse.controller;
 
 import com.ironhorse.dto.CarResponseDto;
 import com.ironhorse.dto.CarSaveDto;
+import com.ironhorse.dto.CarSaveResponseDto;
 import com.ironhorse.dto.CarUpdateDto;
 import com.ironhorse.repository.projection.CarResumeProjection;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +25,7 @@ public interface CarController {
                     description = "Create car",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CarSaveDto.class))})
     })
-    ResponseEntity<CarSaveDto> save(CarSaveDto carSaveDto);
+    ResponseEntity<CarSaveResponseDto> save(CarSaveDto carSaveDto);
 
     @Operation(summary = "Find car by ID")
     @ApiResponses(value = {
