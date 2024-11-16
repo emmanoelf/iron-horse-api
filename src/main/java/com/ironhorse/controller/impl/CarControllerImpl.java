@@ -3,6 +3,7 @@ package com.ironhorse.controller.impl;
 import com.ironhorse.controller.CarController;
 import com.ironhorse.dto.CarResponseDto;
 import com.ironhorse.dto.CarSaveDto;
+import com.ironhorse.dto.CarSaveResponseDto;
 import com.ironhorse.dto.CarUpdateDto;
 import com.ironhorse.repository.projection.CarResumeProjection;
 import com.ironhorse.service.CarService;
@@ -26,9 +27,9 @@ public class CarControllerImpl implements CarController {
     @Override
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CarSaveDto> save(@RequestBody @Valid CarSaveDto carSaveDto) {
-        CarSaveDto carSaved = this.carService.save(carSaveDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(carSaveDto);
+    public ResponseEntity<CarSaveResponseDto> save(@RequestBody @Valid CarSaveDto carSaveDto) {
+        CarSaveResponseDto carSaved = this.carService.save(carSaveDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(carSaved);
     }
 
     @Override
