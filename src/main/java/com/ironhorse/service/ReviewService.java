@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReviewService {
-    ReviewDto createReview(ReviewDto reviewDto, Long carId, Long userId);
+    ReviewDto createReview(ReviewDto reviewDto, Long carId);
 
     List<ReviewDto> getAllReviews();
 
