@@ -36,7 +36,7 @@ public interface ReviewController {
                     description = "Create review by car ID and User ID",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReviewDto.class))}),
     })
-    ResponseEntity<ReviewDto> createReview(ReviewDto reviewDto, Long carId, Long userId);
+    ResponseEntity<ReviewDto> createReview(ReviewDto reviewDto, Long carId);
 
     @Operation(summary = "Get review by ID")
     @ApiResponses(value = {
