@@ -11,10 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-
-
-import java.util.List;
 
 @Tag(name = "Car Controller")
 public interface CarController {
@@ -56,5 +54,5 @@ public interface CarController {
                     description = "Get all cars resume to list by city",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CarResumeProjection.class))}),
     })
-    ResponseEntity<List<CarResumeProjection>> findAllCarsByCity(String city);
+    Page<CarResumeProjection> findAllCarsByCity(String city, int page, int size);
 }

@@ -13,9 +13,10 @@ import com.ironhorse.service.CarService;
 import com.ironhorse.service.FileStorageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -179,7 +180,8 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
-    public List<CarResumeProjection> findAllCarsByCity(String city) {
-        return this.carRepository.findCarResumesByCity(city);
+    public Page<CarResumeProjection> findAllCarsByCity(String city, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return this.carRepository.findCarResumesByCity(city, pageable);
     }
 }

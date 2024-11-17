@@ -8,11 +8,10 @@ import com.ironhorse.dto.CarUpdateDto;
 import com.ironhorse.repository.projection.CarResumeProjection;
 import com.ironhorse.service.CarService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/cars")
@@ -59,8 +58,10 @@ public class CarControllerImpl implements CarController {
     @Override
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<CarResumeProjection>> findAllCarsByCity(@RequestParam String city) {
-        List<CarResumeProjection> projection = this.carService.findAllCarsByCity(city);
-        return ResponseEntity.status(HttpStatus.OK).body(projection);
+    public Page<CarResumeProjection> findAllCarsByCity(@RequestParam String city,
+                                                       @RequestParam int page,
+                                                       @RequestParam int size) {
+        Page<CarResumeProjection> projection = this.carService.findAllCarsByCity(city, page, size);
+        return projection;
     }
 }
