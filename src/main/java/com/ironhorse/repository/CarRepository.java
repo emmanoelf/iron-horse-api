@@ -29,10 +29,10 @@ public interface CarRepository extends JpaRepository<Car, Long> {
         (SELECT ci.path FROM CarImages ci WHERE ci.carInfo.car.id = c.id ORDER BY ci.id ASC LIMIT 1) AS path
     )
     FROM Car c
-    INNER JOIN User u ON c.user.id = u.id
-    INNER JOIN UserInfo ui ON u.id = ui.id
-    INNER JOIN CarOverview co ON c.id = co.id
-    INNER JOIN Review r ON c.id = r.car.id
+    LEFT JOIN User u ON c.user.id = u.id
+    LEFT JOIN UserInfo ui ON u.id = ui.id
+    LEFT JOIN CarOverview co ON c.id = co.id
+    LEFT JOIN Review r ON c.id = r.car.id
     WHERE co.isAvailable = true AND ui.city = :city
     GROUP BY c.id, c.brand, c.model, ui.city, co.numberTrips, co.price
 """)
