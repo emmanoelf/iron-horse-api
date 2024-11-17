@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
+
 @Tag(name = "Car Controller")
 public interface CarController {
 
@@ -54,5 +56,5 @@ public interface CarController {
                     description = "Get all cars resume to list by city",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = CarResumeProjection.class))}),
     })
-    Page<CarResumeProjection> findAllCarsByCity(String city, int page, int size);
+    Page<CarResumeProjection> findAllCarsByCity(String city, LocalDateTime startDate, LocalDateTime endDate, int page, int size);
 }

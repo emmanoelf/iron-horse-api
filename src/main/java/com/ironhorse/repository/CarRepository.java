@@ -15,28 +15,44 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     Long deleteCarById(Long id);
 
     @Query("""
-    SELECT NEW com.ironhorse.repository.projection.CarResumeProjection(
-        c.id,
-        c.brand,
-        c.model,
-        c.manufactureYear,
-        ui.city,
-        ui.latitude,
-        ui.longitude,
-        AVG(r.rate),
-        co.numberTrips,
-        co.price,
-        (SELECT ci.path FROM CarImages ci WHERE ci.carInfo.car.id = c.id ORDER BY ci.id ASC LIMIT 1) AS path
-    )
-    FROM Car c
-    LEFT JOIN User u ON c.user.id = u.id
-    LEFT JOIN UserInfo ui ON u.id = ui.id
-    LEFT JOIN CarOverview co ON c.id = co.id
-    LEFT JOIN Review r ON c.id = r.car.id
-    WHERE co.isAvailable = true AND ui.city = :city
-    GROUP BY c.id, c.brand, c.model, ui.city, co.numberTrips, co.price
-""")
-    Page<CarResumeProjection> findCarResumesByCity(@Param("city") String city, Pageable pageable);
+                SELECT NEW com.ironhorse.repository.projection.CarResumeProjection(
+                    c.id,
+                    c.brand,
+                    c.model,
+                    c.manufactureYear,
+                    ui.city,
+                    ui.latitude,
+                    ui.longitude,
+                    AVG(r.rate),
+                    co.numberTrips,
+                    co.price,
+                    (SELECT ci.path FROM CarImages ci WHERE ci.carInfo.car.id = c.id ORDER BY ci.id ASC LIMIT 1) AS path
+                )
+                FROM Car c
+                LEFT JOIN User u ON c.user.id = u.id
+                LEFT JOIN UserInfo ui ON u.id = ui.id
+                LEFT JOIN CarOverview co ON c.id = co.id
+                LEFT JOIN Review r ON c.id = r.car.id
+                LEFT JOIN Rental rt ON rt.car.id = c.id
+                WHERE co.isAvailable = true
+                AND ui.city = :city
+                AND NOT EXISTS (
+                        SELECT 1 FROM Rental r
+                        WHERE r.car.id = c.id
+                        AND (
+                            (r.startDate < :startDate AND r.expectedEndDate > :startDate)
+                            OR
+                            (r.startDate < :endDate AND r.expectedEndDate > :endDate)
+                        )
+                    )
+                GROUP BY c.id, c.brand, c.model, ui.city, co.numberTrips, co.price
+            """)
+    Page<CarResumeProjection> findAllCarsByCityAndDateRange(
+            @Param("city") String city,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            Pageable pageable
+    );
 
     @Query("SELECT c FROM Car c " +
             "INNER JOIN CarOverview co ON c.id = co.car.id " +

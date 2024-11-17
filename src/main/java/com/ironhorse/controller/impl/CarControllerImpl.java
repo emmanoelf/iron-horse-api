@@ -9,9 +9,12 @@ import com.ironhorse.repository.projection.CarResumeProjection;
 import com.ironhorse.service.CarService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/v1/cars")
@@ -59,9 +62,11 @@ public class CarControllerImpl implements CarController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public Page<CarResumeProjection> findAllCarsByCity(@RequestParam String city,
+                                                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
                                                        @RequestParam int page,
                                                        @RequestParam int size) {
-        Page<CarResumeProjection> projection = this.carService.findAllCarsByCity(city, page, size);
+        Page<CarResumeProjection> projection = this.carService.findAllCarsByCityAndDateRange(city, startDate, endDate, page, size);
         return projection;
     }
 }

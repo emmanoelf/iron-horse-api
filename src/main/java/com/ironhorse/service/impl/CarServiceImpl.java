@@ -18,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
@@ -180,8 +182,9 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
-    public Page<CarResumeProjection> findAllCarsByCity(String city, int page, int size) {
+    public Page<CarResumeProjection> findAllCarsByCityAndDateRange(String city, LocalDateTime startDate,
+                                                                   LocalDateTime endDate, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return this.carRepository.findCarResumesByCity(city, pageable);
+        return this.carRepository.findAllCarsByCityAndDateRange(city, startDate, endDate, pageable);
     }
 }
