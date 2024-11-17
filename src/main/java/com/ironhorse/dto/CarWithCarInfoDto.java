@@ -10,6 +10,6 @@ public record CarWithCarInfoDto(
         @NotNull @NotBlank String model,
         @NotNull Long manufactureYear,
         List<ReviewDto> reviews,
-        CarInfoDto carInfo
+        CarInfoUpdateDto carInfo
 ) {
 }

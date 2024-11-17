@@ -34,7 +34,7 @@ public class CarOverviewMapper {
     }
 
     public static CarOverviewListDto toDtoOverview(CarOverview carOverview){
-        CarInfoDto carInfoDto = CarInfoMapper.toDto(carOverview.getCar().getCarInfo());
+        CarInfoUpdateDto carInfoUpdateDto = CarInfoMapper.toUpdateDto(carOverview.getCar().getCarInfo());
         List<ReviewDto> reviewDto = carOverview.getCar().getReviews().stream()
                 .map(ReviewMapper::toDto)
                 .collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class CarOverviewMapper {
                 carOverview.getCar().getModel(),
                 carOverview.getCar().getManufactureYear(),
                 reviewDto,
-                carInfoDto
+                carInfoUpdateDto
         );
 
         return new CarOverviewListDto(
