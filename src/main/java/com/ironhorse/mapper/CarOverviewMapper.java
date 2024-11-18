@@ -35,6 +35,8 @@ public class CarOverviewMapper {
 
     public static CarOverviewListDto toDtoOverview(CarOverview carOverview){
         CarInfoUpdateDto carInfoUpdateDto = CarInfoMapper.toUpdateDto(carOverview.getCar().getCarInfo());
+        List<FileStorageDto> imagesDto = CarImageMapper.toCarDTOList(carOverview.getCar().getCarInfo().getCarImages());
+
         List<ReviewDto> reviewDto = carOverview.getCar().getReviews().stream()
                 .map(ReviewMapper::toDto)
                 .collect(Collectors.toList());
@@ -44,7 +46,8 @@ public class CarOverviewMapper {
                 carOverview.getCar().getModel(),
                 carOverview.getCar().getManufactureYear(),
                 reviewDto,
-                carInfoUpdateDto
+                carInfoUpdateDto,
+                imagesDto
         );
 
         return new CarOverviewListDto(
