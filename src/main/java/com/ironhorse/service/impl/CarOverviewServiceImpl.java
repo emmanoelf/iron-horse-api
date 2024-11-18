@@ -72,7 +72,7 @@ public class CarOverviewServiceImpl implements CarOverviewService {
         CarOverview carOverview = this.carOverviewRepository.findCarOverviewByCarId(carId).orElseThrow(
                 () -> new EntityNotFoundException("Detalhes do carro não encontrado"));
 
-        carOverview.setActive(isAvailable);
+        carOverview.setAvailable(isAvailable);
         this.carOverviewRepository.save(carOverview);
     }
 
