@@ -13,7 +13,7 @@ public class StripeServiceImpl implements PaymentService {
     private static final String CURRENCY_TYPE = "BRL";
 
     public PaymentResponseDto createPaymentLink(PaymentDto paymentDto) throws StripeException {
-        long expiresAt = System.currentTimeMillis() / 1000 + 30 * 60;
+        long expiresAt = (System.currentTimeMillis() / 1000) + (30 * 60);
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
