@@ -10,9 +10,9 @@ import java.util.Optional;
 public interface CarOverviewRepository extends JpaRepository<CarOverview, Long> {
     @Query("SELECT co " +
             "FROM CarOverview co " +
-            "JOIN FETCH co.car c " +
-            "JOIN FETCH c.carInfo ci " +
-            "JOIN FETCH c.reviews r " +
+            "INNER JOIN co.car c " +
+            "INNER JOIN c.carInfo ci " +
+            "LEFT JOIN c.reviews r " +
             "WHERE c.id = :carId")
     Optional<CarOverview> getAllDetailsFromCarOverview(@Param("carId") Long carId);
 
