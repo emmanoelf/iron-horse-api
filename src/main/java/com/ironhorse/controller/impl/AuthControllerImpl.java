@@ -2,6 +2,7 @@ package com.ironhorse.controller.impl;
 
 import com.ironhorse.controller.AuthController;
 import com.ironhorse.dto.AuthenticationDto;
+import com.ironhorse.dto.RefreshTokenDto;
 import com.ironhorse.dto.TokenDto;
 import com.ironhorse.service.AuthenticationService;
 import org.springframework.http.HttpStatus;
@@ -28,8 +29,8 @@ public class AuthControllerImpl implements AuthController {
     @Override
     @PostMapping("/refresh")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<TokenDto> refreshTokenAccess(@RequestBody String refreshToken) {
-        TokenDto tokenDto = this.authenticationService.refreshTokenAccess(refreshToken);
+    public ResponseEntity<TokenDto> refreshTokenAccess(@RequestBody RefreshTokenDto refreshTokenDto) {
+        TokenDto tokenDto = this.authenticationService.refreshTokenAccess(refreshTokenDto.refreshToken());
         return ResponseEntity.status(HttpStatus.OK).body(tokenDto);
     }
 }
