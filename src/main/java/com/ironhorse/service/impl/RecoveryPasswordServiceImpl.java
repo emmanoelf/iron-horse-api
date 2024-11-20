@@ -8,6 +8,7 @@ import com.ironhorse.repository.UserRepository;
 import com.ironhorse.service.EmailService;
 import com.ironhorse.service.RecoveryPasswordService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ public class RecoveryPasswordServiceImpl implements RecoveryPasswordService {
     private final PasswordRecoveryRepository passwordRecoveryRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+
+    @Value("${base.url.front}")
+    private String baseUrl;
 
     public RecoveryPasswordServiceImpl(UserRepository userRepository, PasswordRecoveryRepository passwordRecoveryRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
@@ -72,7 +76,8 @@ public class RecoveryPasswordServiceImpl implements RecoveryPasswordService {
     }
 
     private void sendPasswordRecovery(String email, String token) {
-        String recoveryLink = "http://localhost:8080/reset-password?token=" + token;
+        String recoveryLink = this.baseUrl + "/recovery/reset?token=" + token;
+
         HashMap<String, String> templateVariables = new HashMap<>();
         templateVariables.put("recoveryLink", recoveryLink);
 
