@@ -29,7 +29,7 @@ O projeto tem objetivo principal a locação de carros entre pessoas físicas e 
     - AWS
     - JWT
     - Stripe
-    - Caffeine (Cacheamento)
+    - Caffeine (Cacheamento para OTP - One Time Password)
 
 
 ## Prototipação
@@ -37,13 +37,13 @@ O projeto tem objetivo principal a locação de carros entre pessoas físicas e 
 https://www.figma.com/design/FSLxksz2OYmnqn7qsRTubW/Projeto-Final---Prototipagem?node-id=0-1&t=aQ6QohoaWV4MIZTJ-1
 
 ## Diagrama ER
-![Diagrama ER](https://imgur.com/tlYL4Sd)
+![modelo-er](https://github.com/user-attachments/assets/45207f59-011e-4d06-adce-77c6a840213d)
 
 
 ## Git flow
 ### Branches
 
-Sabemos que todas as empresas possuem seus próprios fluxos e uma vez que entramos em um time devemos segui-los. Com a finalidade de se aproximar o mais próximo da realidade, surigo que utilizemos 3 branches principais e uma situacional.
+Utilizamos 3 branches principais e uma situacional. Abaixo uma breve explicação sobre tais.
 
 ### Master
 
@@ -62,11 +62,12 @@ Aqui desenvolveremos funcionalidades e/ou correções de forma isolada sem afeta
 Essa branch só irá existir caso tenha algum erro muito grave em produção e que necessita de correção o mais rápido possível. Ela será um clone da master onde será feita a correção e aberta a PR direto para master. Uma vez corrigida e mergeada na master, terá que atualizar a branch release com esta correção para que não tenha problema futuro de branchs desincronizadas.
 
 Deixo abaixo uma imagem para melhor visualização do fluxo adotado.<br/>
-![Github flow](https://imgur.com/a/4uILx8R)
+![git-flow drawio](https://github.com/user-attachments/assets/653efe80-edd7-4db5-b79a-5a0ed03499d4)
+
 
 ## Convenções
 
-Para mantermos as boas práticas, poderiamos adotar a padronização dos commits seguindo a documentação Conventional Commits.
+Para mantermos as boas práticas, adotamos a padronização dos commits seguindo a documentação Conventional Commits.
 
 - `feat:` novo recurso/funcionalidade;
 - `fix:` solucionando um problema (bug fix);
