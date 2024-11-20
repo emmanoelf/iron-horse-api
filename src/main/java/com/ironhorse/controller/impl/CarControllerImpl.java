@@ -6,6 +6,7 @@ import com.ironhorse.dto.CarSaveDto;
 import com.ironhorse.dto.CarSaveResponseDto;
 import com.ironhorse.dto.CarUpdateDto;
 import com.ironhorse.repository.projection.CarResumeProjection;
+import com.ironhorse.repository.projection.MyCarsProjection;
 import com.ironhorse.service.CarService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/cars")
@@ -68,5 +71,13 @@ public class CarControllerImpl implements CarController {
                                                        @RequestParam int size) {
         Page<CarResumeProjection> projection = this.carService.findAllCarsByCityAndDateRange(city, startDate, endDate, page, size);
         return projection;
+    }
+
+    @Override
+    @GetMapping("/my-cars")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Optional<List<MyCarsProjection>>> findAllCars() {
+        Optional<List<MyCarsProjection>> carList = this.carService.getAllCarsByIdWithRentals();
+        return ResponseEntity.status(HttpStatus.OK).body(carList);
     }
 }
