@@ -32,12 +32,28 @@ O projeto tem objetivo principal a locação de carros entre pessoas físicas e 
     - Caffeine (Cacheamento para OTP - One Time Password)
 
 
+## Para rodar o projeto back-end
+- Set as variáveis de ambientes necessárias
+- Instale as dependências do maven
+- Utilize versão Java 17 ou superior
+- Gere chaves RSA dentro da pasta `resources` em `src -> main -> resources`
+  - Os nomes dos arquivos das chaves deverão ser `app.key` para a chave privada e `app.pub` para chave pública
+ 
+ ### Como gerar chaves RSA
+ - Recomenda-se instalar o `chocolatey` para windows
+   - Link para auxílio: https://chocolatey.org/install
+ - Após chocolatey instalado, podes verificar a instalação com o comando `choco -v`
+ - Instalar a biblioteca OpenSSL com o comando `choco install openssl`
+ - Gere a chave privada com o comando `openssl genpkey -algorithm RSA -out app.key -pkeyopt rsa_keygen_bits:4096`
+ - Ainda na mesma pasta gere a chave pública a partir da chave privada com o comando `openssl rsa -in app.key -pubout -out app.pub`
+ - Pronto! Suas chaves RSA foram geradas. Basta incluí-las dentro da pasta mencionada no tópico acima.
+
 ## Prototipação
 (André Santos)
 https://www.figma.com/design/FSLxksz2OYmnqn7qsRTubW/Projeto-Final---Prototipagem?node-id=0-1&t=aQ6QohoaWV4MIZTJ-1
 
 ## Diagrama ER
-![modelo-er](https://github.com/user-attachments/assets/45207f59-011e-4d06-adce-77c6a840213d)
+![modelo-er](https://github.com/user-attachments/assets/01f074b3-3a82-4947-9e64-f0dd85526959)
 
 
 ## Git flow
@@ -61,11 +77,11 @@ Aqui desenvolveremos funcionalidades e/ou correções de forma isolada sem afeta
 
 Essa branch só irá existir caso tenha algum erro muito grave em produção e que necessita de correção o mais rápido possível. Ela será um clone da master onde será feita a correção e aberta a PR direto para master. Uma vez corrigida e mergeada na master, terá que atualizar a branch release com esta correção para que não tenha problema futuro de branchs desincronizadas.
 
-Deixo abaixo uma imagem para melhor visualização do fluxo adotado.<br/>
+Deixo abaixo uma imagem para melhor visualização do fluxo adotado. <br/><br/>
 ![git-flow drawio](https://github.com/user-attachments/assets/653efe80-edd7-4db5-b79a-5a0ed03499d4)
 
 
-## Convenções
+### Convenções
 
 Para mantermos as boas práticas, adotamos a padronização dos commits seguindo a documentação Conventional Commits.
 
