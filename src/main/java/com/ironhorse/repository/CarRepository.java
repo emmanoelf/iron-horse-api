@@ -79,6 +79,7 @@ public interface CarRepository extends JpaRepository<Car, Long> {
             co.numberTrips,
             co.price,
             (SELECT ci.path FROM CarImages ci WHERE ci.carInfo.car.id = c.id ORDER BY ci.id ASC LIMIT 1) AS path,
+            rt.id,
             rt.status
         )
         FROM Car c
@@ -88,7 +89,7 @@ public interface CarRepository extends JpaRepository<Car, Long> {
         LEFT JOIN Review r ON c.id = r.car.id
         LEFT JOIN Rental rt ON rt.car.id = c.id
         WHERE c.user.id = :id
-        GROUP BY c.id, c.brand, c.model, c.manufactureYear, ui.city, co.numberTrips, co.price, rt.status
+        GROUP BY c.id, c.brand, c.model, c.manufactureYear, ui.city, co.numberTrips, co.price, rt.id, rt.status
     """)
     Optional<List<MyCarsProjection>> getCarByUserId(@Param("id") Long id);
 

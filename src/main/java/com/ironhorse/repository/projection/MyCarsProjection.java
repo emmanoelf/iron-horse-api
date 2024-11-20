@@ -14,6 +14,7 @@ public record MyCarsProjection(
         Integer numberTrips,
         BigDecimal price,
         String path,
+        Long rentalId,
         RentalStatus status
 ) {
 }
