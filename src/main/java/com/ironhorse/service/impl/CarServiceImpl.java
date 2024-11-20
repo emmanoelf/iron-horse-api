@@ -58,9 +58,6 @@ public class CarServiceImpl implements CarService {
 
         CarInfo savedCarInfo = carInfoRepository.saveAndFlush(carInfo);
 
-        savedCar.getCarOverview().setAvailable(true);
-        savedCar.getCarOverview().setActive(true);
-
         savedCar.setCarInfo(savedCarInfo);
         carRepository.save(savedCar);
 
