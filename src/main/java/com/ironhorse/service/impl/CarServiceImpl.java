@@ -8,6 +8,7 @@ import com.ironhorse.mapper.CarMapper;
 import com.ironhorse.model.*;
 import com.ironhorse.repository.*;
 import com.ironhorse.repository.projection.CarResumeProjection;
+import com.ironhorse.repository.projection.MyCarsProjection;
 import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.CarService;
 import com.ironhorse.service.FileStorageService;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +57,9 @@ public class CarServiceImpl implements CarService {
         carFeatures.setCarInfo(carInfo);
 
         CarInfo savedCarInfo = carInfoRepository.saveAndFlush(carInfo);
+
+        savedCar.getCarOverview().setAvailable(true);
+        savedCar.getCarOverview().setActive(true);
 
         savedCar.setCarInfo(savedCarInfo);
         carRepository.save(savedCar);
@@ -186,5 +192,13 @@ public class CarServiceImpl implements CarService {
                                                                    LocalDateTime endDate, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return this.carRepository.findAllCarsByCityAndDateRange(city, startDate, endDate, pageable);
+    }
+
+    @Override
+    public Optional<List<MyCarsProjection>> getAllCarsByIdWithRentals() {
+        Long userId = this.authenticatedService.getCurrentUserId();
+        Optional<List<MyCarsProjection>> carsList = this.carRepository.getCarByUserId(userId);
+
+        return carsList;
     }
 }
