@@ -21,6 +21,7 @@ O projeto tem objetivo principal a locação de carros entre pessoas físicas e 
     - Bootstrap
     - Google Api
     - Via cep
+    - QRCode Generator
 - Back-end:
     - Java
     - Ecosistema Spring boot
@@ -30,10 +31,12 @@ O projeto tem objetivo principal a locação de carros entre pessoas físicas e 
     - JWT
     - Stripe
     - Caffeine (Cacheamento para OTP - One Time Password)
+    - Swagger
+    - Envio de email
 
 
 ## Para rodar o projeto back-end
-- Set as variáveis de ambientes necessárias
+- Adicione as variáveis de ambientes necessárias
 - Instale as dependências do maven
 - Utilize versão Java 17 ou superior
 - Gere chaves RSA dentro da pasta `resources` em `src -> main -> resources`
