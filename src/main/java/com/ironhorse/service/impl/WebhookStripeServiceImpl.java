@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@SuppressWarnings("deprecation")
 public class WebhookStripeServiceImpl implements WebhookService {
     @Value("${api.key.stripe-webhook}")
     private String endpointSecret;

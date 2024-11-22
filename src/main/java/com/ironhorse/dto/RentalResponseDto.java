@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 
 public record RentalResponseDto(
+        Long id,
         LocalDateTime startDate,
         LocalDateTime expectedEndDate,
+        LocalDateTime realEndDate,
         String status,
         Long carId,
 

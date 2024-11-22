@@ -3,15 +3,21 @@ package com.ironhorse.controller.impl;
 import com.ironhorse.controller.CarController;
 import com.ironhorse.dto.CarResponseDto;
 import com.ironhorse.dto.CarSaveDto;
+import com.ironhorse.dto.CarSaveResponseDto;
 import com.ironhorse.dto.CarUpdateDto;
 import com.ironhorse.repository.projection.CarResumeProjection;
+import com.ironhorse.repository.projection.MyCarsProjection;
 import com.ironhorse.service.CarService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/cars")
@@ -26,9 +32,9 @@ public class CarControllerImpl implements CarController {
     @Override
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CarSaveDto> save(@RequestBody @Valid CarSaveDto carSaveDto) {
-        CarSaveDto carSaved = this.carService.save(carSaveDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(carSaveDto);
+    public ResponseEntity<CarSaveResponseDto> save(@RequestBody @Valid CarSaveDto carSaveDto) {
+        CarSaveResponseDto carSaved = this.carService.save(carSaveDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(carSaved);
     }
 
     @Override
@@ -58,8 +64,20 @@ public class CarControllerImpl implements CarController {
     @Override
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<CarResumeProjection>> findAllCarsByCity(@RequestParam String city) {
-        List<CarResumeProjection> projection = this.carService.findAllCarsByCity(city);
-        return ResponseEntity.status(HttpStatus.OK).body(projection);
+    public Page<CarResumeProjection> findAllCarsByCity(@RequestParam String city,
+                                                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                                       @RequestParam int page,
+                                                       @RequestParam int size) {
+        Page<CarResumeProjection> projection = this.carService.findAllCarsByCityAndDateRange(city, startDate, endDate, page, size);
+        return projection;
+    }
+
+    @Override
+    @GetMapping("/my-cars")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Optional<List<MyCarsProjection>>> findAllCars() {
+        Optional<List<MyCarsProjection>> carList = this.carService.getAllCarsByIdWithRentals();
+        return ResponseEntity.status(HttpStatus.OK).body(carList);
     }
 }

@@ -17,8 +17,10 @@ public class RentalMapper {
 
     public static RentalResponseDto toDto(Rental rental) {
         return new RentalResponseDto(
+                rental.getId(),
                 rental.getStartDate(),
                 rental.getExpectedEndDate(),
+                rental.getRealEndDate(),
                 rental.getStatus().toString(),
                 rental.getCar().getId(),
                 rental.getCreatedAt(),
@@ -29,8 +31,10 @@ public class RentalMapper {
 
     public static RentalResponseDto toDtoWithPaymentUrl(Rental rental, String paymentUrl) {
         return new RentalResponseDto(
+                rental.getId(),
                 rental.getStartDate(),
                 rental.getExpectedEndDate(),
+                rental.getRealEndDate(),
                 rental.getStatus().toString(),
                 rental.getCar().getId(),
                 rental.getCreatedAt(),

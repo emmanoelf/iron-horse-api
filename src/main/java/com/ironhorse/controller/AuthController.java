@@ -1,6 +1,7 @@
 package com.ironhorse.controller;
 
 import com.ironhorse.dto.AuthenticationDto;
+import com.ironhorse.dto.RefreshTokenDto;
 import com.ironhorse.dto.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,5 +28,5 @@ public interface AuthController {
                     description = "Renew an existing token",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = TokenDto.class))})
     })
-    ResponseEntity<TokenDto> refreshTokenAccess(String refreshToken);
+    ResponseEntity<TokenDto> refreshTokenAccess(RefreshTokenDto refreshTokenDto);
 }

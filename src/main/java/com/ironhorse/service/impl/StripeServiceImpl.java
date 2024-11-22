@@ -13,15 +13,13 @@ public class StripeServiceImpl implements PaymentService {
     private static final String CURRENCY_TYPE = "BRL";
 
     public PaymentResponseDto createPaymentLink(PaymentDto paymentDto) throws StripeException {
-        long expiresAt = System.currentTimeMillis() / 1000 + 30 * 60;
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:3000/")
-                .setCancelUrl("https://www.google.com")
+                .setSuccessUrl("http://localhost:5173/")
+                .setCancelUrl("http://localhost:5173/")
                 .setClientReferenceId(paymentDto.id().toString())
-                .setExpiresAt(expiresAt)
                 .addLineItem(SessionCreateParams.LineItem.builder()
                         .setQuantity(1L)
                         .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
@@ -30,7 +28,7 @@ public class StripeServiceImpl implements PaymentService {
                                 .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                         .setName(paymentDto.name())
                                         .setDescription(paymentDto.description())
-                                        //.addImage(paymentDto.image())
+                                        .addImage(paymentDto.image())
                                         .build())
                                 .build())
                         .build())

@@ -3,12 +3,12 @@ package com.ironhorse.service.impl;
 import com.ironhorse.dto.ReviewDto;
 import com.ironhorse.exception.CarNotFound;
 import com.ironhorse.mapper.ReviewMapper;
-import com.ironhorse.model.Car;
-import com.ironhorse.model.Review;
-import com.ironhorse.model.User;
+import com.ironhorse.model.*;
 import com.ironhorse.repository.CarRepository;
+import com.ironhorse.repository.RentalRepository;
 import com.ironhorse.repository.ReviewRepository;
 import com.ironhorse.repository.UserRepository;
+import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,11 +26,19 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository repository;
     private final CarRepository carRepository;
     private final UserRepository userRepository;
+    private final AuthenticatedService authenticatedService;
+    private final RentalRepository rentalRepository;
 
     @Transactional
-    public ReviewDto createReview(ReviewDto reviewDto, Long carId, Long userId) {
-        Car car = carRepository.findById(carId).orElseThrow(() -> new EntityNotFoundException("Carro não encontrado!"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado!"));
+    public ReviewDto createReview(ReviewDto reviewDto, Long carId) {
+        Long userId = this.authenticatedService.getCurrentUserId();
+        Car car = this.carRepository.findById(carId).orElseThrow(() -> new EntityNotFoundException("Carro não encontrado!"));
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Usuario nao encontrado!"));
+
+        Set<RentalStatus> statuses = Set.of(RentalStatus.FINISHED, RentalStatus.FINISHED_LATE);
+        this.rentalRepository.findByUserIdAndCarIdAndStatusIn(userId, carId, statuses)
+                .orElseThrow(() -> new IllegalArgumentException("O usuário só pode avaliar um carro após a locação ser finalizada."));
+
         Review review = ReviewMapper.toModel(reviewDto);
         review.setUser(user);
         review.setCar(car);

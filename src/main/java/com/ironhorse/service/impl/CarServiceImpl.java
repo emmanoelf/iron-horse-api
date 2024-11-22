@@ -8,15 +8,20 @@ import com.ironhorse.mapper.CarMapper;
 import com.ironhorse.model.*;
 import com.ironhorse.repository.*;
 import com.ironhorse.repository.projection.CarResumeProjection;
+import com.ironhorse.repository.projection.MyCarsProjection;
 import com.ironhorse.service.AuthenticatedService;
 import com.ironhorse.service.CarService;
 import com.ironhorse.service.FileStorageService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +36,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     @Transactional
-    public CarSaveDto save(CarSaveDto carSaveDto) {
+    public CarSaveResponseDto save(CarSaveDto carSaveDto) {
 
         Long userId = authenticatedService.getCurrentUserId();
         User user = userRepository.findById(userId)
@@ -56,7 +61,7 @@ public class CarServiceImpl implements CarService {
         savedCar.setCarInfo(savedCarInfo);
         carRepository.save(savedCar);
 
-        return CarMapper.toSaveDto(savedCar);
+        return CarMapper.toSaveResponseDto(savedCar);
     }
 
 
@@ -74,22 +79,33 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public Long deleteById(Long id) {
         Long userId = this.authenticatedService.getCurrentUserId();
-
         User user = this.userRepository.findById(userId).orElseThrow(
-                () -> new UserInfoNotFoundException("Informações do usuário não encontrada"));
+                () -> new UserInfoNotFoundException("Informações do usuário não encontradas"));
 
-        Car car = user.getCars().stream()
-                .filter(carro -> carro.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ForbiddenAccessException("Você não possui privilegios para excluir carros alheios!"));
+        Car car = this.carRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Carro não encontrado"));
 
-        Long affectedRow = this.carRepository.deleteCarById(id);
-        if(car.getCarInfo() != null){
-            this.fileStorageService.deleteOnlyFromStorage(car);
+        if (!car.getUser().getId().equals(userId)) {
+            throw new ForbiddenAccessException("Você não possui privilégios para excluir carros alheios!");
         }
-        this.carRepository.deleteById(id);
-        this.carRepository.flush();
-        return affectedRow;
+
+        if (car.getCarOverview() != null) {
+            car.setCarOverview(null);
+        }
+
+        if (car.getCarInfo() != null) {
+            if (car.getCarInfo().getCarImages() != null) {
+                this.fileStorageService.deleteOnlyFromStorage(car);
+            }
+            car.setCarInfo(null);
+        }
+
+        car.getReviews().clear();
+        car.getRentals().clear();
+
+        this.carRepository.delete(car);
+
+        return 1L;
     }
 
     @Transactional
@@ -130,7 +146,11 @@ public class CarServiceImpl implements CarService {
         carInfo.setMileage(carUpdateDto.carInfoUpdateDto().mileage());
         carInfo.setRenavam(carUpdateDto.carInfoUpdateDto().renavam());
         carInfo.setTransmission(carUpdateDto.carInfoUpdateDto().transmission());
-
+        carInfo.setColor(carUpdateDto.carInfoUpdateDto().color());
+        carInfo.setNumDoors(carUpdateDto.carInfoUpdateDto().numDoors());
+        carInfo.setNumSeats(carUpdateDto.carInfoUpdateDto().numSeats());
+        carInfo.setHeadlightBulb(carUpdateDto.carInfoUpdateDto().headlightBulb());
+        carInfo.setTrunkCapacity(carUpdateDto.carInfoUpdateDto().trunkCapacity());
         CarFeatures carFeatures = carInfo.getCarFeatures();
         if (carFeatures == null) {
             carFeatures = new CarFeatures();
@@ -165,7 +185,17 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
-    public List<CarResumeProjection> findAllCarsByCity(String city) {
-        return this.carRepository.findCarResumesByCity(city);
+    public Page<CarResumeProjection> findAllCarsByCityAndDateRange(String city, LocalDateTime startDate,
+                                                                   LocalDateTime endDate, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return this.carRepository.findAllCarsByCityAndDateRange(city, startDate, endDate, pageable);
+    }
+
+    @Override
+    public Optional<List<MyCarsProjection>> getAllCarsByIdWithRentals() {
+        Long userId = this.authenticatedService.getCurrentUserId();
+        Optional<List<MyCarsProjection>> carsList = this.carRepository.getCarByUserId(userId);
+
+        return carsList;
     }
 }

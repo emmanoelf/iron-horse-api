@@ -22,9 +22,9 @@ public class ReviewControllerImpl implements ReviewController {
     }
 
 
-    @PostMapping("/{carId}/{userId}")
-    public ResponseEntity<ReviewDto> createReview(@RequestBody ReviewDto reviewDto,@PathVariable Long carId, @PathVariable Long userId) {
-        ReviewDto createdReview = reviewService.createReview(reviewDto, carId, userId);
+    @PostMapping("/{carId}")
+    public ResponseEntity<ReviewDto> createReview(@RequestBody ReviewDto reviewDto,@PathVariable Long carId) {
+        ReviewDto createdReview = reviewService.createReview(reviewDto, carId);
         return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
     }
 

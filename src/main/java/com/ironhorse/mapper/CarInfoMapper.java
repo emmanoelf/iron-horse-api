@@ -43,11 +43,14 @@ public class CarInfoMapper {
                 .cylinderDisplacement(carInfoDto.cylinderDisplacement())
                 .mileage(carInfoDto.mileage())
                 .fuelType(carInfoDto.fuelType())
+                .color(carInfoDto.color())
+                .headlightBulb(carInfoDto.headlightBulb())
+                .numDoors(carInfoDto.numDoors())
+                .numSeats(carInfoDto.numSeats())
+                .trunkCapacity(carInfoDto.trunkCapacity())
                 .carFeatures(CarFeaturesMapper.toModel(carInfoDto.carFeaturesDto()))
                 .build();
     }
-
-
 
     public static CarInfoDto toDto(CarInfo carInfo) {
         return new CarInfoDto(
@@ -62,6 +65,11 @@ public class CarInfoMapper {
                 carInfo.getCylinderDisplacement(),
                 carInfo.getMileage(),
                 carInfo.getFuelType(),
+                carInfo.getColor(),
+                carInfo.getNumDoors(),
+                carInfo.getNumSeats(),
+                carInfo.getHeadlightBulb(),
+                carInfo.getTrunkCapacity(),
                 CarFeaturesMapper.toDto(carInfo.getCarFeatures())  // CarFeatures
         );
     }
@@ -84,8 +92,6 @@ public class CarInfoMapper {
                 .build();
     }
 
-
-
     public static CarInfoUpdateDto toUpdateDto(CarInfo carInfo) {
         return new CarInfoUpdateDto(
                 carInfo.isInsurance(),
@@ -99,9 +105,12 @@ public class CarInfoMapper {
                 carInfo.getCylinderDisplacement(),
                 carInfo.getMileage(),
                 carInfo.getFuelType(),
+                carInfo.getColor(),
+                carInfo.getNumDoors(),
+                carInfo.getNumSeats(),
+                carInfo.getHeadlightBulb(),
+                carInfo.getTrunkCapacity(),
                 CarFeaturesMapper.toUpdateDto(carInfo.getCarFeatures())  // CarFeatures
         );
     }
-
-
 }

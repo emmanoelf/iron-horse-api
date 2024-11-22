@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -54,5 +55,5 @@ public interface RentalController {
                     description = "Finish an retal",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RentalResponseDto.class))}),
     })
-    ResponseEntity<RentalResponseDto> finishRental(Long rentalId);
+    ResponseEntity<RentalResponseDto> finishRental(@RequestParam Long rentalId, @RequestParam String otp);
 }

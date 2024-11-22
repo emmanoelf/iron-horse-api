@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -25,6 +26,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendEmail(EmailDto email) {
         try{
             this.validateEntryData(email);
+
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper mimeHelper = new MimeMessageHelper(mimeMessage, true);
 
@@ -32,9 +34,15 @@ public class EmailServiceImpl implements EmailService {
             mimeHelper.setTo(email.to());
             mimeHelper.setSubject(email.subject());
 
-            String pickTemplate = this.loadTemplate(email.body());
-            mimeHelper.setText(pickTemplate, true);
-            mailSender.send(mimeMessage);
+            String body = this.loadTemplate(email.body());
+
+            if (email.templateVariables() != null && !email.templateVariables().isEmpty()) {
+                body = populateTemplate(body, email.templateVariables());
+            }
+
+            mimeHelper.setText(body, true);
+
+            this.mailSender.send(mimeMessage);
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
@@ -58,5 +66,12 @@ public class EmailServiceImpl implements EmailService {
         if(Objects.isNull(email.body()) || email.body().isEmpty()){
             throw new IllegalArgumentException("Corpo não fornecido");
         }
+    }
+
+    private String populateTemplate(String body, Map<String, String> templateVariables) {
+        for (Map.Entry<String, String> entry : templateVariables.entrySet()) {
+            body = body.replace("{{" + entry.getKey() + "}}", entry.getValue());
+        }
+        return body;
     }
 }

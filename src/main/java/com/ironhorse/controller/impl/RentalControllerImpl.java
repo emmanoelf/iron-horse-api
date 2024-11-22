@@ -53,10 +53,11 @@ public class RentalControllerImpl implements RentalController {
     }
 
     @Override
-    @PatchMapping("/{rentalId}/finish")
+    @GetMapping("/finish")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<RentalResponseDto> finishRental(@PathVariable Long rentalId) {
-        RentalResponseDto rentalResponseDto = this.rentalService.finishRental(rentalId);
+    public ResponseEntity<RentalResponseDto> finishRental(@RequestParam Long rentalId,
+                                                          @RequestParam String otp) {
+        RentalResponseDto rentalResponseDto = this.rentalService.finishRental(rentalId, otp);
         return ResponseEntity.status(HttpStatus.OK).body(rentalResponseDto);
     }
 }
