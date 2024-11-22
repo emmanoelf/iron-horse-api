@@ -1,7 +1,6 @@
 package com.ironhorse.controller.impl;
 
 import com.ironhorse.controller.RentalController;
-import com.ironhorse.dto.OneTimePasswordDto;
 import com.ironhorse.dto.RentalDto;
 import com.ironhorse.dto.RentalResponseDetailsDto;
 import com.ironhorse.dto.RentalResponseDto;
@@ -54,11 +53,11 @@ public class RentalControllerImpl implements RentalController {
     }
 
     @Override
-    @PatchMapping("/{rentalId}/finish")
+    @GetMapping("/finish")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<RentalResponseDto> finishRental(@PathVariable Long rentalId,
-                                                          @RequestBody OneTimePasswordDto oneTimePasswordDto) {
-        RentalResponseDto rentalResponseDto = this.rentalService.finishRental(rentalId, oneTimePasswordDto.oneTimePassword());
+    public ResponseEntity<RentalResponseDto> finishRental(@RequestParam Long rentalId,
+                                                          @RequestParam String otp) {
+        RentalResponseDto rentalResponseDto = this.rentalService.finishRental(rentalId, otp);
         return ResponseEntity.status(HttpStatus.OK).body(rentalResponseDto);
     }
 }
