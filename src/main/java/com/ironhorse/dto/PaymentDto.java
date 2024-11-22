@@ -5,7 +5,7 @@ public record PaymentDto(
         String name,
         Long quantity,
         Long totalPrice,
-        String description
-        //String image
+        String description,
+        String image
 ) {
 }

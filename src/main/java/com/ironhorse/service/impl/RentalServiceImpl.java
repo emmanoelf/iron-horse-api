@@ -193,9 +193,9 @@ public class RentalServiceImpl implements RentalService {
         String name = car.getModel() + " " + car.getBrand() + " " + car.getManufactureYear();
         Long totalPrice = car.getCarOverview().getPrice().longValue() * rentalDays;
         String description = car.getCarOverview().getDescription();
-        //String image = car.getCarInfo().getCarImages().get(0).getPath();
+        String image = car.getCarInfo().getCarImages().get(0).getPath();
 
-        return new PaymentDto(id, name, 1L, totalPrice, description);
+        return new PaymentDto(id, name, 1L, totalPrice, description, image);
     }
 
     private Optional<Rental> findPendingOrCanceledRental(Long carId) {
