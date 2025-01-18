@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: iron-horse
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${DB_USER}
+    password: ${MYSQL_ROOT_PASSWORD}
+  servlet:
+    multipart:
+      max-file-size: 12582912
+      max-request-size: 50331648
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+upload:
+  dir: ${UPLOAD_PATH_LOCAL}
+file:
+  storage:
+    type: ${STORAGE_TYPE}
+aws:
+  accessKeyId: ${AWS_ACCESS_KEY}
+  secretAccessKey: ${AWS_SECRET_KEY}
+  s3:
+    region: ${AWS_REGION}
+    bucketName: ${AWS_BUCKET_NAME}
+jwt:
+  public:
+    key: classpath:app.pub
+  private:
+    key: classpath:app.key
+api:
+  key:
+    google-maps: ${API_KEY_GOOGLE_MAPS}
+    stripe-secret: ${STRIPE_KEY_SECRET}
+    stripe-webhook: ${STRIPE_KEY_WEBHOOK}
+base:
+  url:
+    front: ${BASE_URL_FRONT}

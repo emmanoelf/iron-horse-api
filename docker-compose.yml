@@ -1,0 +1,35 @@
+services:
+  app:
+    build:
+      context: .
+    container_name: iron-horse-app
+    depends_on:
+      - mysql-db
+    ports:
+      - "8080:8080"
+    tty: true
+    env_file:
+      - .env
+    networks:
+      - iron-horse-app-network
+
+  mysql-db:
+    image: mysql:5.7
+    container_name: mysql-db
+    restart: always
+    tty: true
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - iron-horse-app-network
+
+networks:
+  iron-horse-app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
