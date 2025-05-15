@@ -173,4 +173,33 @@ public class RentalServiceTest {
         assertEquals("A data de devolução não pode ser maior que a data de início", illegalException.getMessage());
     }
 
+    @Test
+    public void shouldConfirmRentalSuccessfully(){
+        Rental pendingRental = Rental.builder()
+                .id(1L)
+                .status(RentalStatus.PENDING)
+                .car(this.mockCar)
+                .build();
+
+        when(this.rentalRepository.findByCarIdAndStatus(eq(this.mockCar.getId()), any()))
+                .thenReturn(Optional.of(pendingRental));
+
+        this.rentalService.confirmRental(this.mockCar.getId());
+
+        verify(this.carOverviewService).setIsAvailable(this.mockCar.getId(), false);
+        verify(this.rentalRepository).save(pendingRental);
+
+        assertEquals(RentalStatus.ACTIVE, pendingRental.getStatus());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenConfirmRentalIsNotFound(){
+        when(this.rentalRepository.findByCarIdAndStatus(eq(this.mockCar.getId()), any()))
+                .thenReturn(Optional.empty());
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> this.rentalService.confirmRental(this.mockCar.getId()));
+
+        assertEquals("Locação não encontrada ou já confirmada.", exception.getMessage());
+    }
 }
