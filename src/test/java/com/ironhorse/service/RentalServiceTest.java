@@ -2,18 +2,21 @@ package com.ironhorse.service;
 
 import com.ironhorse.dto.PaymentResponseDto;
 import com.ironhorse.dto.RentalDto;
+import com.ironhorse.dto.RentalResponseDetailsDto;
 import com.ironhorse.dto.RentalResponseDto;
 import com.ironhorse.exception.ForbiddenAccessException;
 import com.ironhorse.model.*;
 import com.ironhorse.repository.CarRepository;
 import com.ironhorse.repository.RentalRepository;
 import com.ironhorse.repository.UserRepository;
+import com.ironhorse.repository.projection.RentalDetailsProjection;
 import com.ironhorse.service.impl.AuthenticatedServiceImpl;
 import com.ironhorse.service.impl.CarOverviewServiceImpl;
 import com.ironhorse.service.impl.RentalServiceImpl;
 import com.ironhorse.service.impl.StripeServiceImpl;
 import com.stripe.exception.ApiException;
 import com.stripe.exception.StripeException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -276,5 +279,38 @@ public class RentalServiceTest {
                 () -> this.rentalService.expiredRental(this.mockCar.getId()));
 
         assertEquals("Locação não encontrada ou já confirmada.", exception.getMessage());
+    }
+
+    @Test
+    public void shouldReturnRentalDetailsSuccessfully(){
+        Long rentalId = 1L;
+
+        RentalDetailsProjection rentalDetailsProjection = new RentalDetailsProjection(
+                1L, LocalDateTime.now(),
+                LocalDateTime.now().plusDays(3),
+                RentalStatus.PENDING,
+                this.mockCar.getId(),
+                this.mockCar.getBrand(),
+                this.mockCar.getModel(),
+                this.mockCar.getManufactureYear(),
+                this.mockCar.getCarOverview().getPrice(),
+                3
+        );
+
+        when(this.authenticatedService.getCurrentUserId()).thenReturn(this.mockUser.getId());
+        when(this.rentalRepository.findRentalWithDetails(eq(rentalId), eq(this.mockUser.getId())))
+                .thenReturn(Optional.of(rentalDetailsProjection));
+
+        RentalResponseDetailsDto result = this.rentalService.getRentalDetails(rentalId);
+        assertEquals(new BigDecimal("450.00"), result.totalPrice());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenRentalDetailsIsNotFound(){
+        Long rentalId = 1L;
+        when(this.authenticatedService.getCurrentUserId()).thenReturn(this.mockUser.getId());
+        when(this.rentalRepository.findRentalWithDetails(rentalId, this.mockUser.getId())).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> rentalService.getRentalDetails(rentalId));
     }
 }
