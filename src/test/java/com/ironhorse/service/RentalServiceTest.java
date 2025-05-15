@@ -3,6 +3,7 @@ package com.ironhorse.service;
 import com.ironhorse.dto.PaymentResponseDto;
 import com.ironhorse.dto.RentalDto;
 import com.ironhorse.dto.RentalResponseDto;
+import com.ironhorse.exception.ForbiddenAccessException;
 import com.ironhorse.model.*;
 import com.ironhorse.repository.CarRepository;
 import com.ironhorse.repository.RentalRepository;
@@ -201,5 +202,50 @@ public class RentalServiceTest {
                 () -> this.rentalService.confirmRental(this.mockCar.getId()));
 
         assertEquals("Locação não encontrada ou já confirmada.", exception.getMessage());
+    }
+
+    @Test
+    public void shouldCancelRentalSuccessfully(){
+        Rental pendingRental = Rental.builder()
+                .id(1L)
+                .user(this.mockUser)
+                .car(this.mockCar)
+                .status(RentalStatus.PENDING)
+                .build();
+
+        when(this.authenticatedService.getCurrentUserId()).thenReturn(this.mockUser.getId());
+        when(this.rentalRepository.findById(pendingRental.getId())).thenReturn(Optional.of(pendingRental));
+
+        this.rentalService.cancelRental(this.mockCar.getId());
+
+        verify(this.carOverviewService).setIsAvailable(pendingRental.getCar().getId(), true);
+        verify(this.rentalRepository).save(pendingRental);
+
+        assertEquals(RentalStatus.CANCELED, pendingRental.getStatus());
+    }
+
+    @Test
+    public void shouldThrowForbiddenExceptionWhenUserIsNotOwner(){
+        Rental rental = Rental.builder()
+                .id(1L)
+                .status(RentalStatus.PENDING)
+                .user(User.builder()
+                        .id(2L)
+                        .build())
+                .car(Car.builder()
+                        .id(2L)
+                        .user(User.builder()
+                                .id(3L)
+                                .build())
+                        .build())
+                .build();
+
+        when(this.authenticatedService.getCurrentUserId()).thenReturn(this.mockUser.getId());
+        when(this.rentalRepository.findById(1L)).thenReturn(Optional.of(rental));
+
+        ForbiddenAccessException exception = assertThrows(ForbiddenAccessException.class,
+                () -> this.rentalService.cancelRental(rental.getId()));
+
+        assertEquals("Você não tem privilégios para cancelar esta locação", exception.getMessage());
     }
 }
