@@ -248,4 +248,33 @@ public class RentalServiceTest {
 
         assertEquals("Você não tem privilégios para cancelar esta locação", exception.getMessage());
     }
+
+    @Test
+    public void shouldExpiredRentalSuccessfully(){
+        Rental pendingRental = Rental.builder()
+                .id(1L)
+                .status(RentalStatus.PENDING)
+                .car(this.mockCar)
+                .build();
+
+        when(this.rentalRepository.findByCarIdAndStatus(eq(this.mockCar.getId()), any()))
+                .thenReturn(Optional.of(pendingRental));
+
+        this.rentalService.expiredRental(this.mockCar.getId());
+
+        verify(this.rentalRepository).save(pendingRental);
+        verify(this.carOverviewService).setIsAvailable(this.mockCar.getId(), true);
+        assertEquals(RentalStatus.EXPIRED, pendingRental.getStatus());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenExpiredRentalIsNotFound(){
+        when(this.rentalRepository.findByCarIdAndStatus(eq(this.mockCar.getId()), any()))
+                .thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> this.rentalService.expiredRental(this.mockCar.getId()));
+
+        assertEquals("Locação não encontrada ou já confirmada.", exception.getMessage());
+    }
 }
