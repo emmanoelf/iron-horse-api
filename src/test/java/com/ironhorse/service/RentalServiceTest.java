@@ -59,6 +59,9 @@ public class RentalServiceTest {
     @Mock
     private CarOverviewServiceImpl carOverviewService;
 
+    @Mock
+    private OneTimePasswordService oneTimePasswordService;
+
     private User mockUser;
     private Car mockCar;
     private RentalDto rentalDto;
@@ -342,5 +345,84 @@ public class RentalServiceTest {
 
         assertEquals(mockRentals.size(), result.size());
         assertEquals(confirmedRental.getId(), result.get(1).id());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenRentalIsNotFound(){
+        Long rentalIdNotExists = 77L;
+
+        when(this.rentalRepository.findById(eq(rentalIdNotExists))).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> this.rentalService.finishRental(rentalIdNotExists, "123456"));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenOtpIsInvalid(){
+        Rental rental = Rental.builder()
+                .id(1L)
+                .car(this.mockCar)
+                .expectedEndDate(LocalDateTime.now().plusDays(3))
+                .build();
+
+        when(this.rentalRepository.findById(1L)).thenReturn(Optional.of(rental));
+        when(this.oneTimePasswordService.validateOneTimePassword(1L, "123456")).thenReturn(false);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> this.rentalService.finishRental(1L, "123456"));
+
+        assertEquals("Código inválido", exception.getMessage());
+    }
+
+    @Test
+    public void shouldFinishRentalSuccessfully(){
+        String otp = "123456";
+        Rental rental = Rental.builder()
+                .id(1L)
+                .car(this.mockCar)
+                .user(this.mockUser)
+                .status(RentalStatus.ACTIVE)
+                .expectedEndDate(LocalDateTime.now().plusDays(1))
+                .build();
+
+        when(this.rentalRepository.findById(rental.getId())).thenReturn(Optional.of(rental));
+        when(this.oneTimePasswordService.validateOneTimePassword(rental.getId(), otp))
+                .thenReturn(true);
+
+        RentalResponseDto result = this.rentalService.finishRental(rental.getId(), otp);
+
+        verify(this.carOverviewService).setIsAvailable(this.mockCar.getId(), true);
+        verify(this.carOverviewService).increaseNumberOfTrips(this.mockCar.getId());
+        verify(this.rentalRepository).save(rental);
+
+        assertEquals(RentalStatus.FINISHED.name(), result.status());
+        assertEquals(rental.getId(), result.id());
+        assertNotNull(rental.getRealEndDate());
+    }
+
+    @Test
+    public void shouldFinishARentalAfterExpectedEndDate(){
+        String otp = "123456";
+        Rental rental = Rental.builder()
+                .id(1L)
+                .car(this.mockCar)
+                .user(this.mockUser)
+                .status(RentalStatus.ACTIVE)
+                .expectedEndDate(LocalDateTime.now().minusDays(2))
+                .build();
+
+        when(this.rentalRepository.findById(rental.getId())).thenReturn(Optional.of(rental));
+        when(this.oneTimePasswordService.validateOneTimePassword(rental.getId(), otp))
+                .thenReturn(true);
+
+        RentalResponseDto result = this.rentalService.finishRental(rental.getId(), otp);
+
+        verify(this.carOverviewService).setIsAvailable(this.mockCar.getId(), true);
+        verify(this.carOverviewService).increaseNumberOfTrips(this.mockCar.getId());
+        verify(this.rentalRepository).save(rental);
+
+        assertEquals(RentalStatus.FINISHED_LATE.name(), result.status());
+        assertEquals(rental.getId(), result.id());
+        assertNotNull(rental.getRealEndDate());
     }
 }
