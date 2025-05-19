@@ -33,8 +33,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class RentalServiceTest {
@@ -424,5 +423,40 @@ public class RentalServiceTest {
         assertEquals(RentalStatus.FINISHED_LATE.name(), result.status());
         assertEquals(rental.getId(), result.id());
         assertNotNull(rental.getRealEndDate());
+    }
+
+    @Test
+    public void shouldCancelPendingRentalWithWebhookEventSuccessfully() {
+        Rental rental = Rental.builder()
+                .id(1L)
+                .car(this.mockCar)
+                .user(this.mockUser)
+                .status(RentalStatus.PENDING)
+                .build();
+
+        when(this.rentalRepository.findByCarIdAndStatus(eq(this.mockCar.getId()), any()))
+                .thenReturn(Optional.of(rental));
+
+        this.rentalService.cancelRentalByCarId(this.mockCar.getId());
+
+        verify(this.rentalRepository).save(rental);
+        verify(this.carOverviewService).setIsAvailable(this.mockCar.getId(), true);
+
+        assertEquals(RentalStatus.CANCELED, rental.getStatus());
+    }
+
+    @Test
+    public void shouldThrowExceptionIfNoPendingOrCanceledRentalFoundWithWebhookEvent() {
+        when(this.rentalRepository.findByCarIdAndStatus(eq(this.mockCar.getId()), any()))
+                .thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                this.rentalService.cancelRentalByCarId(this.mockCar.getId())
+        );
+
+        verify(this.rentalRepository, never()).save(any());
+        verify(this.carOverviewService, never()).setIsAvailable(this.mockCar.getId(), true);
+
+        assertEquals("Locação não encontrada ou já confirmada.", exception.getMessage());
     }
 }
