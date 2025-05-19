@@ -26,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -312,5 +313,34 @@ public class RentalServiceTest {
         when(this.rentalRepository.findRentalWithDetails(rentalId, this.mockUser.getId())).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> rentalService.getRentalDetails(rentalId));
+    }
+
+    @Test
+    public void shouldBeAbleToShowAllRentalsByLoggedUser(){
+        Rental pendingRental = Rental.builder()
+                .id(1L)
+                .status(RentalStatus.PENDING)
+                .car(this.mockCar)
+                .user(this.mockUser)
+                .build();
+
+        Rental confirmedRental = Rental.builder()
+                .id(1L)
+                .status(RentalStatus.ACTIVE)
+                .car(this.mockCar)
+                .user(this.mockUser)
+                .build();
+
+        List<Rental> mockRentals = Arrays.asList(pendingRental, confirmedRental);
+        when(this.authenticatedService.getCurrentUserId()).thenReturn(this.mockUser.getId());
+        when(this.rentalRepository.findByUserId(this.mockUser.getId())).thenReturn(mockRentals);
+
+        List<RentalResponseDto> result = this.rentalService.getAllRentalsByLoggedUser();
+
+        verify(this.authenticatedService).getCurrentUserId();
+        verify(this.rentalRepository).findByUserId(this.mockUser.getId());
+
+        assertEquals(mockRentals.size(), result.size());
+        assertEquals(confirmedRental.getId(), result.get(1).id());
     }
 }
