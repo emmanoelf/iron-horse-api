@@ -164,10 +164,8 @@ public class RentalServiceImpl implements RentalService {
         LocalDateTime realEndDate = LocalDateTime.now();
 
         boolean isOverdue = this.validateDeliveryDate(rental.getExpectedEndDate(), realEndDate);
-        if(isOverdue){
-            rental.setStatus(RentalStatus.FINISHED_LATE);
-        }
-        rental.setStatus(RentalStatus.FINISHED);
+        RentalStatus status = isOverdue ? RentalStatus.FINISHED_LATE : RentalStatus.FINISHED;
+        rental.setStatus(status);
 
         rental.setRealEndDate(realEndDate);
         this.rentalRepository.save(rental);
