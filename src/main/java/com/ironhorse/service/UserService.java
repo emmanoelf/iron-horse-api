@@ -9,5 +9,4 @@ public interface UserService {
     UserResponseDto findById(Long id);
     Long deleteById(Long id);
     UserResponseDto update(Long id, UserDto userDto);
-    User findByEmail(String email);
 }
