@@ -1,19 +1,22 @@
 package com.ironhorse.service.impl;
 
+import com.ironhorse.client.StripeClient;
 import com.ironhorse.dto.PaymentDto;
 import com.ironhorse.dto.PaymentResponseDto;
 import com.ironhorse.service.PaymentService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class StripeServiceImpl implements PaymentService {
+    private final StripeClient stripeClient;
     private static final String CURRENCY_TYPE = "BRL";
 
     public PaymentResponseDto createPaymentLink(PaymentDto paymentDto) throws StripeException {
-
         SessionCreateParams params = SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
@@ -37,9 +40,8 @@ public class StripeServiceImpl implements PaymentService {
                 )
                 .build();
 
-        Session session = Session.create(params);
-        PaymentResponseDto paymentResponseDto = new PaymentResponseDto(session.getUrl());
+        Session session = this.stripeClient.createSession(params);
 
-        return paymentResponseDto;
+        return new PaymentResponseDto(session.getUrl());
     }
 }
