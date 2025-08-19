@@ -8,7 +8,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
   datasource:
     url: ${SPRING_DATASOURCE_URL}
-    username: ${DB_USER}
+    username: ${SPRING_DATASOURCE_USERNAME}
     password: ${MYSQL_ROOT_PASSWORD}
   servlet:
     multipart:
@@ -46,6 +46,8 @@ api:
     google-maps: ${API_KEY_GOOGLE_MAPS}
     stripe-secret: ${STRIPE_KEY_SECRET}
     stripe-webhook: ${STRIPE_KEY_WEBHOOK}
+googleGeocodeClient:
+  url: ${GOOGLE_GEOCODE_CLIENT_URL}
 base:
   url:
     front: ${BASE_URL_FRONT}

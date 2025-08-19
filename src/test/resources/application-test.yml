@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: iron-horse
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.H2Dialect
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: sa
+  mail:
+    host: mock-mail-host
+    port: 25
+    username: mock-mail-user
+    password: mock-mail-password
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+  servlet:
+    multipart:
+      max-file-size: 12582912
+      max-request-size: 50331648
+upload:
+  dir: mock-upload-dir
+file:
+  storage:
+    type: local
+aws:
+  accessKeyId: mock-access-key
+  secretAccessKey: mock-secret-key
+  s3:
+    region: mock-region
+    bucketName: mock-bucket
+jwt:
+  public:
+    key: classpath:app.pub
+  private:
+    key: classpath:app.key
+api:
+  key:
+    google-maps: test_key
+    stripe-secret: mock-stripe-secret
+    stripe-webhook: mock-stripe-webhook
+googleGeocodeClient:
+  url: google-maps
+base:
+  url:
+    front: mock-url
