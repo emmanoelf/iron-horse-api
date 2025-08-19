@@ -10,11 +10,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class GeocodeServiceImpl implements GeocodeService {
     private final GoogleGeocodeClient googleGeocodeClient;
-
-    @Value("${api.key.google-maps}")
     private final String apiKey;
 
-    public GeocodeServiceImpl(GoogleGeocodeClient googleGeocodeClient, String apiKey) {
+    public GeocodeServiceImpl(GoogleGeocodeClient googleGeocodeClient, @Value("${api.key.google-maps}")String apiKey) {
         this.googleGeocodeClient = googleGeocodeClient;
         this.apiKey = apiKey;
     }

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "googleGeocodeClient", url = "https://maps.googleapis.com/maps/api/geocode")
+@FeignClient(name = "googleGeocodeClient", url="${googleGeocodeClient.url}")
 public interface GoogleGeocodeClient {
 
     @GetMapping("/json")
