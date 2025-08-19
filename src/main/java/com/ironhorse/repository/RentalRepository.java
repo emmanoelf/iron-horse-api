@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface RentalRepository extends JpaRepository<Rental, Long> {
+
+
     @Query("""
             SELECT NEW com.ironhorse.repository.projection.RentalDetailsProjection(
                 r.id,
@@ -22,8 +24,7 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
                 c.brand,
                 c.model,
                 c.manufactureYear,
-                co.price,
-                DATEDIFF(r.expectedEndDate, r.startDate)
+                co.price
             )
                 FROM Rental r
                         INNER JOIN Car c ON r.car.id = c.id

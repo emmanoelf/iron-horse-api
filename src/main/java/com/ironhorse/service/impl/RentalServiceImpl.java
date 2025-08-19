@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -140,6 +141,9 @@ public class RentalServiceImpl implements RentalService {
             throw new EntityNotFoundException("Locação não encontrada");
         }
 
+        rentalDetails.get().setDaysRented(this.calculateRentalDays(
+                rentalDetails.get().getStartDate(), rentalDetails.get().getExpectedEndDate()));
+
         BigDecimal totalPrice = rentalDetails.get().getPrice()
                 .multiply(BigDecimal.valueOf(rentalDetails.get().getDaysRented()));
         rentalDetails.get().setTotalPrice(totalPrice);
@@ -201,4 +205,8 @@ public class RentalServiceImpl implements RentalService {
         return rentalRepository.findByCarIdAndStatus(carId, statuses);
     }
 
+    private int calculateRentalDays(LocalDateTime startDate, LocalDateTime expectEndDate) {
+        long totalDays = Duration.between(startDate, expectEndDate).toDays();
+        return (int) Math.max(0, totalDays);
+    }
 }

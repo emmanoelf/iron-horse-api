@@ -35,7 +35,7 @@ public class RentalDetailsProjection {
         this.daysRented = daysRented;
     }
 
-    public RentalDetailsProjection(Long id, LocalDateTime startDate, LocalDateTime expectedEndDate, RentalStatus status, Long carId, String carBrand, String carModel, Long carManufactureYear, BigDecimal price, int daysRented, BigDecimal totalPrice) {
+    public RentalDetailsProjection(Long id, LocalDateTime startDate, LocalDateTime expectedEndDate, RentalStatus status, Long carId, String carBrand, String carModel, Long carManufactureYear, BigDecimal price) {
         this.id = id;
         this.startDate = startDate;
         this.expectedEndDate = expectedEndDate;
@@ -45,7 +45,5 @@ public class RentalDetailsProjection {
         this.carModel = carModel;
         this.carManufactureYear = carManufactureYear;
         this.price = price;
-        this.daysRented = daysRented;
-        this.totalPrice = totalPrice;
     }
 }
