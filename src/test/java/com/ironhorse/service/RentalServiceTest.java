@@ -296,8 +296,7 @@ public class RentalServiceTest {
                 this.mockCar.getBrand(),
                 this.mockCar.getModel(),
                 this.mockCar.getManufactureYear(),
-                this.mockCar.getCarOverview().getPrice(),
-                3
+                this.mockCar.getCarOverview().getPrice()
         );
 
         when(this.authenticatedService.getCurrentUserId()).thenReturn(this.mockUser.getId());
@@ -306,6 +305,7 @@ public class RentalServiceTest {
 
         RentalResponseDetailsDto result = this.rentalService.getRentalDetails(rentalId);
         assertEquals(new BigDecimal("450.00"), result.totalPrice());
+        assertEquals(3, result.daysRented());
     }
 
     @Test
