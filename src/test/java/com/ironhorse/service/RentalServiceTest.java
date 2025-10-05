@@ -222,7 +222,7 @@ public class RentalServiceTest {
         when(this.authenticatedService.getCurrentUserId()).thenReturn(this.mockUser.getId());
         when(this.rentalRepository.findById(pendingRental.getId())).thenReturn(Optional.of(pendingRental));
 
-        this.rentalService.cancelRental(this.mockCar.getId());
+        this.rentalService.cancelRental(pendingRental.getId());
 
         verify(this.carOverviewService).setIsAvailable(pendingRental.getCar().getId(), true);
         verify(this.rentalRepository).save(pendingRental);
@@ -304,7 +304,7 @@ public class RentalServiceTest {
                 .thenReturn(Optional.of(rentalDetailsProjection));
 
         RentalResponseDetailsDto result = this.rentalService.getRentalDetails(rentalId);
-        assertEquals(new BigDecimal("450.00"), result.totalPrice());
+        assertEquals(0, result.totalPrice().compareTo(new BigDecimal("450.00")));
         assertEquals(3, result.daysRented());
     }
 
