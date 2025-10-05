@@ -82,7 +82,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         UserInfo userInfo = this.userInfoRepository.findById(userId)
                 .orElseThrow(() -> new UserInfoNotFoundException("Informações do usuário não encontradas"));
 
-        userInfo.setStreetAddress(userInfoDto.cpf());
+        userInfo.setCpf(userInfoDto.cpf());
         userInfo.setStreetAddress(userInfoDto.streetAddress());
         userInfo.setStreetName(userInfoDto.streetName());
         userInfo.setStreetNumber(userInfoDto.streetNumber());
@@ -103,14 +103,22 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     private void setLatitudeAndLongitude(UserInfo userInfo, String streetAddress, String streetName, String city, String state) {
-        String addresss = String.format("%s, %s, %s, %s",
+        String address = this.buildFullAddress(streetAddress, streetName, city, state);
+        LocationDto locationDto = this.fetchLocation(address);
+
+        userInfo.setLatitude(locationDto.lat());
+        userInfo.setLongitude(locationDto.lng());
+    }
+
+    private String buildFullAddress(String streetAddress, String streetName, String city, String state){
+        return String.format("%s, %s, %s, %s",
                 streetAddress,
                 streetName,
                 city,
                 state);
+    }
 
-        LocationDto locationDto = this.geocodeService.getLatitudeAndLongitude(addresss);
-        userInfo.setLatitude(locationDto.lat());
-        userInfo.setLongitude(locationDto.lng());
+    private LocationDto fetchLocation(String address){
+        return this.geocodeService.getLatitudeAndLongitude(address);
     }
 }
