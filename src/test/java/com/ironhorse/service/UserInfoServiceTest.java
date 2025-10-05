@@ -13,6 +13,7 @@ import com.ironhorse.repository.UserRepository;
 import com.ironhorse.service.impl.UserInfoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class UserInfoServiceTest {
 

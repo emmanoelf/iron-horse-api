@@ -9,6 +9,7 @@ import com.ironhorse.repository.UserRepository;
 import com.ironhorse.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
     @InjectMocks
