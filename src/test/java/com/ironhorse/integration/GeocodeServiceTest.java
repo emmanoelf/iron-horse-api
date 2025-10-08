@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Tag("integration")
 @Tag("external")
+@Tag("slow")
 @SpringBootTest
 @ActiveProfiles("test")
 class GeocodeServiceTest {
