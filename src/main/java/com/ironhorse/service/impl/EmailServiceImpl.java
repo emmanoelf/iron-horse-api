@@ -2,6 +2,7 @@ package com.ironhorse.service.impl;
 
 import com.ironhorse.dto.EmailDto;
 import com.ironhorse.service.EmailService;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,9 +25,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendEmail(EmailDto email) {
-        try{
-            this.validateEntryData(email);
+        this.validateEntryData(email);
 
+        try{
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper mimeHelper = new MimeMessageHelper(mimeMessage, true);
 
@@ -43,8 +44,10 @@ public class EmailServiceImpl implements EmailService {
             mimeHelper.setText(body, true);
 
             this.mailSender.send(mimeMessage);
+        }catch (MessagingException | IOException e){
+            throw new RuntimeException("Erro ao processar e-mail", e);
         }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Erro ao enviar e-mail: " + e.getMessage(), e);
         }
     }
 
