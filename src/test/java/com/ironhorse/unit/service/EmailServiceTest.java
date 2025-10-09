@@ -1,4 +1,4 @@
-package com.ironhorse.service;
+package com.ironhorse.unit.service;
 
 import com.ironhorse.dto.EmailDto;
 import com.ironhorse.service.impl.EmailServiceImpl;

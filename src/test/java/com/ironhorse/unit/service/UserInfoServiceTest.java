@@ -1,4 +1,4 @@
-package com.ironhorse.service;
+package com.ironhorse.unit.service;
 
 import com.ironhorse.dto.UserInfoCreateDto;
 import com.ironhorse.dto.UserInfoDto;
@@ -10,6 +10,8 @@ import com.ironhorse.model.User;
 import com.ironhorse.model.UserInfo;
 import com.ironhorse.repository.UserInfoRepository;
 import com.ironhorse.repository.UserRepository;
+import com.ironhorse.service.AuthenticatedService;
+import com.ironhorse.service.GeocodeService;
 import com.ironhorse.service.impl.UserInfoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

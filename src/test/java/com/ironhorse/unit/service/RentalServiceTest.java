@@ -1,4 +1,4 @@
-package com.ironhorse.service;
+package com.ironhorse.unit.service;
 
 import com.ironhorse.dto.PaymentResponseDto;
 import com.ironhorse.dto.RentalDto;
@@ -10,6 +10,7 @@ import com.ironhorse.repository.CarRepository;
 import com.ironhorse.repository.RentalRepository;
 import com.ironhorse.repository.UserRepository;
 import com.ironhorse.repository.projection.RentalDetailsProjection;
+import com.ironhorse.service.OneTimePasswordService;
 import com.ironhorse.service.impl.AuthenticatedServiceImpl;
 import com.ironhorse.service.impl.CarOverviewServiceImpl;
 import com.ironhorse.service.impl.RentalServiceImpl;

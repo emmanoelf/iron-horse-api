@@ -1,4 +1,4 @@
-package com.ironhorse.service;
+package com.ironhorse.unit.service;
 
 import com.ironhorse.dto.EmailDto;
 import com.ironhorse.dto.UserDto;
@@ -6,6 +6,7 @@ import com.ironhorse.dto.UserResponseDto;
 import com.ironhorse.exception.UserNotFound;
 import com.ironhorse.model.User;
 import com.ironhorse.repository.UserRepository;
+import com.ironhorse.service.EmailService;
 import com.ironhorse.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
