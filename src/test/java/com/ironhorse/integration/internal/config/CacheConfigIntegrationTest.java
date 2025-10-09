@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Tag("integration")
 @Tag("internal")
+@Tag("slow")
 @ActiveProfiles("test")
 @SpringBootTest
 public class CacheConfigIntegrationTest {
