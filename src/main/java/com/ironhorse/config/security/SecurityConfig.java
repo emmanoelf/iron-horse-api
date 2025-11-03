@@ -35,7 +35,7 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.POST, "/v1/users/upload").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/userInfo").permitAll()
                         .requestMatchers("/v1/payment/**").permitAll()
-                        .requestMatchers("/v1/rentals/**").permitAll()
+                        .requestMatchers("/v1/rentals/**").authenticated()
                         .requestMatchers("/v1/recovery/**").permitAll()
                         .requestMatchers("/webhook/**").permitAll()
                         .anyRequest().authenticated()
