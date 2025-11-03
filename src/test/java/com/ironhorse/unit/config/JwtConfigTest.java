@@ -25,7 +25,7 @@ public class JwtConfigTest {
     @DisplayName("Should be able to create beans successfully")
     public void shouldBeAbleToCreateBeansSuccessfully() throws Exception{
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
+        keyPairGenerator.initialize(4096);
 
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
